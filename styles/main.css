@@ -35,6 +35,10 @@ p {
 }
 
 /* Layout Components */
+main {
+  background: linear-gradient(135deg, var(--secondary-color) 0%, var(--neutral-cream) 100%);
+}
+
 .container {
   width: 100%;
   max-width: var(--container-max);
@@ -50,8 +54,9 @@ p {
 /* Accordion Container */
 .accordion-container {
   max-width: 1200px;
-  margin: 1rem auto 2rem auto;
+  padding: 2rem 0;
   position: relative;
+  /* background: linear-gradient(135deg, var(--secondary-color) 0%, var(--neutral-cream) 100%); */
 }
 
 /* Accordion Section Styles */
@@ -179,10 +184,12 @@ p {
 
 /* Header Component */
 .header {
-  position: sticky;
+  position: absolute;
   top: 0;
-  background-color: var(--secondary-color);
-  z-index: var(--z-sticky);
+  left: 0;
+  right: 0;
+  background-color: transparent;
+  z-index: var(--z-fixed);
   transition: all var(--transition-normal);
 }
 
@@ -699,7 +706,187 @@ p {
   padding-top: var(--space-lg);
 }
 
+/* Top Hero Section */
+.top-hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background: linear-gradient(135deg, var(--secondary-color) 0%, var(--neutral-cream) 100%); */
+  position: relative;
+  overflow: hidden;
+}
+
+.top-hero__container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.top-hero__logo-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: heroEntrance 2s ease-out forwards;
+}
+
+.top-hero__logo {
+  width: 300px;
+  height: 300px;
+  object-fit: contain;
+  transition: all var(--transition-slow);
+  animation: logoFloat 6s ease-in-out infinite;
+  cursor: pointer;
+  filter: drop-shadow(0 10px 30px rgba(190, 30, 45, 0.3));
+}
+
+.top-hero__logo:hover {
+  transform: scale(1.1) rotate(5deg);
+  filter: drop-shadow(0 15px 40px rgba(190, 30, 45, 0.5));
+}
+
+.top-hero__glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(190, 30, 45, 0.2) 0%, rgba(190, 30, 45, 0.1) 30%, transparent 70%);
+  border-radius: 50%;
+  animation: pulseGlow 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.top-hero__particles {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 500px;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background-image: url('../logos/pattern/red_pattern.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.7;
+  animation: particleFloat 8s ease-in-out infinite, particleRotate 12s linear infinite;
+}
+
+.particle:nth-child(1) {
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+  animation-duration: 7s;
+}
+
+.particle:nth-child(2) {
+  top: 80%;
+  left: 20%;
+  animation-delay: 1s;
+  animation-duration: 9s;
+}
+
+.particle:nth-child(3) {
+  top: 30%;
+  right: 15%;
+  animation-delay: 2s;
+  animation-duration: 6s;
+}
+
+.particle:nth-child(4) {
+  bottom: 25%;
+  right: 10%;
+  animation-delay: 3s;
+  animation-duration: 8s;
+}
+
+.particle:nth-child(5) {
+  top: 60%;
+  left: 5%;
+  animation-delay: 4s;
+  animation-duration: 7.5s;
+}
+
+.particle:nth-child(6) {
+  top: 10%;
+  right: 30%;
+  animation-delay: 5s;
+  animation-duration: 8.5s;
+}
+
 /* Animations */
+@keyframes heroEntrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes logoFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+@keyframes particleFloat {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0.6;
+  }
+  25% {
+    transform: translateY(-30px) translateX(10px);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-15px) translateX(-15px);
+    opacity: 0.4;
+  }
+  75% {
+    transform: translateY(-25px) translateX(5px);
+    opacity: 0.7;
+  }
+}
+
+@keyframes particleRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes fadeInUp {
   to {
     opacity: 1;
@@ -1102,6 +1289,55 @@ p {
   }
 }
 
+/* Top Hero Responsive Styles */
+@media (max-width: 768px) {
+  .top-hero__logo {
+    width: 250px;
+    height: 250px;
+  }
+  
+  .top-hero__glow {
+    width: 320px;
+    height: 320px;
+  }
+  
+  .top-hero__particles {
+    width: 400px;
+    height: 400px;
+  }
+  
+  .particle {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .top-hero {
+    min-height: 80vh;
+  }
+  
+  .top-hero__logo {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .top-hero__glow {
+    width: 280px;
+    height: 280px;
+  }
+  
+  .top-hero__particles {
+    width: 350px;
+    height: 350px;
+  }
+  
+  .particle {
+    width: 28px;
+    height: 28px;
+  }
+}
+
 /* Desktop Styles */
 @media (min-width: 1024px) {
   .section {
@@ -1118,5 +1354,25 @@ p {
   
   .contact-form {
     padding: var(--space-3xl);
+  }
+  
+  .top-hero__logo {
+    width: 400px;
+    height: 400px;
+  }
+  
+  .top-hero__glow {
+    width: 500px;
+    height: 500px;
+  }
+  
+  .top-hero__particles {
+    width: 600px;
+    height: 600px;
+  }
+  
+  .particle {
+    width: 10px;
+    height: 10px;
   }
 }
