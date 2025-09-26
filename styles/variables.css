@@ -1,0 +1,93 @@
+:root {
+  /* Colors */
+  --primary-color: #BE1E2D;
+  --secondary-color: #ffffff;
+  --accent-purple: #8D5CFF;
+  --accent-purple-light: #C3A9FF;
+  --accent-pink: #FF547A;
+  --accent-pink-light: #FFB4E0;
+  --accent-orange: #FF8436;
+  --accent-yellow: #FFCF00;
+  --accent-teal: #1F9B88;
+  --accent-teal-light: #86CBC3;
+  --accent-blue: #2548FF;
+  --accent-blue-light: #9EBFFF;
+  --neutral-gray: #BFBDC4;
+  --neutral-cream: #EEEDD8;
+  
+  /* Text Colors */
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-light: #999999;
+  --text-white: #ffffff;
+  
+  /* Typography */
+  --font-primary: 'Segoe UI', Georgia, serif;
+  --font-secondary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  /* Font Sizes - Mobile First */
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.875rem;   /* 14px */
+  --text-base: 1rem;     /* 16px */
+  --text-lg: 1.125rem;   /* 18px */
+  --text-xl: 1.25rem;    /* 20px */
+  --text-2xl: 1.5rem;    /* 24px */
+  --text-3xl: 1.875rem;  /* 30px */
+  --text-4xl: 2rem;   /* 36px */
+  --text-5xl: 3rem;      /* 48px */
+  
+  /* Spacing */
+  --space-xs: 0.25rem;   /* 4px */
+  --space-sm: 0.5rem;    /* 8px */
+  --space-md: 1rem;      /* 16px */
+  --space-lg: 1.5rem;    /* 24px */
+  --space-xl: 2rem;      /* 32px */
+  --space-2xl: 3rem;     /* 48px */
+  --space-3xl: 4rem;     /* 64px */
+  
+  /* Layout */
+  --container-max: 1200px;
+  --container-padding: var(--space-md);
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  
+  /* Transitions */
+  --transition-fast: 0.15s ease-out;
+  --transition-normal: 0.3s ease-out;
+  --transition-slow: 0.5s ease-out;
+  
+  /* Z-index */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal: 1040;
+  --z-popover: 1050;
+  --z-tooltip: 1060;
+}
+
+/* Tablet breakpoint adjustments */
+@media (min-width: 768px) {
+  :root {
+    --text-3xl: 2.25rem;  /* 36px */
+    --text-4xl: 2.5rem;     /* 48px */
+    --text-5xl: 4rem;     /* 64px */
+    --container-padding: var(--space-lg);
+  }
+}
+
+/* Desktop breakpoint adjustments */
+@media (min-width: 1124px) {
+  :root {
+    --text-4xl: 3rem;   /* 56px */
+    --text-5xl: 4.5rem;   /* 72px */
+    --container-padding: var(--space-xl);
+  }
+}
