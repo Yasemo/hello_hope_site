@@ -11,6 +11,8 @@ class HelloHopeApp {
     this.setupSmoothScrolling();
     this.setupActiveNavigation();
     this.setupAccordion();
+    this.setupHeroFadeEffect();
+    this.setupScrollIndicator();
   }
 
   // Mobile Menu Functionality
@@ -173,10 +175,10 @@ class HelloHopeApp {
       section.setAttribute('aria-expanded', 'false');
     });
 
-    // Expand the first section by default
+    // Expand the first section by default (without scrolling)
     if (accordionSections.length > 0) {
       setTimeout(() => {
-        this.expandAccordionSection(accordionSections[0]);
+        this.expandAccordionSection(accordionSections[0], false);
       }, 500);
     }
   }
@@ -191,7 +193,7 @@ class HelloHopeApp {
     }
   }
 
-  expandAccordionSection(section) {
+  expandAccordionSection(section, shouldScroll = true) {
     const allSections = document.querySelectorAll('.accordion-section');
 
     // Collapse all other sections first
@@ -205,6 +207,28 @@ class HelloHopeApp {
     section.classList.remove('collapsed');
     section.classList.add('expanded');
     section.setAttribute('aria-expanded', 'true');
+
+    // Only scroll if this was triggered by user interaction
+    if (shouldScroll) {
+      // Wait longer to ensure all collapse/expand animations are complete
+      setTimeout(() => {
+        // Target the section-content element for more precise positioning
+        const sectionContent = section.querySelector('.section-content');
+        if (sectionContent) {
+          // Use getBoundingClientRect to get the exact position relative to viewport
+          const contentRect = sectionContent.getBoundingClientRect();
+          const currentScrollY = window.scrollY;
+          
+          // Calculate the exact scroll position needed to align content top with viewport top
+          const targetScrollY = currentScrollY + contentRect.top;
+          
+          window.scrollTo({
+            top: targetScrollY,
+            behavior: 'smooth'
+          });
+        }
+      }, 450); // Wait for CSS transition (0.4s) plus buffer to ensure layout is stable
+    }
 
     // Trigger any existing animations
     const animatedElements = section.querySelectorAll('.hero__title, .hero__subtitle, .hero__cta, .aubrey__title, .aubrey__subtitle, .aubrey__cta, .testimonials__title, .testimonials__subtitle, .testimonials__cta, .cta__title, .cta__subtitle, .cta__cta');
@@ -227,6 +251,110 @@ class HelloHopeApp {
     section.classList.remove('expanded');
     section.classList.add('collapsed');
     section.setAttribute('aria-expanded', 'false');
+  }
+
+  // Hero fade effect on scroll
+  setupHeroFadeEffect() {
+    const heroContainer = document.querySelector('.top-hero__container');
+    const accordionContainer = document.querySelector('.accordion-container');
+    
+    if (!heroContainer || !accordionContainer) return;
+
+    let ticking = false;
+
+    const updateHeroOpacity = () => {
+      const scrollY = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      
+      // Calculate the position where accordion container starts to come into view
+      const accordionTop = accordionContainer.offsetTop;
+      
+      // Start fading immediately when scrolling begins
+      // Complete fade when accordion is about to come into prominent view
+      const fadeStartPoint = 0;
+      
+      // Adjust fade timing based on screen size for better mobile experience
+      let fadeMultiplier = 0.6; // Default for desktop
+      if (viewportHeight < 600) {
+        fadeMultiplier = 0.7; // Slightly slower fade on very small screens
+      } else if (viewportHeight < 800) {
+        fadeMultiplier = 0.65; // Medium screens
+      }
+      
+      const fadeEndPoint = accordionTop - (viewportHeight * fadeMultiplier);
+      
+      let opacity = 1;
+      
+      if (scrollY > fadeStartPoint) {
+        if (scrollY >= fadeEndPoint) {
+          opacity = 0;
+        } else {
+          // Calculate fade progress (0 to 1)
+          const fadeProgress = (scrollY - fadeStartPoint) / (fadeEndPoint - fadeStartPoint);
+          // Use easing function for smoother fade
+          const easedProgress = 1 - Math.pow(1 - fadeProgress, 3); // Cubic ease-out
+          opacity = Math.max(0, 1 - easedProgress);
+        }
+      }
+      
+      heroContainer.style.opacity = opacity;
+      
+      // Control z-index to allow clicks when hero is invisible
+      if (opacity <= 0) {
+        heroContainer.style.zIndex = '-1'; // Move behind accordion when invisible
+      } else {
+        heroContainer.style.zIndex = '2'; // Keep above background when visible
+      }
+      
+      ticking = false;
+    };
+
+    const requestTick = () => {
+      if (!ticking) {
+        requestAnimationFrame(updateHeroOpacity);
+        ticking = true;
+      }
+    };
+
+    // Use debounced scroll handler for performance
+    const debouncedScrollHandler = this.debounce(requestTick, 10);
+    
+    window.addEventListener('scroll', debouncedScrollHandler, { passive: true });
+    
+    // Initial calculation
+    updateHeroOpacity();
+  }
+
+  // Scroll indicator functionality
+  setupScrollIndicator() {
+    const scrollIndicator = document.querySelector('.top-hero__scroll-indicator');
+    
+    if (!scrollIndicator) return;
+
+    scrollIndicator.addEventListener('click', () => {
+      const accordionContainer = document.querySelector('.accordion-container');
+      if (accordionContainer) {
+        const accordionTop = accordionContainer.offsetTop;
+        
+        window.scrollTo({
+          top: accordionTop,
+          behavior: 'smooth'
+        });
+      }
+    });
+
+    // Add keyboard support
+    scrollIndicator.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        scrollIndicator.click();
+      }
+    });
+
+    // Make it focusable for accessibility
+    scrollIndicator.setAttribute('tabindex', '0');
+    scrollIndicator.setAttribute('role', 'button');
+    scrollIndicator.setAttribute('aria-label', 'Scroll down to content');
   }
 
   // Utility method for debouncing

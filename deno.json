@@ -1,7 +1,7 @@
 {
   "tasks": {
-    "dev": "deno run --allow-net --allow-read --watch server.ts",
-    "start": "deno run --allow-net --allow-read server.ts"
+    "dev": "deno run -A --watch server.ts",
+    "start": "deno run -A server.ts"
   },
   "imports": {
     "std/": "https://deno.land/std@0.208.0/"

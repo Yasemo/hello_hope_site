@@ -1,7 +1,8 @@
 import { serve } from "std/http/server.ts";
 import { serveDir } from "std/http/file_server.ts";
 
-const port = 8000;
+// Use PORT environment variable for Cloud Run, fallback to 8000 for local development
+const port = parseInt(Deno.env.get("PORT") || "8000");
 
 serve(
   (req) => {
