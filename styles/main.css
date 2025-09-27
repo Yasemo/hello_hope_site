@@ -1,6 +1,3 @@
-@import url('./variables.css');
-@import url('./reset.css');
-
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-primary);
@@ -32,6 +29,8 @@ h4 {
 p {
   margin-bottom: var(--space-md);
   line-height: 1.7;
+  font-family: var(--font-primary);
+  font-weight: 400;
 }
 
 /* Layout Components */
@@ -1349,13 +1348,15 @@ main {
     min-height: 130px;
   }
 
-  .hero__title {
+
+
+  .section__title {
     max-width: 15ch;
     margin-inline: auto;
   }
 
-  .section__title {
-    max-width: 15ch;
+  .hero__title {
+    max-width: 180px;
     margin-inline: auto;
   }
 }

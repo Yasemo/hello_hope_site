@@ -1,3 +1,68 @@
+/* Minion Pro Font Family */
+@font-face {
+  font-family: 'Minion Pro';
+  src: url('../fonts/minion_variable_woff/MinionPro-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Minion Pro';
+  src: url('../fonts/minion_variable_woff/MinionPro-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Minion Pro';
+  src: url('../fonts/minion_variable_woff/MinionPro-Semibold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Minion Pro';
+  src: url('../fonts/minion_variable_woff/MinionPro-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Minion Pro';
+  src: url('../fonts/minion_variable_woff/MinionPro-It.woff') format('woff');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Minion Pro';
+  src: url('../fonts/minion_variable_woff/MinionPro-MediumIt.woff') format('woff');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Minion Pro';
+  src: url('../fonts/minion_variable_woff/MinionPro-SemiboldIt.woff') format('woff');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Minion Pro';
+  src: url('../fonts/minion_variable_woff/MinionPro-BoldIt.woff') format('woff');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
 :root {
   /* Colors */
   --primary-color: #BE1E2D;
@@ -22,7 +87,7 @@
   --text-white: #ffffff;
   
   /* Typography */
-  --font-primary: 'Segoe UI', Georgia, serif;
+  --font-primary: 'Minion Pro', Georgia, serif;
   --font-secondary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   
   /* Font Sizes - Mobile First */
