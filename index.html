@@ -45,29 +45,33 @@
   <!-- Header -->
   <header class="header">
     <div class="header_container">
-      <a href="index.html" class="header_logo">
+      <a href="#hero" class="header_logo">
         <img src="logos/red/red_Red 36x36.png" alt="Hello Hope Canada Logo">
       </a>
       <nav class="header_nav">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="programs.html">Programs</a>
-        <a href="contact.html">Contact</a>
+        <a href="#hero" class="nav-link">Home</a>
+        <a href="#aubrey" class="nav-link">About</a>
+        <a href="#testimonials" class="nav-link">Testimonials</a>
+        <a href="#programs" class="nav-link">Programs</a>
+        <!-- <a href="#contact" class="nav-link">Contact</a> -->
       </nav>
       <div class="contact_button">
-        <a href="contact.html">Contact Us</a>
+        <a href="#contact" class="nav-link contact-btn">Contact Us</a>
       </div>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-bar-fill"></div>
     </div>
   </header>
     
-  <section class="hero">
+  <section id="hero" class="hero">
     <video class="hero-video" autoplay muted loop playsinline>
       <source src="media/videos/istockphoto-1399445857-640_adpp_is.mp4" type="video/mp4">
     </video>
     <img src="logos/red/red_Red 1080 x 1080.png" alt="Hello Hope Canada Logo" class="hero-logo">
   </section>
 
-  <section class="aubrey">
+  <section id="aubrey" class="aubrey">
     <div class="partners"></div>
     <div class="section_container">
       <div class="section_title">
@@ -122,7 +126,7 @@
 
   <section class="stock_image"></section>
 
-  <section class="testimonials">
+  <section id="testimonials" class="testimonials">
     <div class="section_container">
       <div class="section_title">
         <h1>Testimonials</h1>
@@ -214,7 +218,7 @@
     </div>
   </section>
 
-  <section class="programs">
+  <section id="programs" class="programs">
     <div class="section_container">
       <div class="section_title">
         <h1>Programs</h1>
@@ -329,10 +333,82 @@ us reach the finish line. (60 min)</p>
     </div>
   </section>
 
-  <section class="contact">
+    <section class="stock_image2"></section>
+
+
+  <section id="contact" class="contact">
     <div class="section_container">
       <div class="section_title">
-        <h1>Contact</h1>
+        <h1>Get In Touch</h1>
+      </div>
+      <div class="contact_content">
+        <!-- <div class="contact_info">
+          <h3>Get in Touch</h3>
+          <p>Ready to bring hope to your school or organization? Let's discuss how Hello Hope Canada's programs can make a positive impact in your community.</p>
+          
+          <div class="contact_details">
+            <div class="contact_item">
+              <h4>Speaking Engagements</h4>
+              <p>Available for schools, organizations, and corporate events across Canada.</p>
+            </div>
+            
+            <div class="contact_item">
+              <h4>Program Options</h4>
+              <p>Choose from our range of character education and safe schools programs tailored to different age groups.</p>
+            </div>
+            
+            <div class="contact_item">
+              <h4>Response Time</h4>
+              <p>We typically respond to inquiries within 24-48 hours.</p>
+            </div>
+          </div>
+        </div> -->
+        
+        <div class="contact_form_container">
+          <form class="contact_form" id="contactForm">
+            <div class="form_group">
+              <label for="name">Full Name *</label>
+              <input type="text" id="name" name="name" required>
+            </div>
+            
+            <div class="form_group">
+              <label for="email">Email Address *</label>
+              <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form_group">
+              <label for="phone">Phone Number</label>
+              <input type="tel" id="phone" name="phone">
+            </div>
+            
+            <div class="form_group">
+              <label for="organization">Organization/School</label>
+              <input type="text" id="organization" name="organization">
+            </div>
+            
+            <div class="form_group">
+              <label for="program">Program Interest</label>
+              <select id="program" name="program">
+                <option value="">Select a program...</option>
+                <option value="hello-hope">Hello Hope: Battling Stress & Loneliness</option>
+                <option value="colour-blind">Colour Blind? Why Being 'Not Racist' Is Not Enough</option>
+                <option value="stick-truth">Stick With The Truth</option>
+                <option value="just-here">I'm Just Here: What Am I Doing?</option>
+                <option value="man-up">Man Up: Being A Real Man</option>
+                <option value="reconnect">Reconnect</option>
+                <option value="multiple">Multiple Programs</option>
+                <option value="other">Other/General Inquiry</option>
+              </select>
+            </div>
+            
+            <div class="form_group">
+              <label for="message">Message/Inquiry *</label>
+              <textarea id="message" name="message" rows="5" required placeholder="Please tell us about your event, audience size, preferred dates, and any specific requirements..."></textarea>
+            </div>
+            
+            <button type="submit" class="submit_btn">Send Message</button>
+          </form>
+        </div>
       </div>
     </div>
   </section>
