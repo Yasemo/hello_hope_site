@@ -43,230 +43,301 @@
 </head>
 <body>
   <!-- Header -->
-  <header class="header" role="banner">
-    <div class="header__container container">
-      <a href="index.html" class="header__logo-link" aria-label="Hello Hope Canada Home">
-        <img src="logos/red/red_Red 96x96.png" alt="Hello Hope Canada Logo" class="header__logo">
+  <header class="header">
+    <div class="header_container">
+      <a href="index.html" class="header_logo">
+        <img src="logos/red/red_Red 36x36.png" alt="Hello Hope Canada Logo">
       </a>
-      
-      <!-- Desktop Navigation -->
-      <nav class="nav" role="navigation" aria-label="Main navigation">
-        <ul class="nav__list">
-          <li><a href="index.html" class="nav__link nav__link--active">Home</a></li>
-          <li><a href="about.html" class="nav__link">About</a></li>
-          <li><a href="programs.html" class="nav__link">Programs</a></li>
-          <li><a href="media.html" class="nav__link">Media</a></li>
-          <li><a href="contact.html" class="nav__link">Contact</a></li>
-          <li><a href="conference.html" class="nav__link">Conference</a></li>
-        </ul>
+      <nav class="header_nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="programs.html">Programs</a>
+        <a href="contact.html">Contact</a>
       </nav>
-      
-      <!-- Mobile Menu Toggle -->
-      <button class="mobile-menu-toggle" aria-label="Toggle mobile menu" aria-expanded="false">
-        <span class="mobile-menu-toggle__line"></span>
-        <span class="mobile-menu-toggle__line"></span>
-        <span class="mobile-menu-toggle__line"></span>
-      </button>
+      <div class="contact_button">
+        <a href="contact.html">Contact Us</a>
+      </div>
     </div>
   </header>
+    
+  <section class="hero">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="media/videos/istockphoto-1399445857-640_adpp_is.mp4" type="video/mp4">
+    </video>
+    <img src="logos/red/red_Red 1080 x 1080.png" alt="Hello Hope Canada Logo" class="hero-logo">
+  </section>
 
-  <!-- Mobile Menu -->
-  <nav class="mobile-menu" role="navigation" aria-label="Mobile navigation">
-    <ul class="mobile-menu__list">
-      <li><a href="index.html" class="mobile-menu__link mobile-menu__link--active">Home</a></li>
-      <li><a href="about.html" class="mobile-menu__link">About</a></li>
-      <li><a href="programs.html" class="mobile-menu__link">Programs</a></li>
-      <li><a href="media.html" class="mobile-menu__link">Media</a></li>
-      <li><a href="contact.html" class="mobile-menu__link">Contact</a></li>
-      <li><a href="conference.html" class="mobile-menu__link">Conference</a></li>
-    </ul>
-  </nav>
-
-  <!-- Main Content -->
-  <main role="main">
-    <!-- Top Hero Section -->
-    <section class="top-hero">
-      <div class="top-hero__container">
-        <div class="top-hero__logo-wrapper">
-          <img src="logos/red/red_Red 1080 x 1080.png" alt="Hello Hope Canada Logo" class="top-hero__logo">
-          <div class="top-hero__glow"></div>
-        </div>
-        <div class="top-hero__scroll-indicator">
-          <div class="scroll-arrow">
-            <span class="scroll-arrow__line"></span>
-            <span class="scroll-arrow__point"></span>
-          </div>
-          <span class="scroll-text">Scroll Down</span>
-        </div>
+  <section class="aubrey">
+    <div class="partners"></div>
+    <div class="section_container">
+      <div class="section_title">
+        <h1>Meet Aubrey Noronha</h1>
       </div>
-    </section>
-
-    <!-- Hero Section -->
-    <section class="section section--hero" aria-labelledby="hero-title" style="background: var(--primary-color); color: var(--text-white);">
-      <div class="container">
-          <div class="hero">
-            <h2 id="hero-title" class="hero__title section__title">The Power of Hope</h2>
-            <p class="hero__subtitle">
-              Introducing as many people to the power of hope as possible through passionate,
-              energetic and strength-based programs for youth, families, educators and professionals.
-            </p>
-            <div class="hero__cta">
-              <a href="programs.html" class="btn btn--primary">Explore Programs</a>
-              <a href="conference.html" class="btn btn--secondary">Join Conference</a>
-            </div>
-          </div>
+      <div class="aubrey_description">
+        <img src="media/aubrey_profile.jpg" alt="" class="aubrey_image">
+        <p>Aubrey Noronha (NA-ROW-NA) is a recognized Character Education and Safe Schools Speaker who believes in the possibility of a safer and more emotionally connected school culture. Through his Hello Hope Canada programs, Aubrey seeks to instill his hope for the future into the minds and hearts of youth and caring adults. <br><br>As a child & youth counsellor and seasoned Restorative Practice facilitator, Aubrey has worked with youth, families and professionals in schools, prisons and treatment facilities for over 16 years. As a former crisis negotiator, and Critical Incident Stress Management facilitator Aubrey's expertise, passion, and candour flow through his workshops and will leave students and adults feeling encouraged and equipped to make their school and community safer one day and one decision at a time. <br><br> Aubrey is also a recording artist. He has sung duets with John Legend, Foo Fighters and Adele ... while listening to them on his headphones during his evening jog.​</p>
       </div>
-    </section>
-
-    <!-- Aubrey Section -->
-    <section class="section section--aubrey" aria-labelledby="aubrey-title" style="background: var(--accent-teal); color: var(--text-white);">
-      <div class="container">
-          <div class="aubrey">
-            <h2 id="aubrey-title" class="aubrey__title section__title">Meet Aubrey Noronha</h2>
-            <div class="aubrey__profile">
-              <img src="media/aubrey_profile.jpg" alt="Aubrey Noronha - Founder of Hello Hope Canada" class="aubrey__profile-image">
-            </div>
-            <p class="aubrey__subtitle">
-              Founder and visionary leader of Hello Hope Canada, Aubrey brings over two decades of experience
-              in education and community development. Her passion for hope-centered approaches has transformed
-              countless lives across Canada.
-            </p>
-
-            <h3 class="aubrey__credentials-title">Aubrey has partnered with / been featured on:</h3>
-
-            <!-- Aubrey Credentials Banners -->
-            <div class="aubrey__credentials">
-              <!-- Banner 1: Left to Right -->
-              <div class="credentials-banner credentials-banner--left">
-                <div class="credentials-banner__track">
-                  <img src="media/tdsb.png" alt="Toronto District School Board" class="credentials-banner__logo">
-                  <img src="media/toronto_star.png" alt="Toronto Star" class="credentials-banner__logo">
-                  <img src="media/city_news.png" alt="City News" class="credentials-banner__logo">
-                  <img src="media/global_news.png" alt="Global News" class="credentials-banner__logo">
-                  <img src="media/city_of_pickering.png" alt="City of Pickering" class="credentials-banner__logo">
-                  <img src="media/ddsb.png" alt="Durham District School Board" class="credentials-banner__logo">
-                  <img src="media/ottawa_catholic.png" alt="Ottawa Catholic School Board" class="credentials-banner__logo">
-                  <img src="media/simcoe_county.png" alt="Simcoe County" class="credentials-banner__logo">
-                  <img src="media/telus.png" alt="Telus" class="credentials-banner__logo">
-                  <!-- Duplicate for seamless loop -->
-                  <img src="media/tdsb.png" alt="Toronto District School Board" class="credentials-banner__logo">
-                  <img src="media/toronto_star.png" alt="Toronto Star" class="credentials-banner__logo">
-                  <img src="media/city_news.png" alt="City News" class="credentials-banner__logo">
-                  <img src="media/global_news.png" alt="Global News" class="credentials-banner__logo">
-                  <img src="media/city_of_pickering.png" alt="City of Pickering" class="credentials-banner__logo">
-                  <img src="media/ddsb.png" alt="Durham District School Board" class="credentials-banner__logo">
-                  <img src="media/ottawa_catholic.png" alt="Ottawa Catholic School Board" class="credentials-banner__logo">
-                  <img src="media/simcoe_county.png" alt="Simcoe County" class="credentials-banner__logo">
-                  <img src="media/telus.png" alt="Telus" class="credentials-banner__logo">
-                </div>
-              </div>
-
-              <!-- Banner 2: Right to Left -->
-              <div class="credentials-banner credentials-banner--right">
-                <div class="credentials-banner__track">
-                  <img src="media/york_region.png" alt="York Region" class="credentials-banner__logo">
-                  <img src="media/york_catholic.png" alt="York Catholic School Board" class="credentials-banner__logo">
-                  <img src="media/trillium.png" alt="Trillium Health Partners" class="credentials-banner__logo">
-                  <img src="media/lakeridge_health.png" alt="Lakeridge Health" class="credentials-banner__logo">
-                  <img src="media/toronto_community_housing.png" alt="Toronto Community Housing" class="credentials-banner__logo">
-                  <img src="media/opg.png" alt="Ontario Power Generation" class="credentials-banner__logo">
-                  <img src="media/humanity.png" alt="Humanity" class="credentials-banner__logo">
-                  <img src="media/aod.png" alt="AOD" class="credentials-banner__logo">
-                  <img src="media/oshawa_be_amazed.png" alt="Oshawa Be Amazed" class="credentials-banner__logo">
-                  <!-- Duplicate for seamless loop -->
-                  <img src="media/york_region.png" alt="York Region" class="credentials-banner__logo">
-                  <img src="media/york_catholic.png" alt="York Catholic School Board" class="credentials-banner__logo">
-                  <img src="media/trillium.png" alt="Trillium Health Partners" class="credentials-banner__logo">
-                  <img src="media/lakeridge_health.png" alt="Lakeridge Health" class="credentials-banner__logo">
-                  <img src="media/toronto_community_housing.png" alt="Toronto Community Housing" class="credentials-banner__logo">
-                  <img src="media/opg.png" alt="Ontario Power Generation" class="credentials-banner__logo">
-                  <img src="media/humanity.png" alt="Humanity" class="credentials-banner__logo">
-                  <img src="media/aod.png" alt="AOD" class="credentials-banner__logo">
-                  <img src="media/oshawa_be_amazed.png" alt="Oshawa Be Amazed" class="credentials-banner__logo">
-                </div>
-              </div>
-            </div>
-
-            <div class="aubrey__cta">
-              <a href="about.html" class="btn btn--primary">Learn More About Aubrey</a>
-              <a href="programs.html" class="btn btn--secondary">Explore Our Impact</a>
-            </div>
-          </div>
-      </div>
-    </section>
-
-    <!-- Testimonials Section -->
-    <section class="section section--testimonials" aria-labelledby="testimonials-title" style="background: var(--accent-purple); color: var(--text-white);">
-      <div class="container">
-          <div class="testimonials">
-            <h2 id="testimonials-title" class="testimonials__title section__title">What People Are Saying</h2>
-            <p class="testimonials__subtitle">
-              Hear from educators, students, and community leaders who have experienced the transformative
-              power of hope through our programs. These stories inspire us to continue our mission of
-              bringing hope to every community.
-            </p>
-            <div class="testimonials__video">
-              <iframe
-                src="https://www.youtube.com/embed/_8oJLto87I8"
-                title="Hello Hope Canada Testimonial Video"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen
-                class="testimonials__iframe">
-              </iframe>
-            </div>
-            <div class="testimonials__cta">
-              <a href="media.html" class="btn btn--primary">Read More Stories</a>
-              <a href="contact.html" class="btn btn--secondary">Share Your Story</a>
-            </div>
-          </div>
-      </div>
-    </section>
-
-    <!-- Call to Action Section -->
-    <section class="section section--cta" aria-labelledby="cta-title" style="background: var(--accent-orange); color: var(--text-white);">
-      <div class="container">
-          <div class="cta">
-            <h2 id="cta-title" class="cta__title section__title">Bring Hope to Your Community</h2>
-            <p class="cta__subtitle">
-              Join us in creating safer, more connected communities through the power of hope.
-              Whether you're an educator, parent, or community leader, there's a place for you in our mission.
-            </p>
-            <div class="cta__cta">
-              <a href="contact.html" class="btn btn--primary">Get In Touch</a>
-              <a href="conference.html" class="btn btn--secondary">Join Our Conference</a>
-            </div>
-          </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- Footer -->
-  <footer class="footer" role="contentinfo">
-    <div class="container">
-      <div class="footer__content">
-        <img src="logos/white/white_white 96x96.png" alt="Hello Hope Canada Logo" class="footer__logo">
-        
-        <p class="footer__text">
-          Introducing as many people to the power of hope as possible.
-        </p>
-        
-        <nav class="footer__links" aria-label="Footer navigation">
-          <a href="about.html" class="footer__link">About</a>
-          <a href="programs.html" class="footer__link">Programs</a>
-          <a href="media.html" class="footer__link">Media</a>
-          <a href="contact.html" class="footer__link">Contact</a>
-          <a href="conference.html" class="footer__link">Conference</a>
-        </nav>
-        
-        <div class="footer__copyright">
-          <p>&copy; 2024 Hello Hope Canada. All rights reserved.</p>
+      <div class="organizations_section">
+        <h2 class="organizations_title">Aubrey Has Partnered With / Been Featured On:</h2>
+        <div class="organizations_grid">
+          <div class="org_logo"><img src="media/orgs/ajax.png" alt="Ajax"></div>
+        <div class="org_logo"><img src="media/orgs/annapolis.png" alt="Annapolis"></div>
+        <div class="org_logo"><img src="media/orgs/aod.png" alt="AOD"></div>
+        <div class="org_logo"><img src="media/orgs/christ_redeemer.png" alt="Christ Redeemer"></div>
+        <div class="org_logo"><img src="media/orgs/city_news.png" alt="City News"></div>
+        <div class="org_logo"><img src="media/orgs/city_of_pickering.png" alt="City of Pickering"></div>
+        <div class="org_logo"><img src="media/orgs/clarington.png" alt="Clarington"></div>
+        <div class="org_logo"><img src="media/orgs/ddsb.png" alt="DDSB"></div>
+        <div class="org_logo"><img src="media/orgs/durham_catholic.png" alt="Durham Catholic"></div>
+        <div class="org_logo"><img src="media/orgs/durham_region.png" alt="Durham Region"></div>
+        <div class="org_logo"><img src="media/orgs/global_news.png" alt="Global News"></div>
+        <div class="org_logo"><img src="media/orgs/grand_erie.png" alt="Grand Erie"></div>
+        <div class="org_logo"><img src="media/orgs/halton.png" alt="Halton"></div>
+        <div class="org_logo"><img src="media/orgs/humanity.png" alt="Humanity"></div>
+        <div class="org_logo"><img src="media/orgs/kawartha.png" alt="Kawartha"></div>
+        <div class="org_logo"><img src="media/orgs/lakeridge_health.png" alt="Lakeridge Health"></div>
+        <div class="org_logo"><img src="media/orgs/lambton.png" alt="Lambton"></div>
+        <div class="org_logo"><img src="media/orgs/opg.png" alt="OPG"></div>
+        <div class="org_logo"><img src="media/orgs/oshawa_be_amazed.png" alt="Oshawa Be Amazed"></div>
+        <div class="org_logo"><img src="media/orgs/ottawa_catholic.png" alt="Ottawa Catholic"></div>
+        <div class="org_logo"><img src="media/orgs/peterborough.png" alt="Peterborough"></div>
+        <div class="org_logo"><img src="media/orgs/simcoe_county.png" alt="Simcoe County"></div>
+        <div class="org_logo"><img src="media/orgs/simcoe_muskoka.png" alt="Simcoe Muskoka"></div>
+        <div class="org_logo"><img src="media/orgs/tdsb.png" alt="TDSB"></div>
+        <div class="org_logo"><img src="media/orgs/telus.png" alt="Telus"></div>
+        <div class="org_logo"><img src="media/orgs/thames.png" alt="Thames"></div>
+        <div class="org_logo"><img src="media/orgs/the_vine.png" alt="The Vine"></div>
+        <div class="org_logo"><img src="media/orgs/toronto_catholic.png" alt="Toronto Catholic"></div>
+        <div class="org_logo"><img src="media/orgs/toronto_community_housing.png" alt="Toronto Community Housing"></div>
+        <div class="org_logo"><img src="media/orgs/toronto_star.png" alt="Toronto Star"></div>
+        <div class="org_logo"><img src="media/orgs/trillium.png" alt="Trillium"></div>
+        <div class="org_logo"><img src="media/orgs/upper_canada.png" alt="Upper Canada"></div>
+        <div class="org_logo"><img src="media/orgs/workplace_safety.png" alt="Workplace Safety"></div>
+        <div class="org_logo"><img src="media/orgs/york_catholic.png" alt="York Catholic"></div>
+        <div class="org_logo"><img src="media/orgs/york_region.png" alt="York Region"></div>
         </div>
       </div>
     </div>
-  </footer>
+  </section>
 
-  <!-- Scripts -->
+  <section class="stock_image"></section>
+
+  <section class="testimonials">
+    <div class="section_container">
+      <div class="section_title">
+        <h1>Testimonials</h1>
+      </div>
+      <div class="testimonials_carousel">
+        <div class="carousel_container">
+          <button class="carousel_arrow carousel_arrow_left" aria-label="Previous testimonial">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="carousel_arrow carousel_arrow_right" aria-label="Next testimonial">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="carousel_track">
+            <div class="testimonial_card active">
+              <div class="testimonial_content">
+                <h3 class="testimonial_title">Many lives are yet to be changed</h3>
+                <p class="testimonial_text">"Aubrey has changed many lives and it sounds like many more lives are still yet to be changed by him for the better."</p>
+                <p class="testimonial_author">- Kevin Frankish (City TV / Breakfast Television Legend)</p>
+              </div>
+            </div>
+            <div class="testimonial_card">
+              <div class="testimonial_content">
+                <h3 class="testimonial_title">45 minutes...</h3>
+                <p class="testimonial_text">"In Aubrey's presentation I think I learned more in 45 minutes than in two years. I highly recommend Aubrey! The reason is that he has hit on all our safe schools principles. He has addressed a lot of those topics that we often don't have the capacity to be able to address as school administrators or even as a school team. He broke it down in a way that the students understood, connected with them with 'real talk' and dropped wisdom. For me it was money very well spent!"</p>
+                <p class="testimonial_author">- Principal, Durham District School Board</p>
+              </div>
+            </div>
+            <div class="testimonial_card">
+              <div class="testimonial_content">
+                <h3 class="testimonial_title">Brilliant and relevant pedagogy!</h3>
+                <p class="testimonial_text">"Your presentation was brilliant, timely and relevant pedagogy for the season we are in. I've been teaching for 26 years and I think this is the first time my students have had such a presentation, and presented with such facts and points to ponder. Your humour helped engage the students too."</p>
+                <p class="testimonial_author">- Joy Barnaby, Guidance Counsellor, Halton District School Board</p>
+              </div>
+            </div>
+            <div class="testimonial_card">
+              <div class="testimonial_content">
+                <h3 class="testimonial_title">I was physiologically impacted</h3>
+                <p class="testimonial_text">"All throughout I was not only hanging on to every word but I was physiologically impacted with goose bumps, a racing heart, nausea and a fire in my belly strong to reignite and sustain an actively antiracist journey!"</p>
+                <p class="testimonial_author">- Addictions Counsellor, Lake Ridge Health System</p>
+              </div>
+            </div>
+            <div class="testimonial_card">
+              <div class="testimonial_content">
+                <h3 class="testimonial_title">He hit on all our Safe Schools principles</h3>
+                <p class="testimonial_text">"This presentation was a beautiful balance of delivering and discussing sensitive topics as well as being able to create a space to talk about and reflect on the difficult topics with elements of humour at the most appropriate of times."</p>
+                <p class="testimonial_author">- Employee, Workplace Safety & Prevention Services</p>
+              </div>
+            </div>
+            <div class="testimonial_card">
+              <div class="testimonial_content">
+                <h3 class="testimonial_title">Spoke to my soul</h3>
+                <p class="testimonial_text">"WOW! what an amazing session, you did bring tears to my eyes, because you spoke to me, you spoke to my soul and my heart. I've heard many sessions about covid fatigue, covid loneliness, etc., but you took it a different way, you made me think, and made me feel with hope and encouragement. Thank you!"</p>
+                <p class="testimonial_author">- P.L., Grade 6 Teacher, DCDSB</p>
+              </div>
+            </div>
+            <div class="testimonial_card">
+              <div class="testimonial_content">
+                <h3 class="testimonial_title">First time in 26 years</h3>
+                <p class="testimonial_text">"I've been teaching for 26 years and I think this is the first time my students have had such a presentation, and presented with such facts and points to ponder. Your humour helped engage the students too."</p>
+                <p class="testimonial_author">- Katie Kelly, Teacher, Durham District School Board</p>
+              </div>
+            </div>
+            <div class="testimonial_card">
+              <div class="testimonial_content">
+                <h3 class="testimonial_title">It was almost unreal</h3>
+                <p class="testimonial_text">"It was almost unreal to have someone speak about a sensitive topic to most openly, respectfully, and in an understandable way. It was a great experience to be a part of and interact with."</p>
+                <p class="testimonial_author">- M.S., Student, St. Stephen C.S.S. PVNCCDSB</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel_navigation">
+          <div class="carousel_dots">
+            <button class="carousel_dot active" data-slide="0" aria-label="Go to testimonial 1"></button>
+            <button class="carousel_dot" data-slide="1" aria-label="Go to testimonial 2"></button>
+            <button class="carousel_dot" data-slide="2" aria-label="Go to testimonial 3"></button>
+            <button class="carousel_dot" data-slide="3" aria-label="Go to testimonial 4"></button>
+            <button class="carousel_dot" data-slide="4" aria-label="Go to testimonial 5"></button>
+            <button class="carousel_dot" data-slide="5" aria-label="Go to testimonial 6"></button>
+            <button class="carousel_dot" data-slide="6" aria-label="Go to testimonial 7"></button>
+            <button class="carousel_dot" data-slide="7" aria-label="Go to testimonial 8"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="programs">
+    <div class="section_container">
+      <div class="section_title">
+        <h1>Programs</h1>
+      </div>
+      <div class="program_cards">
+        <div class="program_card card_1">
+          <div class="card_text">
+            <div class="program_description">
+                <h3>HELLO HOPE:
+                BATTLING STRESS,
+                LONELINESS, AND
+                OTHER THINGS THAT
+                CAN WEIGH US DOWN.</h3>
+                            <p>This session focuses on bringing encouragement and relief
+                to participants to tackle stress and anxiety during and
+                after a pandemic. Learning components include the
+                connection between social media, empathy and the
+                health benefits of face to face interaction, and practical
+                take-aways on how to create stronger bonds with others.
+                (60 min)</p>
+                <p class="program_versions">(VERSIONS: Gr.4-6, Gr. 7-8, Gr.9-10, Gr.11-12, Faculty, Parents/Guardians, Corporate, Teams)</p>
+            </div>
+          </div>
+        </div>
+        <div class="program_card card_2">
+          <div class="card_text">
+            <div class="program_description">
+                <h3>COLOUR BLIND?
+WHY BEING
+'NOT RACIST' IS NOT
+ENOUGH ANYMORE
+(1.0 + 2.0)</h3>
+                            <p>1.0 - focuses on why this issue of fighting racism is even
+worth our time and why it needs to be a matter of the
+heart before change can occur. (60 min)
+2.0 - goes deeper and then lays out some points of
+action where participants can start on their journey of
+addressing racism in their lives and being the opposite of
+racist. (60 min)</p>
+                <p class="program_versions">(VERSIONS: Gr.7-8, Gr.9-10, Gr.11-12, Faculty, Sr. Admin., Parents/Guardians, Corporate, Teams)</p>
+            </div>
+          </div>
+        </div>
+        <div class="program_card card_3">
+          <div class="card_text">
+            <div class="program_description">
+                <h3>STICK WITH THE
+TRUTH
+(1.0 + 2.0)</h3>
+                            <p>1.0 - focuses on the truth about skin colour, identifies the
+reality that lies will be told about skin colour, and that
+there is one thing K-6 students can do with that truth and
+about those lies.
+2.0 - goes deeper and then lays out some points of
+action where participants can start on their journey of
+addressing racism in their lives and being the opposite of
+racist. (60 min)</p>
+                <p class="program_versions">(VERSIONS: Gr.K-3, Gr.4-6)</p>
+            </div>
+          </div>
+        </div>
+                <div class="program_card card_4">
+          <div class="card_text">
+            <div class="program_description">
+                <h3>I'M JUST HERE:
+WHAT AM I DOING?
+WHAT'S THE POINT?
+WHERE CAN I GO?</h3>
+                            <p>"I'm just here." Some of us don't have a clue what we are
+doing, what the point is, or where we can go from here.
+Many of us are existing but not really living as we feel a
+sense of purposelessness.
+
+This raw, sincere, and encouraging talk tackles peer-
+conflicts and motivation for the future by going upstream to
+
+look at self-identity, purpose, and the "secret to supreme
+satisfaction". (60 min)</p>
+                <p class="program_versions">(VERSIONS: Gr.7-8 · Gr.9-10 · Gr.11-12 )</p>
+            </div>
+          </div>
+        </div>
+                <div class="program_card card_5">
+          <div class="card_text">
+            <div class="program_description">
+                <h3>MAN UP:
+BEING A REAL MAN
+IN UNREAL TIMES</h3>
+                            <p>A no-joke conversation about the reality of the male
+influence on culture, the opportunity to use that influence
+for good, and practical tools to do it solo or with a
+squad. (60 min)</p>
+                <p class="program_versions">(VERSIONS: Gr.6-8 · Gr.9-10 · Gr.11-12 · Teams)</p>
+            </div>
+          </div>
+        </div>
+                <div class="program_card card_6">
+          <div class="card_text">
+            <div class="program_description">
+                <h3>RECONNECT:</h3>
+                            <p>This one-hour recharge will uplift your team of
+professionals including principals, senior administrators,
+teachers, and other educational support staff. It's easy to
+think about what matters most once in a while, but to
+reconnect to what's important again and again will help
+us reach the finish line. (60 min)</p>
+                <p class="program_versions">(VERSIONS: Educators · Administration · Special Teams)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact">
+    <div class="section_container">
+      <div class="section_title">
+        <h1>Contact</h1>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer"></footer>
   <script src="scripts/main.js"></script>
 </body>
 </html>
