@@ -36,6 +36,7 @@ p {
 /* Layout Components */
 main {
   background: linear-gradient(135deg, var(--secondary-color) 0%, var(--neutral-cream) 100%);
+  padding-bottom: 2rem;
 }
 
 .container {
@@ -50,132 +51,14 @@ main {
   padding: var(--space-2xl) 0;
 }
 
-/* Accordion Container */
-.accordion-container {
-  max-width: 1200px;
-  margin-inline: auto;
-  padding: 2rem 0;
-  position: relative;
-  /* background: linear-gradient(135deg, var(--secondary-color) 0%, var(--neutral-cream) 100%); */
-}
-
-/* Accordion Section Styles */
-.accordion-section {
-  position: relative;
-  margin: 0 2rem -3rem 2rem; /* Increased negative margin for more overlap */
-  border-radius: 50px 50px 0 0; /* 50px radius on top corners */
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
-  min-height: 120px;
-}
-
-.accordion-section:first-child {
-  margin-top: 1rem; /* First section has top margin */
-}
-
-.accordion-section:last-child {
-  margin-bottom: 1rem; /* Last section has bottom margin */
-  border-radius: 50px 50px 50px 50px; /* Last section fully rounded when alone */
-}
-
-/* Collapsed State (20% visible) */
-.accordion-section.collapsed {
-  max-height: 160px;
-  min-height: 160px;
-}
-
-.accordion-section.collapsed:last-child {
-  max-height: 110px;
-  min-height: 110px;
-}
-
-.accordion-section.collapsed .section-content {
-  opacity: 0.5;
-  transform: translateY(-10px);
-}
-
-/* Expanded State */
-.accordion-section.expanded {
-  /* max-height: 1000px; */
-  min-height: 400px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-}
-
-.accordion-section.expanded .section-content {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Hover Effects */
-.accordion-section:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.accordion-section.collapsed:hover .section-content {
-  opacity: 0.9;
-  transform: translateY(-5px);
-}
-
-/* Section Content */
-.section-content {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 2rem var(--container-padding);
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-bottom: 4rem;
-}
-
-/* Visual Indicators */
-.accordion-indicator {
-  position: absolute;
-  bottom: var(--space-lg);
-  right: var(--space-xl);
-  width: 24px;
-  height: 24px;
-  transition: transform 0.3s ease;
-  opacity: 0.8;
-}
-
-.accordion-section.expanded .accordion-indicator {
-  transform: rotate(180deg);
-}
-
-.accordion-indicator::before,
-.accordion-indicator::after {
-  content: '';
-  position: absolute;
-  background-color: currentColor;
-  transition: all 0.3s ease;
-}
-
-.accordion-indicator::before {
-  width: 12px;
-  height: 2px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.accordion-indicator::after {
-  width: 2px;
-  height: 12px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-
-
-/* Remove old section styles - now using accordion-section class */
+/* Standard Section Styles */
 .section--hero,
 .section--aubrey,
 .section--testimonials,
 .section--cta {
-  /* Styles now handled by .accordion-section */
+  border-radius: 50px;
+  margin: 2rem;
+  overflow: hidden;
 }
 
 .section--alt {
@@ -1266,90 +1149,13 @@ main {
   font-weight: 600;
 }
 
-@media (max-width: 1125px) {
-  .accordion-section.collapsed {
-    max-height: 145px;
-    min-height: 145px;
-  }
-
-  .accordion-section.collapsed:last-child {
-    max-height: 100px;
-    min-height: 100px;
-  }
-}
-
-/* Hide indicators on mobile for cleaner look */
-@media (max-width: 775px) {
-  .accordion-indicator {
-    display: none;
-  }
-
-  .accordion-section {
-    margin: 0 1rem -7rem 1rem; /* Overlap for mobile */
-  }
-
-  .accordion-section:first-child {
-    margin-top: 0.5rem;
-  }
-
-  .accordion-section:last-child {
-    margin-bottom: 0.5rem;
-  }
-
-  .section-content {
-    margin-bottom: 4rem;
-  }
-
-  /* Mobile: Show 50px visible for each collapsed section */
-  .accordion-section.collapsed {
-    max-height: 135px;
-    min-height: 135px;
-  }
-
-  .accordion-section.collapsed:last-child {
-    margin-bottom: 0.5rem;
-    max-height: 90px;
-    min-height: 90px;
-  }
-
-}
-
-@media (max-width: 768px) {
-  .accordion-section {
-    margin: 0 1rem -3rem 1rem; /* Overlap for tablet */
-  }
-}
-
-
-
 @media (max-width: 520px) {
-  .accordion-section.collapsed:last-child {
-    max-height: 130px;
-    min-height: 130px;
-  }
-
   .top-hero__scroll-indicator {
     bottom: 150px;
   }
 }
 
 @media (max-width: 440px) {
-  .accordion-section {
-    margin: -3rem 1rem 0 1rem; /* Overlap for desktop */
-  }
-
-  .accordion-section.collapsed {
-    max-height: 170px;
-    min-height: 170px;
-  }
-
-  .accordion-section.collapsed:last-child {
-    max-height: 130px;
-    min-height: 130px;
-  }
-
-
-
   .section__title {
     max-width: 15ch;
     margin-inline: auto;

@@ -10,7 +10,6 @@ class HelloHopeApp {
     this.setupScrollAnimations();
     this.setupSmoothScrolling();
     this.setupActiveNavigation();
-    this.setupAccordion();
     this.setupHeroFadeEffect();
     this.setupScrollIndicator();
   }
@@ -144,121 +143,13 @@ class HelloHopeApp {
     });
   }
 
-  // Accordion functionality
-  setupAccordion() {
-    const accordionSections = document.querySelectorAll('.accordion-section');
-
-    if (!accordionSections.length) return;
-
-    accordionSections.forEach((section, index) => {
-      // Add click handler to each section
-      section.addEventListener('click', (e) => {
-        // Don't trigger if clicking on buttons or links
-        if (e.target.closest('.btn') || e.target.closest('a')) {
-          return;
-        }
-
-        this.toggleAccordionSection(section);
-      });
-
-      // Add keyboard support
-      section.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          this.toggleAccordionSection(section);
-        }
-      });
-
-      // Make sections focusable for accessibility
-      section.setAttribute('tabindex', '0');
-      section.setAttribute('role', 'button');
-      section.setAttribute('aria-expanded', 'false');
-    });
-
-    // Expand the first section by default (without scrolling)
-    if (accordionSections.length > 0) {
-      setTimeout(() => {
-        this.expandAccordionSection(accordionSections[0], false);
-      }, 500);
-    }
-  }
-
-  toggleAccordionSection(section) {
-    const isExpanded = section.classList.contains('expanded');
-
-    if (isExpanded) {
-      this.collapseAccordionSection(section);
-    } else {
-      this.expandAccordionSection(section);
-    }
-  }
-
-  expandAccordionSection(section, shouldScroll = true) {
-    const allSections = document.querySelectorAll('.accordion-section');
-
-    // Collapse all other sections first
-    allSections.forEach(s => {
-      if (s !== section) {
-        this.collapseAccordionSection(s);
-      }
-    });
-
-    // Expand the clicked section
-    section.classList.remove('collapsed');
-    section.classList.add('expanded');
-    section.setAttribute('aria-expanded', 'true');
-
-    // Only scroll if this was triggered by user interaction
-    if (shouldScroll) {
-      // Wait longer to ensure all collapse/expand animations are complete
-      setTimeout(() => {
-        // Target the section-content element for more precise positioning
-        const sectionContent = section.querySelector('.section-content');
-        if (sectionContent) {
-          // Use getBoundingClientRect to get the exact position relative to viewport
-          const contentRect = sectionContent.getBoundingClientRect();
-          const currentScrollY = window.scrollY;
-          
-          // Calculate the exact scroll position needed to align content top with viewport top
-          const targetScrollY = currentScrollY + contentRect.top;
-          
-          window.scrollTo({
-            top: targetScrollY,
-            behavior: 'smooth'
-          });
-        }
-      }, 450); // Wait for CSS transition (0.4s) plus buffer to ensure layout is stable
-    }
-
-    // Trigger any existing animations
-    const animatedElements = section.querySelectorAll('.hero__title, .hero__subtitle, .hero__cta, .aubrey__title, .aubrey__subtitle, .aubrey__cta, .testimonials__title, .testimonials__subtitle, .testimonials__cta, .cta__title, .cta__subtitle, .cta__cta');
-
-    animatedElements.forEach((element, index) => {
-      if (!element.style.animation) {
-        element.style.opacity = '0';
-        element.style.transform = 'translateY(30px)';
-        element.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-
-        setTimeout(() => {
-          element.style.opacity = '1';
-          element.style.transform = 'translateY(0)';
-        }, index * 100);
-      }
-    });
-  }
-
-  collapseAccordionSection(section) {
-    section.classList.remove('expanded');
-    section.classList.add('collapsed');
-    section.setAttribute('aria-expanded', 'false');
-  }
 
   // Hero fade effect on scroll
   setupHeroFadeEffect() {
     const heroContainer = document.querySelector('.top-hero__container');
-    const accordionContainer = document.querySelector('.accordion-container');
+    const firstSection = document.querySelector('.section--hero');
     
-    if (!heroContainer || !accordionContainer) return;
+    if (!heroContainer || !firstSection) return;
 
     let ticking = false;
 
@@ -266,11 +157,11 @@ class HelloHopeApp {
       const scrollY = window.scrollY;
       const viewportHeight = window.innerHeight;
       
-      // Calculate the position where accordion container starts to come into view
-      const accordionTop = accordionContainer.offsetTop;
+      // Calculate the position where first section starts to come into view
+      const firstSectionTop = firstSection.offsetTop;
       
       // Start fading immediately when scrolling begins
-      // Complete fade when accordion is about to come into prominent view
+      // Complete fade when first section is about to come into prominent view
       const fadeStartPoint = 0;
       
       // Adjust fade timing based on screen size for better mobile experience
@@ -281,7 +172,7 @@ class HelloHopeApp {
         fadeMultiplier = 0.65; // Medium screens
       }
       
-      const fadeEndPoint = accordionTop - (viewportHeight * fadeMultiplier);
+      const fadeEndPoint = firstSectionTop - (viewportHeight * fadeMultiplier);
       
       let opacity = 1;
       
@@ -301,7 +192,7 @@ class HelloHopeApp {
       
       // Control z-index to allow clicks when hero is invisible
       if (opacity <= 0) {
-        heroContainer.style.zIndex = '-1'; // Move behind accordion when invisible
+        heroContainer.style.zIndex = '-1'; // Move behind sections when invisible
       } else {
         heroContainer.style.zIndex = '2'; // Keep above background when visible
       }
@@ -332,12 +223,12 @@ class HelloHopeApp {
     if (!scrollIndicator) return;
 
     scrollIndicator.addEventListener('click', () => {
-      const accordionContainer = document.querySelector('.accordion-container');
-      if (accordionContainer) {
-        const accordionTop = accordionContainer.offsetTop;
+      const firstSection = document.querySelector('.section--hero');
+      if (firstSection) {
+        const firstSectionTop = firstSection.offsetTop;
         
         window.scrollTo({
-          top: accordionTop,
+          top: firstSectionTop,
           behavior: 'smooth'
         });
       }
