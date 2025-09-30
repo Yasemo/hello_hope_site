@@ -1,63 +1,63 @@
-/* Minion Pro Font Family */
+/* Barlow Condensed Font Family */
 @font-face {
-  font-family: 'Minion Pro';
-  src: url('../fonts/minion_variable_woff/MinionPro-Regular.woff') format('woff');
+  font-family: 'Barlow Condensed';
+  src: url('../fonts/Barlow_Condensed/BarlowCondensed-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Minion Pro';
-  src: url('../fonts/minion_variable_woff/MinionPro-Medium.woff') format('woff');
+  font-family: 'Barlow Condensed';
+  src: url('../fonts/Barlow_Condensed/BarlowCondensed-Medium.ttf') format('truetype');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Minion Pro';
-  src: url('../fonts/minion_variable_woff/MinionPro-Semibold.woff') format('woff');
+  font-family: 'Barlow Condensed';
+  src: url('../fonts/Barlow_Condensed/BarlowCondensed-SemiBold.ttf') format('truetype');
   font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Minion Pro';
-  src: url('../fonts/minion_variable_woff/MinionPro-Bold.woff') format('woff');
+  font-family: 'Barlow Condensed';
+  src: url('../fonts/Barlow_Condensed/BarlowCondensed-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Minion Pro';
-  src: url('../fonts/minion_variable_woff/MinionPro-It.woff') format('woff');
+  font-family: 'Barlow Condensed';
+  src: url('../fonts/Barlow_Condensed/BarlowCondensed-Italic.ttf') format('truetype');
   font-weight: 400;
   font-style: italic;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Minion Pro';
-  src: url('../fonts/minion_variable_woff/MinionPro-MediumIt.woff') format('woff');
+  font-family: 'Barlow Condensed';
+  src: url('../fonts/Barlow_Condensed/BarlowCondensed-MediumItalic.ttf') format('truetype');
   font-weight: 500;
   font-style: italic;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Minion Pro';
-  src: url('../fonts/minion_variable_woff/MinionPro-SemiboldIt.woff') format('woff');
+  font-family: 'Barlow Condensed';
+  src: url('../fonts/Barlow_Condensed/BarlowCondensed-SemiBoldItalic.ttf') format('truetype');
   font-weight: 600;
   font-style: italic;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Minion Pro';
-  src: url('../fonts/minion_variable_woff/MinionPro-BoldIt.woff') format('woff');
+  font-family: 'Barlow Condensed';
+  src: url('../fonts/Barlow_Condensed/BarlowCondensed-BoldItalic.ttf') format('truetype');
   font-weight: 700;
   font-style: italic;
   font-display: swap;
@@ -87,7 +87,7 @@
   --text-white: #ffffff;
   
   /* Typography */
-  --font-primary: 'Minion Pro', Georgia, serif;
+  --font-primary: 'Barlow Condensed', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-secondary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   
   /* Font Sizes - Mobile First */

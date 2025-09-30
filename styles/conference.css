@@ -1,0 +1,1689 @@
+/* Conference Page Styles */
+
+/* Conference Header Override - Black background with white text */
+.header {
+    background-color: black !important;
+    border-bottom: 1px solid #333 !important;
+}
+
+.header .nav-link {
+    color: white !important;
+}
+
+.header .nav-link:hover {
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.header .nav-link.active {
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.header .contact-btn {
+    background-color: white !important;
+    color: black !important;
+}
+
+.header .contact-btn:hover {
+    background-color: #f0f0f0 !important;
+    color: black !important;
+}
+
+.header .hamburger_line {
+    background-color: white !important;
+}
+
+.header .mobile_nav_link {
+    color: white !important;
+    border-bottom: 1px solid #333 !important;
+}
+
+.header .mobile_nav_link:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    color: white !important;
+}
+
+.header .mobile_contact_btn {
+    background-color: white !important;
+    color: black !important;
+}
+
+.header .mobile_contact_btn:hover {
+    background-color: #f0f0f0 !important;
+    color: black !important;
+}
+
+.header .mobile_nav {
+    background-color: black !important;
+    border-bottom: 1px solid #333 !important;
+}
+
+body {
+    background-color: black;
+}
+.conference_banner {
+    height: 40px;
+    position: relative;
+    background-color: black;
+    z-index: 10;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.banner_scroll {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.banner_text {
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    will-change: transform;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    word-spacing: 8px;
+}
+
+.banner_text_1 {
+    animation: scroll-banner-1 30s linear infinite;
+}
+
+.banner_text_2 {
+    animation: scroll-banner-2 30s linear infinite;
+}
+
+@keyframes scroll-banner-1 {
+    0% {
+        transform: translateY(-50%) translateX(0%);
+    }
+    100% {
+        transform: translateY(-50%) translateX(-100%);
+    }
+}
+
+@keyframes scroll-banner-2 {
+    0% {
+        transform: translateY(-50%) translateX(100%);
+    }
+    100% {
+        transform: translateY(-50%) translateX(0%);
+    }
+}
+
+.conference_hero {
+    height: calc(100vh - 40px);
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr;
+    background: linear-gradient(to bottom, #C3A9FF 70%, #ddcfff);
+    background-size: 100% 200%;
+    animation: heroGradientShift 6s ease-in-out infinite alternate;
+    padding: 3rem;
+    position: relative;
+    z-index: 10;
+    overflow: hidden;
+}
+
+/* Animated gradient for hero background */
+@keyframes heroGradientShift {
+    0% {
+        background-position: 0% 0%;
+    }
+    100% {
+        background-position: 0% 100%;
+    }
+}
+
+
+.conference_hero h1 {
+    color: white;
+}
+
+/* Initial state for hero elements - hidden for page load animation */
+.hero_top,
+.hero_middle,
+.hero_bottom {
+    opacity: 0;
+    transform: translateY(30px);
+    will-change: transform, opacity;
+}
+
+/* Page load animation states */
+.conference_hero.loaded .hero_top {
+    animation: slideInFromTop 1s ease-out 0.2s forwards;
+}
+
+.conference_hero.loaded .hero_middle {
+    animation: scaleInCenter 1.2s ease-out 0.6s forwards;
+}
+
+.conference_hero.loaded .hero_bottom {
+    animation: slideInFromBottom 1s ease-out 1s forwards;
+}
+
+/* Keyframe animations for hero elements */
+@keyframes slideInFromTop {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleInCenter {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) translateY(20px);
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1.05) translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes slideInFromBottom {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero_top {
+    display: flex;
+    justify-content: space-between;
+    align-items: top;
+}
+
+.buy_tickets {
+    padding: 0.5rem 1.2rem;
+    border-radius: 50px;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    height: 40px;
+    border: 2px solid transparent;
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Ticket icon using CSS */
+.buy_tickets::before {
+    content: '';
+    width: 16px;
+    height: 12px;
+    background: currentColor;
+    border-radius: 2px;
+    position: relative;
+    transition: all 0.4s ease;
+    mask: 
+        radial-gradient(circle at 0 50%, transparent 3px, black 3px),
+        radial-gradient(circle at 100% 50%, transparent 3px, black 3px);
+    mask-composite: intersect;
+    -webkit-mask: 
+        radial-gradient(circle at 0 50%, transparent 3px, black 3px),
+        radial-gradient(circle at 100% 50%, transparent 3px, black 3px);
+    -webkit-mask-composite: source-in;
+}
+
+/* Shimmer effect */
+.buy_tickets::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.6s ease;
+    z-index: 1;
+}
+
+.buy_tickets:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+    border-color: rgba(195, 169, 255, 0.5);
+}
+
+.buy_tickets:hover::after {
+    left: 100%;
+}
+
+.buy_tickets:active {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Button text */
+.buy_tickets span {
+    position: relative;
+    z-index: 2;
+    transition: all 0.4s ease;
+}
+
+.hero_top h1 {
+    color: white;
+    font-size: 2rem;
+    font-weight: 400;
+    letter-spacing: 3px;
+}
+
+.hero_middle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero_middle h1 {
+    font-size: 13rem;
+    color: black;
+    font-weight: 500;
+    line-height: 0.9;
+}
+
+.hero_bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+}
+
+.hero_bottom h1 {
+    font-size: 5rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.pattern {
+    height: 50px;
+    margin-bottom: 1.3rem;}
+
+
+
+
+
+.an_event_for {
+    height: 100vh;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 5em;
+    z-index: 1;
+}
+
+.an_event_for h1 {
+    color: white;
+    font-weight: 400;
+    font-size: 6rem;
+}
+
+.an_event_for p {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: normal;
+}
+
+
+.images_container {
+    position: relative;
+    height: 200px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+}
+
+.images_container img {
+    width: 150px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 25px;
+    position: absolute;
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transform-origin: center bottom;
+    z-index: 100;
+}
+
+/* Initial state - stacked deck above viewport */
+.images_container.deck-initial img {
+    transform: translateY(-150vh) translateX(0) rotate(-8deg);
+}
+
+.images_container.deck-initial img:nth-child(1) { z-index: 107; transform: translateY(-150vh) translateX(-3px) rotate(-8deg); }
+.images_container.deck-initial img:nth-child(2) { z-index: 106; transform: translateY(-150vh) translateX(-2px) rotate(-8deg); }
+.images_container.deck-initial img:nth-child(3) { z-index: 105; transform: translateY(-150vh) translateX(-1px) rotate(-8deg); }
+.images_container.deck-initial img:nth-child(4) { z-index: 104; transform: translateY(-150vh) translateX(0px) rotate(-8deg); }
+.images_container.deck-initial img:nth-child(5) { z-index: 103; transform: translateY(-150vh) translateX(1px) rotate(-8deg); }
+.images_container.deck-initial img:nth-child(6) { z-index: 102; transform: translateY(-150vh) translateX(2px) rotate(-8deg); }
+.images_container.deck-initial img:nth-child(7) { z-index: 101; transform: translateY(-150vh) translateX(3px) rotate(-8deg); }
+
+/* Dropped state - stacked deck in position */
+.images_container.deck-dropped img {
+    transform: translateY(0) translateX(0) rotate(-8deg);
+}
+
+.images_container.deck-dropped img:nth-child(1) { z-index: 107; transform: translateY(0) translateX(-3px) rotate(-8deg); }
+.images_container.deck-dropped img:nth-child(2) { z-index: 106; transform: translateY(0) translateX(-2px) rotate(-8deg); }
+.images_container.deck-dropped img:nth-child(3) { z-index: 105; transform: translateY(0) translateX(-1px) rotate(-8deg); }
+.images_container.deck-dropped img:nth-child(4) { z-index: 104; transform: translateY(0) translateX(0px) rotate(-8deg); }
+.images_container.deck-dropped img:nth-child(5) { z-index: 103; transform: translateY(0) translateX(1px) rotate(-8deg); }
+.images_container.deck-dropped img:nth-child(6) { z-index: 102; transform: translateY(0) translateX(2px) rotate(-8deg); }
+.images_container.deck-dropped img:nth-child(7) { z-index: 101; transform: translateY(0) translateX(3px) rotate(-8deg); }
+
+/* Final expanded state - arch formation with subtle overlap and bottom-to-top effect */
+.images_container.deck-expanded img {
+    transform: translateY(0);
+}
+
+.images_container.deck-expanded img:nth-child(1) { 
+    z-index: 101; 
+    transform: translateY(40px) translateX(-300px) rotate(-15deg); 
+}
+.images_container.deck-expanded img:nth-child(2) { 
+    z-index: 102; 
+    transform: translateY(20px) translateX(-200px) rotate(-10deg); 
+}
+.images_container.deck-expanded img:nth-child(3) { 
+    z-index: 103; 
+    transform: translateY(5px) translateX(-100px) rotate(-5deg); 
+}
+.images_container.deck-expanded img:nth-child(4) { 
+    z-index: 104; 
+    transform: translateY(0px) translateX(0px) rotate(0deg); 
+}
+.images_container.deck-expanded img:nth-child(5) { 
+    z-index: 105; 
+    transform: translateY(5px) translateX(100px) rotate(5deg); 
+}
+.images_container.deck-expanded img:nth-child(6) { 
+    z-index: 106; 
+    transform: translateY(20px) translateX(200px) rotate(10deg); 
+}
+.images_container.deck-expanded img:nth-child(7) { 
+    z-index: 107; 
+    transform: translateY(40px) translateX(300px) rotate(15deg); 
+}
+
+
+.conference_about {
+    height: auto;
+    display: grid;
+    grid-template-rows: auto auto auto;
+    background-color: black;
+    padding: 3rem 3rem 10rem 3rem;
+    gap: 3rem;
+    z-index: 200;
+}
+
+.about_title {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.conference_about h3 {
+    font-size: 1.5rem;
+    color: black;
+    font-weight: 400;
+    background-color: #C3A9FF;
+    padding: 0 1rem 0.2rem 1rem;
+    border-radius: 50px;
+    text-align: center;
+    width: fit-content;
+}
+
+.conference_about h1 {
+    font-size: 6rem;
+    color: white;
+    font-weight: 400;
+    justify-self: left;
+}
+
+.conference_about p {
+    font-size: 2.5rem;
+    color: rgb(114, 114, 114);
+    font-weight: 400;
+    justify-self: right;
+    width: 40ch;
+    line-height: normal;
+}
+
+.conference_about img {
+    margin-top: 10rem;
+    width: 100%;
+    height: 100%;
+    max-height: 700px;
+    object-fit: cover;
+    border-radius: 25px;
+    opacity: 0;
+    transform: translateX(-100px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.conference_about img.animate-in {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+
+.the_pros_section {
+    height: auto;
+    min-height: 100vh;
+    display: grid;
+    justify-items: center;
+    grid-template-rows: auto auto;
+    background-color: black;
+    padding: 10rem 3rem 3rem 3rem;
+    gap: 3rem;
+    z-index: 250;
+}
+
+.pros_title {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.pros_title h3 {
+    font-size: 1.5rem;
+    color: black;
+    font-weight: 400;
+    background-color: #C3A9FF;
+    padding: 0 1rem 0.2rem 1rem;
+    border-radius: 50px;
+    text-align: center;
+    width: fit-content;
+}
+
+.pros_title h1 {
+    font-size: 6rem;
+    color: white;
+    font-weight: 400;
+    justify-self: left;
+    line-height: 1;
+}
+
+.pros_title p {
+    font-size: 1.5rem;
+    color: rgb(114, 114, 114);
+    font-weight: 400;
+    justify-self: right;
+    width: 40ch;
+    line-height: normal;
+}
+
+.pros_container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 2rem;
+}
+
+.pro {
+    width: 30%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.pro h3 {
+    font-size: 1.5rem;
+    color: white;
+    font-weight: 400;
+    margin: 1rem auto 0 0;
+}
+
+.pro p {
+    font-size: 1.5rem;
+    color: rgb(114, 114, 114);
+    font-weight: 400;
+    margin-right: auto;
+}
+
+.pro img {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    border-radius: 25px;
+    filter: grayscale(100%);
+}
+
+.pro::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    aspect-ratio: 2/3;
+    background-color: #C3A9FF;
+    opacity: 0.3;
+    border-radius: 25px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+
+
+
+.conference_schedule {
+    height: auto;
+    min-height: 100vh;
+    display: grid;
+    justify-items: center;
+    grid-template-columns: 1fr 1.5fr;
+    background-color: black;
+    padding: 10rem 3rem 10rem 3rem;
+    gap: 3rem;
+    z-index: 250;
+}
+
+
+.schedule_header h3 {
+    font-size: 1.5rem;
+    color: black;
+    font-weight: 400;
+    background-color: #C3A9FF;
+    padding: 0 1rem 0.2rem 1rem;
+    border-radius: 50px;
+    text-align: center;
+    width: fit-content;
+}
+
+.schedule_header h1 {
+    font-size: 6rem;
+    color: white;
+    font-weight: 400;
+    justify-self: left;
+    line-height: 1;
+}
+
+.schedule_header p {
+    font-size: 1.5rem;
+    color: rgb(114, 114, 114);
+    font-weight: 400;
+    justify-self: right;
+    width: 40ch;
+    line-height: normal;
+    margin-bottom: 3rem;
+    justify-self: left;
+}
+
+.conference_days {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.day_tabs {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.day_tab {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 1rem;
+    justify-content: center;
+    align-items: center;
+    border-bottom: rgb(51, 51, 51) 1px solid;
+}
+
+.day_tab.active {
+    border-bottom: white 3px solid;
+    color: white;
+}
+
+.day_tab {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: rgb(114, 114, 114);
+}
+
+.day_tab:hover {
+    color: #C3A9FF;
+    transform: translateY(-2px);
+}
+
+.day_tab.active {
+    transform: translateY(0);
+}
+
+.day1_events,
+.day2_events {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.4s ease-in-out;
+    max-height: 0;
+    overflow: hidden;
+}
+
+.day1_events.active,
+.day2_events.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    max-height: none;
+    overflow: visible;
+}
+
+.event {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    width: 100%;
+    padding: 1rem;
+    align-items: center;
+    border-bottom: rgb(51, 51, 51) 1px solid;
+}
+
+.event_time {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+
+.event_text {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.event_text h1 {
+    font-size: 2.5rem;
+    color: white;
+    font-weight: 400;
+}
+
+.event_text h3 {
+    font-size: 1.2rem;
+    color: white;
+    font-weight: 400;
+}
+
+.event_text p {
+    font-size: 1.2rem;
+    color: rgb(114, 114, 114);
+    font-weight: 400;
+    line-height: normal;
+}
+
+
+
+
+.conference_cta {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(45deg, #000000 0%, #1a0d2e 25%, #C3A9FF 70%, #ddcfff 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 8s ease-in-out infinite;
+    padding: 3rem;
+    position: relative;
+    z-index: 350;
+    overflow: hidden;
+}
+
+/* Animated gradient background */
+@keyframes gradientShift {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+/* Floating particles background effect */
+/* .conference_cta::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(195, 169, 255, 0.3) 2px, transparent 2px),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+        radial-gradient(circle at 40% 40%, rgba(195, 169, 255, 0.2) 1.5px, transparent 1.5px),
+        radial-gradient(circle at 60% 90%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+        radial-gradient(circle at 90% 60%, rgba(195, 169, 255, 0.25) 2px, transparent 2px);
+    background-size: 200px 200px, 150px 150px, 300px 300px, 250px 250px, 180px 180px;
+    animation: floatingParticles 20s linear infinite;
+    z-index: -1;
+} */
+
+@keyframes floatingParticles {
+    0% {
+        transform: translateY(0) translateX(0);
+    }
+    25% {
+        transform: translateY(-20px) translateX(10px);
+    }
+    50% {
+        transform: translateY(-10px) translateX(-15px);
+    }
+    75% {
+        transform: translateY(-30px) translateX(5px);
+    }
+    100% {
+        transform: translateY(0) translateX(0);
+    }
+}
+
+/* Geometric shapes background */
+/* .conference_cta::after {
+    content: '';
+    position: absolute;
+    top: 10%;
+    right: 10%;
+    width: 100px;
+    height: 100px;
+    border: 2px solid rgba(195, 169, 255, 0.3);
+    border-radius: 50%;
+    animation: rotateShape 15s linear infinite;
+    z-index: -1;
+} */
+
+@keyframes rotateShape {
+    0% {
+        transform: rotate(0deg) scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: rotate(180deg) scale(1.2);
+        opacity: 0.6;
+    }
+    100% {
+        transform: rotate(360deg) scale(1);
+        opacity: 0.3;
+    }
+}
+
+/* Animation states for content */
+.conference_cta .countdown,
+.conference_cta h1,
+.conference_cta p,
+.conference_cta .buy_tickets {
+    opacity: 0;
+    transform: translateY(30px);
+    will-change: transform, opacity;
+}
+
+.conference_cta.animate-in .countdown {
+    animation: slideDownFade 0.8s ease-out forwards;
+}
+
+.conference_cta.animate-in h1 {
+    animation: scaleUpFade 0.8s ease-out 0.3s forwards;
+}
+
+.conference_cta.animate-in p {
+    animation: slideUpFade 0.8s ease-out 0.5s forwards;
+}
+
+.conference_cta.animate-in .buy_tickets {
+    animation: bounceIn 0.8s ease-out 0.7s forwards;
+}
+
+/* Keyframe animations for content */
+@keyframes slideDownFade {
+    0% {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleUpFade {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes slideUpFade {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.3);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(-10px) scale(1.05);
+    }
+    70% {
+        transform: translateY(5px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.countdown {
+    background-color: black;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    color: white;
+    font-weight: 500;
+}
+
+.conference_cta h1 {
+    font-size: 6rem;
+    color: rgb(255, 255, 255);
+    font-weight: 400;
+    line-height: 1;
+    z-index: 350;
+    text-align: center;
+}
+
+.conference_cta p {
+    font-size: 1.5rem;
+    color: rgb(255, 255, 255);
+    font-weight: 400;
+    width: 40ch;
+    line-height: normal;
+    margin-bottom: 3rem;
+    z-index: 350;
+    text-align: center;
+}
+
+
+@media (max-width: 900px) {
+    .conference_schedule {
+        grid-template-columns: 1fr;
+        gap: 5rem;
+    }
+}
+
+
+/* Responsive Design for Conference Section */
+@media (max-width: 768px) {
+    .banner_text {
+        font-size: 12px;
+    }
+    
+    .banner_text_1 {
+        animation: scroll-banner-1 25s linear infinite;
+    }
+
+    .banner_text_2 {
+        animation: scroll-banner-2 25s linear infinite;
+    }
+    
+    .hero_middle h1 {
+        font-size: 8rem;
+    }
+    
+    .hero_bottom h1 {
+        font-size: 3rem;
+    }
+    
+    .an_event_for h1 {
+        font-size: 3rem;
+    }
+    
+    .an_event_for {
+        gap: 3em;
+        padding: 0 1.5rem;
+    }
+    
+    .an_event_for p {
+        font-size: 1.3rem;
+        padding: 0 1rem;
+    }
+    
+    .images_container {
+        height: 150px;
+    }
+    
+    .images_container img {
+        width: 100px;
+        height: 130px;
+    }
+    
+    /* Adjust positions for smaller screens with arch formation and subtle overlap */
+    .images_container.deck-expanded img:nth-child(1) { 
+        z-index: 101;
+        transform: translateY(25px) translateX(-200px) rotate(-15deg); 
+    }
+    .images_container.deck-expanded img:nth-child(2) { 
+        z-index: 102;
+        transform: translateY(12px) translateX(-133px) rotate(-10deg); 
+    }
+    .images_container.deck-expanded img:nth-child(3) { 
+        z-index: 103;
+        transform: translateY(3px) translateX(-67px) rotate(-5deg); 
+    }
+    .images_container.deck-expanded img:nth-child(4) { 
+        z-index: 104;
+        transform: translateY(0px) translateX(0px) rotate(0deg); 
+    }
+    .images_container.deck-expanded img:nth-child(5) { 
+        z-index: 105;
+        transform: translateY(3px) translateX(67px) rotate(5deg); 
+    }
+    .images_container.deck-expanded img:nth-child(6) { 
+        z-index: 106;
+        transform: translateY(12px) translateX(133px) rotate(10deg); 
+    }
+    .images_container.deck-expanded img:nth-child(7) { 
+        z-index: 107;
+        transform: translateY(25px) translateX(200px) rotate(15deg); 
+    }
+    
+    /* Conference About Section - Tablet Responsive */
+    .conference_about {
+        padding: 2rem 1.5rem 10rem 1.5rem;
+        gap: 2rem;
+    }
+    
+    .conference_about h1 {
+        font-size: 4rem;
+        line-height: 1.1;
+    }
+    
+    .conference_about p {
+        font-size: 1.8rem;
+        width: 100%;
+        max-width: 35ch;
+        justify-self: center;
+        text-align: center;
+    }
+    
+    .conference_about img {
+        margin-top: 3rem;
+        max-height: 400px;
+        border-radius: 20px;
+    }
+
+    .about_title {
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+    
+    /* The Pros Section - Tablet Responsive */
+    .the_pros_section {
+        padding: 5rem 1.5rem 2rem 1.5rem;
+        gap: 2rem;
+    }
+    
+    .pros_title h1 {
+        font-size: 4rem;
+        line-height: 1.1;
+        text-align: center;
+    }
+    
+    .pros_title p {
+        font-size: 1.3rem;
+        width: 100%;
+        max-width: 35ch;
+        text-align: center;
+    }
+    
+    .pros_container {
+        gap: 1.5rem;
+    }
+    
+    .pro {
+        width: 45%;
+    }
+    
+    .pro h3 {
+        font-size: 1.3rem;
+        margin: 0.8rem auto 0 0;
+    }
+    
+    .pro p {
+        font-size: 1.1rem;
+    }
+    
+    /* Conference Schedule Section - Tablet Responsive */
+    .conference_schedule {
+        padding: 5rem 1.5rem 5rem 1.5rem;
+        gap: 3rem;
+    }
+
+    .schedule_header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    
+    .schedule_header h1 {
+        font-size: 4rem;
+        line-height: 1.1;
+        text-align: center;
+    }
+    
+    .schedule_header p {
+        font-size: 1.3rem;
+        width: 100%;
+        max-width: 35ch;
+        text-align: center;
+        justify-self: center;
+        margin-bottom: 2rem;
+    }
+    
+    .day_tab {
+        padding: 0.8rem;
+        font-size: 1.1rem;
+    }
+    
+    .event {
+        padding: 0.8rem;
+    }
+    
+    .event_time {
+        font-size: 1.3rem;
+    }
+    
+    .event_text h1 {
+        font-size: 2rem;
+    }
+    
+    .event_text h3 {
+        font-size: 1.1rem;
+    }
+    
+    .event_text p {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero_middle h1 {
+        font-size: 5rem;
+    }
+    
+    .hero_bottom h1 {
+        font-size: 2rem;
+    }
+    
+    .an_event_for h1 {
+        font-size: 2.5rem;
+    }
+    
+    .an_event_for {
+        gap: 2.5em;
+        padding: 0 1rem;
+        min-height: 80vh;
+    }
+    
+    .an_event_for p {
+        font-size: 1.2rem;
+        padding: 0 0.5rem;
+        line-height: 1.4;
+    }
+    
+    
+    .images_container img {
+        width: 80px;
+        height: 100px;
+    }
+    
+    /* Further adjust positions for mobile with arch formation and subtle overlap */
+    .images_container.deck-expanded img:nth-child(1) { 
+        z-index: 101;
+        transform: translateY(20px) translateX(-120px) rotate(-12deg); 
+    }
+    .images_container.deck-expanded img:nth-child(2) { 
+        z-index: 102;
+        transform: translateY(10px) translateX(-80px) rotate(-8deg); 
+    }
+    .images_container.deck-expanded img:nth-child(3) { 
+        z-index: 103;
+        transform: translateY(3px) translateX(-40px) rotate(-4deg); 
+    }
+    .images_container.deck-expanded img:nth-child(4) { 
+        z-index: 104;
+        transform: translateY(0px) translateX(0px) rotate(0deg); 
+    }
+    .images_container.deck-expanded img:nth-child(5) { 
+        z-index: 105;
+        transform: translateY(3px) translateX(40px) rotate(4deg); 
+    }
+    .images_container.deck-expanded img:nth-child(6) { 
+        z-index: 106;
+        transform: translateY(10px) translateX(80px) rotate(8deg); 
+    }
+    .images_container.deck-expanded img:nth-child(7) { 
+        z-index: 107;
+        transform: translateY(20px) translateX(120px) rotate(12deg); 
+    }
+    
+    /* Conference About Section - Mobile Responsive */
+    .conference_about {
+        padding: 1.5rem 1rem 5rem 1rem;
+        gap: 1.5rem;
+    }
+    
+    .conference_about h3 {
+        font-size: 1.2rem;
+        padding: 0 0.8rem 0.2rem 0.8rem;
+    }
+    
+    .conference_about h1 {
+        font-size: 2.8rem;
+        line-height: 1.1;
+        text-align: center;
+        justify-self: center;
+    }
+    
+    .conference_about p {
+        font-size: 1.4rem;
+        width: 100%;
+        max-width: none;
+        justify-self: center;
+        text-align: center;
+        line-height: 1.4;
+    }
+    
+    .conference_about img {
+        margin-top: 2rem;
+        max-height: 300px;
+        border-radius: 15px;
+    }
+    
+    /* The Pros Section - Mobile Responsive */
+    .the_pros_section {
+        padding: 3rem 1rem 2rem 1rem;
+        gap: 1.5rem;
+    }
+    
+    .pros_title h3 {
+        font-size: 1.2rem;
+        padding: 0 0.8rem 0.2rem 0.8rem;
+    }
+    
+    .pros_title h1 {
+        font-size: 2.8rem;
+        line-height: 1.1;
+        text-align: center;
+    }
+    
+    .pros_title p {
+        font-size: 1.2rem;
+        width: 100%;
+        max-width: none;
+        text-align: center;
+        line-height: 1.4;
+    }
+    
+    .pros_container {
+        gap: 1rem;
+        justify-content: center;
+    }
+    
+    .pro {
+        width: 100%;
+        max-width: 280px;
+        margin-bottom: 1rem;
+    }
+    
+    .pro h3 {
+        font-size: 1.2rem;
+        margin: 0.8rem auto 0 0;
+        text-align: left;
+    }
+    
+    .pro p {
+        font-size: 1rem;
+        text-align: left;
+    }
+    
+    /* Conference Schedule Section - Mobile Responsive */
+    .conference_schedule {
+        padding: 3rem 1rem 3rem 1rem;
+        gap: 2rem;
+    }
+    
+    .schedule_header h3 {
+        font-size: 1.2rem;
+        padding: 0 0.8rem 0.2rem 0.8rem;
+    }
+    
+    .schedule_header h1 {
+        font-size: 2.8rem;
+        line-height: 1.1;
+        text-align: center;
+    }
+    
+    .schedule_header p {
+        font-size: 1.2rem;
+        width: 100%;
+        max-width: none;
+        text-align: center;
+        line-height: 1.4;
+        margin-bottom: 1.5rem;
+    }
+    
+    .day_tab {
+        padding: 0.6rem;
+        font-size: 1rem;
+    }
+    
+    .event {
+        padding: 0.6rem;
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+        text-align: left;
+    }
+    
+    .event_time {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .event_text h1 {
+        font-size: 1.6rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .event_text h3 {
+        font-size: 1rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .event_text p {
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+    
+    /* Mobile responsive adjustments for CTA section */
+    .conference_cta h1 {
+        font-size: 3rem;
+    }
+    
+    .conference_cta p {
+        font-size: 1.2rem;
+        width: 35ch;
+    }
+    
+    .conference_cta::after {
+        width: 60px;
+        height: 60px;
+        top: 15%;
+        right: 15%;
+    }
+}
+
+/* Extra small mobile devices (320px and below) */
+@media (max-width: 320px) {
+    .conference_hero {
+        padding: 1.5rem;
+    }
+    
+    .hero_top h1 {
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+    }
+    
+    .hero_middle h1 {
+        font-size: 3.5rem;
+    }
+    
+    .hero_bottom h1 {
+        font-size: 1.5rem;
+    }
+    
+    .buy_tickets {
+        padding: 0.4rem 1rem;
+        height: 36px;
+        font-size: 0.9rem;
+    }
+    
+    /* Conference About Section - Extra Small Mobile */
+    .conference_about {
+        padding: 1rem 0.75rem;
+        gap: 1rem;
+    }
+    
+    .conference_about h3 {
+        font-size: 1rem;
+        padding: 0 0.6rem 0.15rem 0.6rem;
+    }
+    
+    .conference_about h1 {
+        font-size: 2.2rem;
+        line-height: 1.1;
+    }
+    
+    .conference_about p {
+        font-size: 1.1rem;
+        line-height: 1.3;
+        padding: 0 0.5rem;
+    }
+    
+    .conference_about img {
+        margin-top: 1.5rem;
+        max-height: 250px;
+        border-radius: 12px;
+    }
+    
+    /* The Pros Section - Extra Small Mobile */
+    .the_pros_section {
+        padding: 2rem 0.75rem 1.5rem 0.75rem;
+        gap: 1rem;
+    }
+    
+    .pros_title h3 {
+        font-size: 1rem;
+        padding: 0 0.6rem 0.15rem 0.6rem;
+    }
+    
+    .pros_title h1 {
+        font-size: 2.2rem;
+        line-height: 1.1;
+    }
+    
+    .pros_title p {
+        font-size: 1rem;
+        line-height: 1.3;
+        padding: 0 0.5rem;
+    }
+    
+    .pros_container {
+        gap: 0.8rem;
+    }
+    
+    .pro {
+        width: 100%;
+        max-width: 250px;
+        margin-bottom: 0.8rem;
+    }
+    
+    .pro h3 {
+        font-size: 1.1rem;
+        margin: 0.6rem auto 0 0;
+    }
+    
+    .pro p {
+        font-size: 0.9rem;
+    }
+    
+    /* Conference Schedule Section - Extra Small Mobile */
+    .conference_schedule {
+        padding: 2rem 0.75rem 2rem 0.75rem;
+        gap: 1.5rem;
+    }
+    
+    .schedule_header h3 {
+        font-size: 1rem;
+        padding: 0 0.6rem 0.15rem 0.6rem;
+    }
+    
+    .schedule_header h1 {
+        font-size: 2.2rem;
+        line-height: 1.1;
+    }
+    
+    .schedule_header p {
+        font-size: 1rem;
+        line-height: 1.3;
+        padding: 0 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .day_tab {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .event {
+        padding: 0.5rem;
+        gap: 0.4rem;
+    }
+    
+    .event_time {
+        font-size: 1rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    .event_text h1 {
+        font-size: 1.4rem;
+        margin-bottom: 0.2rem;
+    }
+    
+    .event_text h3 {
+        font-size: 0.9rem;
+        margin-bottom: 0.2rem;
+    }
+    
+    .event_text p {
+        font-size: 0.8rem;
+        line-height: 1.3;
+    }
+    
+    .an_event_for h1 {
+        font-size: 2rem;
+    }
+    
+    .an_event_for {
+        gap: 2em;
+        padding: 0 0.75rem;
+        min-height: 70vh;
+    }
+    
+    .an_event_for p {
+        font-size: 1rem;
+        padding: 0 0.5rem;
+        line-height: 1.3;
+    }
+    
+    /* Images Container - Extra Small Mobile (320px) */
+    .images_container img {
+        width: 60px;
+        height: 80px;
+    }
+    
+    .images_container {
+        height: 120px;
+    }
+    
+    /* Ultra-compact positions for 320px screens */
+    .images_container.deck-expanded img:nth-child(1) { 
+        z-index: 101;
+        transform: translateY(15px) translateX(-90px) rotate(-10deg); 
+    }
+    .images_container.deck-expanded img:nth-child(2) { 
+        z-index: 102;
+        transform: translateY(8px) translateX(-60px) rotate(-6deg); 
+    }
+    .images_container.deck-expanded img:nth-child(3) { 
+        z-index: 103;
+        transform: translateY(2px) translateX(-30px) rotate(-3deg); 
+    }
+    .images_container.deck-expanded img:nth-child(4) { 
+        z-index: 104;
+        transform: translateY(0px) translateX(0px) rotate(0deg); 
+    }
+    .images_container.deck-expanded img:nth-child(5) { 
+        z-index: 105;
+        transform: translateY(2px) translateX(30px) rotate(3deg); 
+    }
+    .images_container.deck-expanded img:nth-child(6) { 
+        z-index: 106;
+        transform: translateY(8px) translateX(60px) rotate(6deg); 
+    }
+    .images_container.deck-expanded img:nth-child(7) { 
+        z-index: 107;
+        transform: translateY(15px) translateX(90px) rotate(10deg); 
+    }
+    
+    .conference_cta h1 {
+        font-size: 2.2rem;
+    }
+    
+    .conference_cta p {
+        font-size: 1rem;
+        width: 30ch;
+        padding: 0 0.5rem;
+    }
+}
+
+/* Accessibility and Performance Considerations */
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .conference_hero,
+    .conference_hero::before,
+    .conference_hero::after,
+    .conference_cta,
+    .conference_cta::before,
+    .conference_cta::after {
+        animation: none !important;
+    }
+    
+    .hero_top,
+    .hero_middle,
+    .hero_bottom,
+    .conference_cta .countdown,
+    .conference_cta h1,
+    .conference_cta p,
+    .conference_cta .buy_tickets {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+    
+    .buy_tickets {
+        transition: background-color 0.2s ease, box-shadow 0.2s ease !important;
+    }
+    
+    .buy_tickets::before {
+        display: none !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .conference_cta {
+        background: linear-gradient(45deg, #000000 0%, #000000 25%, #ffffff 70%, #ffffff 100%) !important;
+    }
+    
+    .conference_cta h1,
+    .conference_cta p {
+        color: #000000 !important;
+        text-shadow: none !important;
+    }
+    
+    .countdown {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #000000 !important;
+    }
+    
+    .buy_tickets {
+        background-color: #000000 !important;
+        color: #ffffff !important;
+        border: 2px solid #ffffff !important;
+    }
+}
+
+/* Focus management for accessibility */
+.buy_tickets:focus {
+    outline: 3px solid #C3A9FF;
+    outline-offset: 2px;
+}
+
+.buy_tickets:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.buy_tickets:focus-visible {
+    outline: 3px solid #C3A9FF;
+    outline-offset: 2px;
+}
+
+/* Performance optimization for mobile devices */
+@media (max-width: 768px) {
+    .conference_cta::before {
+        animation-duration: 30s; /* Slower animation on mobile */
+    }
+    
+    .conference_cta::after {
+        animation-duration: 20s; /* Slower rotation on mobile */
+    }
+}
+
+/* Tablet responsive adjustments */
+@media (max-width: 768px) and (min-width: 481px) {
+    .conference_cta h1 {
+        font-size: 4.5rem;
+    }
+    
+    .conference_cta p {
+        font-size: 1.3rem;
+        width: 38ch;
+    }
+    
+    .conference_cta::after {
+        width: 80px;
+        height: 80px;
+        top: 12%;
+        right: 12%;
+    }
+}
