@@ -424,7 +424,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Enhanced smooth scroll for anchor links
+    // Enhanced smooth scroll for anchor links (including aubrey buttons)
     const anchorLinks = document.querySelectorAll('a[href^="#"]');
     
     anchorLinks.forEach(link => {
@@ -442,6 +442,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     top: targetPosition,
                     behavior: 'smooth'
                 });
+                
+                // Add visual feedback for aubrey buttons
+                if (this.classList.contains('aubrey_btn')) {
+                    // Add a subtle pulse effect to indicate the action
+                    this.style.transform = 'translateY(-2px) scale(0.98)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                }
             }
         });
     });

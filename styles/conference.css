@@ -10,15 +10,15 @@
     color: white !important;
 }
 
-.header .nav-link:hover {
+/* .header .nav-link:hover {
     color: white !important;
     background-color: rgba(255, 255, 255, 0.1) !important;
-}
+} */
 
-.header .nav-link.active {
+/* .header .nav-link.active {
     color: white !important;
     background-color: rgba(255, 255, 255, 0.1) !important;
-}
+} */
 
 .header .contact-btn {
     background-color: white !important;

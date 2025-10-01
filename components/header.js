@@ -1,6 +1,6 @@
 /**
  * Header Component JavaScript
- * Handles mobile menu functionality, navigation highlighting, and progress bar
+ * Handles header loading, mobile menu functionality, navigation highlighting, and progress bar
  */
 
 class HeaderComponent {
@@ -20,9 +20,157 @@ class HeaderComponent {
     init() {
         // Wait for DOM to be ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.setupHeader());
+            document.addEventListener('DOMContentLoaded', () => this.loadHeader());
         } else {
+            this.loadHeader();
+        }
+    }
+
+    async loadHeader() {
+        try {
+            // Check if we can use fetch (server environment)
+            if (window.location.protocol !== 'file:') {
+                // Load header HTML from component file
+                const response = await fetch('components/header.html');
+                const headerHTML = await response.text();
+                
+                // Find existing header or create placeholder
+                let headerElement = document.querySelector('header.header');
+                if (!headerElement) {
+                    headerElement = document.querySelector('#header-placeholder');
+                }
+                
+                if (headerElement) {
+                    // Replace with loaded header
+                    headerElement.outerHTML = headerHTML;
+                }
+            } else {
+                // Fallback for file:// protocol - create header inline
+                this.createHeaderInline();
+            }
+            
+            // Setup header functionality after loading
             this.setupHeader();
+        } catch (error) {
+            console.error('Failed to load header component:', error);
+            // Fallback to inline header creation
+            this.createHeaderInline();
+            this.setupHeader();
+        }
+    }
+
+    createHeaderInline() {
+        const headerHTML = `
+        <!-- Header Component -->
+        <header class="header">
+          <div class="header_container">
+            <a href="index.html#hero" class="header_logo">
+              <img src="logos/red/red_Red 36x36.png" alt="Hello Hope Canada Logo">
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <nav class="header_nav desktop_nav">
+              <a href="index.html#hero" class="nav-link" data-page="home">
+                <span class="nav-text">
+                  <span class="nav-text-original">Home</span>
+                  <span class="nav-text-hover">Home</span>
+                </span>
+              </a>
+              <a href="index.html#aubrey" class="nav-link" data-page="about">
+                <span class="nav-text">
+                  <span class="nav-text-original">About</span>
+                  <span class="nav-text-hover">About</span>
+                </span>
+              </a>
+              <a href="index.html#testimonials" class="nav-link" data-page="testimonials">
+                <span class="nav-text">
+                  <span class="nav-text-original">Testimonials</span>
+                  <span class="nav-text-hover">Testimonials</span>
+                </span>
+              </a>
+              <a href="index.html#programs" class="nav-link" data-page="programs">
+                <span class="nav-text">
+                  <span class="nav-text-original">Programs</span>
+                  <span class="nav-text-hover">Programs</span>
+                </span>
+              </a>
+              <a href="conference.html" class="nav-link" data-page="conference">
+                <span class="nav-text">
+                  <span class="nav-text-original">Conference</span>
+                  <span class="nav-text-hover">Conference</span>
+                </span>
+              </a>
+            </nav>
+            
+            <!-- Desktop Contact Button -->
+            <div class="contact_button desktop_contact">
+              <a href="index.html#contact" class="nav-link contact-btn">
+                <span class="nav-text">
+                  <span class="nav-text-original">Contact Us</span>
+                  <span class="nav-text-hover">Contact Us</span>
+                </span>
+              </a>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <button class="mobile_menu_button" aria-label="Toggle mobile menu" aria-expanded="false">
+              <span class="hamburger_line"></span>
+              <span class="hamburger_line"></span>
+              <span class="hamburger_line"></span>
+            </button>
+          </div>
+          
+          <!-- Mobile Navigation Menu -->
+          <nav class="mobile_nav" aria-hidden="true">
+            <div class="mobile_nav_content">
+              <a href="index.html#hero" class="mobile_nav_link" data-page="home">
+                <span class="nav-text">
+                  <span class="nav-text-original">Home</span>
+                  <span class="nav-text-hover">Home</span>
+                </span>
+              </a>
+              <a href="index.html#aubrey" class="mobile_nav_link" data-page="about">
+                <span class="nav-text">
+                  <span class="nav-text-original">About</span>
+                  <span class="nav-text-hover">About</span>
+                </span>
+              </a>
+              <a href="index.html#testimonials" class="mobile_nav_link" data-page="testimonials">
+                <span class="nav-text">
+                  <span class="nav-text-original">Testimonials</span>
+                  <span class="nav-text-hover">Testimonials</span>
+                </span>
+              </a>
+              <a href="index.html#programs" class="mobile_nav_link" data-page="programs">
+                <span class="nav-text">
+                  <span class="nav-text-original">Programs</span>
+                  <span class="nav-text-hover">Programs</span>
+                </span>
+              </a>
+              <a href="conference.html" class="mobile_nav_link" data-page="conference">
+                <span class="nav-text">
+                  <span class="nav-text-original">Conference</span>
+                  <span class="nav-text-hover">Conference</span>
+                </span>
+              </a>
+              <a href="index.html#contact" class="mobile_nav_link mobile_contact_btn">
+                <span class="nav-text">
+                  <span class="nav-text-original">Contact Us</span>
+                  <span class="nav-text-hover">Contact Us</span>
+                </span>
+              </a>
+            </div>
+          </nav>
+          
+          <div class="progress-bar">
+            <div class="progress-bar-fill"></div>
+          </div>
+        </header>
+        `;
+
+        const placeholder = document.querySelector('#header-placeholder');
+        if (placeholder) {
+            placeholder.outerHTML = headerHTML;
         }
     }
 
@@ -32,6 +180,7 @@ class HeaderComponent {
         this.setupProgressBar();
         this.setupNavigation();
         this.highlightCurrentPage();
+        this.setPageAttribute();
     }
 
     cacheElements() {
@@ -278,6 +427,25 @@ class HeaderComponent {
 
         // Initial call
         updateActiveNavLink();
+    }
+
+    setPageAttribute() {
+        // Set data-page attribute on body for CSS targeting
+        document.body.setAttribute('data-page', this.currentPage);
+        
+        // Update logo based on current page
+        this.updateLogo();
+    }
+
+    updateLogo() {
+        const logoImg = document.querySelector('.header_logo img');
+        if (logoImg) {
+            if (this.currentPage === 'conference') {
+                logoImg.src = 'logos/white/white_white 36x36 .png';
+            } else {
+                logoImg.src = 'logos/red/red_Red 36x36.png';
+            }
+        }
     }
 }
 

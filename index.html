@@ -43,51 +43,8 @@
   <meta property="twitter:image" content="logos/red/red_Red 1080 x 1080.png">
 </head>
 <body>
-  <!-- Header Component -->
-  <header class="header">
-    <div class="header_container">
-      <a href="#hero" class="header_logo">
-        <img src="logos/red/red_Red 36x36.png" alt="Hello Hope Canada Logo">
-      </a>
-      
-      <!-- Desktop Navigation -->
-      <nav class="header_nav desktop_nav">
-        <a href="#hero" class="nav-link" data-page="home">Home</a>
-        <a href="#aubrey" class="nav-link" data-page="about">About</a>
-        <a href="#testimonials" class="nav-link" data-page="testimonials">Testimonials</a>
-        <a href="#programs" class="nav-link" data-page="programs">Programs</a>
-        <a href="conference.html" class="nav-link" data-page="conference">Conference</a>
-      </nav>
-      
-      <!-- Desktop Contact Button -->
-      <div class="contact_button desktop_contact">
-        <a href="#contact" class="nav-link contact-btn">Contact Us</a>
-      </div>
-      
-      <!-- Mobile Menu Button -->
-      <button class="mobile_menu_button" aria-label="Toggle mobile menu" aria-expanded="false">
-        <span class="hamburger_line"></span>
-        <span class="hamburger_line"></span>
-        <span class="hamburger_line"></span>
-      </button>
-    </div>
-    
-    <!-- Mobile Navigation Menu -->
-    <nav class="mobile_nav" aria-hidden="true">
-      <div class="mobile_nav_content">
-        <a href="#hero" class="mobile_nav_link" data-page="home">Home</a>
-        <a href="#aubrey" class="mobile_nav_link" data-page="about">About</a>
-        <a href="#testimonials" class="mobile_nav_link" data-page="testimonials">Testimonials</a>
-        <a href="#programs" class="mobile_nav_link" data-page="programs">Programs</a>
-        <a href="conference.html" class="mobile_nav_link" data-page="conference">Conference</a>
-        <a href="#contact" class="mobile_nav_link mobile_contact_btn">Contact Us</a>
-      </div>
-    </nav>
-    
-    <div class="progress-bar">
-      <div class="progress-bar-fill"></div>
-    </div>
-  </header>
+  <!-- Header Component - Loaded dynamically -->
+  <div id="header-placeholder"></div>
     
   <section id="hero" class="hero">
     <video class="hero-video" autoplay muted loop playsinline>
@@ -97,25 +54,42 @@
   </section>
 
   <section id="aubrey" class="aubrey">
-    <div class="partners"></div>
     <div class="section_container">
       <div class="section_title">
-        <div class="section_subtitle">
+        <!-- <div class="section_subtitle">
           <div class="subtitle_header">
             <svg class="subtitle_icon" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 7V9C15 10.1 14.1 11 13 11V19C13 20.1 13.9 21 15 21H17C18.1 21 19 20.1 19 19V11C17.9 11 17 10.1 17 9ZM7 9C7 10.1 6.1 11 5 11V19C5 20.1 5.9 21 7 21H9C10.1 21 11 20.1 11 19V11C9.9 11 9 10.1 9 9V7H3V9H7Z"/>
             </svg>
             <span class="subtitle_word">SPEAKER</span>
           </div>
-        </div>
-        <h1>Meet Aubrey</h1>
-        <p class="subtitle_description">Inspiring hope through authentic storytelling and connection</p>
+        </div> -->
+        <h1><span style="color: #757575;">Welcome to </span><br>Hello Hope Canada</h1>
+        <!-- <p class="subtitle_description">Inspiring hope through authentic storytelling and connection</p> -->
       </div>
       <div class="aubrey_description">
         <img src="media/aubrey_profile.jpg" alt="" class="aubrey_image">
-        <p>Aubrey Noronha (NA-ROW-NA) is a recognized Character Education and Safe Schools Speaker who believes in the possibility of a safer and more emotionally connected school culture. Through his Hello Hope Canada programs, Aubrey seeks to instill his hope for the future into the minds and hearts of youth and caring adults. <br><br>As a child & youth counsellor and seasoned Restorative Practice facilitator, Aubrey has worked with youth, families and professionals in schools, prisons and treatment facilities for over 16 years. As a former crisis negotiator, and Critical Incident Stress Management facilitator Aubrey's expertise, passion, and candour flow through his workshops and will leave students and adults feeling encouraged and equipped to make their school and community safer one day and one decision at a time. <br><br> Aubrey is also a recording artist. He has sung duets with John Legend, Foo Fighters and Adele ... while listening to them on his headphones during his evening jog.​</p>
+        <div class="aubrey_text_area">
+          <div class="aubrey_about_us">
+              <div class="aubrey_title"><img src="/logos/pattern/Screenshot 2025-09-30 205337.png" alt="" class="pattern"><h2>About Aubrey</h2></div>
+              <p>I'm Aubrey Noronha (NA-ROW-NA), and I work with schools across Canada to help students, educators, and parents stay sensitized in a world going numb. After visiting 1,000+ schools and reaching 50,000+ students, I've seen what happens when kids stop connecting​.</p>
+          </div>
+          <div class="aubrey_about_us">
+              <div class="aubrey_title"><img src="/logos/pattern/Screenshot 2025-09-30 205337.png" alt="" class="pattern"><h2>Delivering Daily</h2></div>
+              <p>We bring real talk, the kind of presentations people quote years later. We give students, staff, parents, and communities actionable steps to transform their conversations and spaces.</p>
+          </div>
+        </div>
       </div>
-      <div class="organizations_section">
+      <div class="aubrey_buttons">
+        <a href="#contact" class="aubrey_btn book_session_btn">Book A Session</a>
+        <a href="#testimonials" class="aubrey_btn testimonials_btn">Watch What Schools Are Saying</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="partners_section">
+    <div class="section_container">
+            <div class="organizations_section">
         <h2 class="organizations_title">Aubrey Has Partnered With / Been Featured On:</h2>
         <div class="organizations_grid">
           <div class="org_logo"><img src="media/orgs/ajax.png" alt="Ajax"></div>
@@ -160,7 +134,202 @@
 
   <section class="stock_image"></section>
 
-  <section id="testimonials" class="testimonials">
+  <section id="programs" class="programs">
+    <div class="section_container">
+      <div class="section_title">
+        <div class="section_subtitle">
+          <div class="subtitle_header">
+            <img src="/logos/pattern/Screenshot 2025-09-30 205337.png" alt="" class="pattern">
+            <span class="subtitle_word">EDUCATION</span>
+          </div>
+        </div>
+        <h1>Programs</h1>
+        <p class="subtitle_description">Character-building programs designed for lasting change</p>
+      </div>
+      <div class="program_cards">
+        <div class="program_card card_1">
+          <div class="card_text">
+            <div class="program_description">
+                <h2>HELLO HOPE:
+                BATTLING LONELINESS</h2>
+                            <p>Social media promised connection, but delivered toxic comparison. Now AI is replacing friendships. This session delivers practical tools for building real human bonds that actually stick.
+</p>
+                <p class="program_versions">Duration: 60 min | Versions: Gr. 4-12, Faculty, Parents/Guardians, Corporate Teams</p>
+                <div class="button_reviews">
+                  <button class="enroll_btn" data-program="hello-hope">Learn More</button>
+                  <p><span class="star-rating">
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                  </span> Delivered to 10,000+ Participants</p>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="program_card card_2">
+          <div class="card_text">
+            <div class="program_description">
+                <h2>COLOUR BLIND? WHY BEING 'NOT RACIST' IS NOT ENOUGH</h2>
+                            <p>Good intentions don't fix systemic racism. Silence isn't neutrality. Part 1.0 explores why this fight is a matter of the heart. Part 2.0 delivers actionable steps to be the opposite of racist.</p>
+                <p class="program_versions">Duration: 60 min each | Versions: Gr. 7-12, Faculty, Sr. Admin., Parents/Guardians, Corporate Teams</p>
+                <div class="button_reviews">
+                  <button class="enroll_btn" data-program="hello-hope">Learn More</button>
+                  <p><span class="star-rating">
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                  </span>Delivered to 8,000+ Participants</p>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="program_card card_3">
+          <div class="card_text">
+            <div class="program_description">
+                <h2>STICK WITH THE TRUTH </h2>
+                            <p>Our youngest students deserve truth about skin color, the lies they'll hear, and tools to fight back. Not diluted. Not sanitized. Age-appropriate truth-telling that 8-year-olds can handle</p>
+                <p class="program_versions">Duration: 60 min each (1.0 + 2.0) | Versions: Gr. K-6</p>
+                <div class="button_reviews">
+                  <button class="enroll_btn" data-program="hello-hope">Learn More</button>
+                  <p><span class="star-rating">
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                  </span>Delivered to 5,000+ Participants</p>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="program_card card_4">
+          <div class="card_text">
+            <div class="program_description">
+                <h2>I'M JUST HERE: WHAT'S THE POINT?</h2>
+                            <p>Some kids are existing, not living. Purpose feels like a luxury when you're just surviving. Raw talk on self-identity, peer conflicts, and the secret to supreme satisfaction.</p>
+                <p class="program_versions">Duration: 60 min | Versions: Gr. 7-12</p>
+                <div class="button_reviews">
+                  <button class="enroll_btn" data-program="hello-hope">Learn More</button>
+                  <p><span class="star-rating">
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                  </span>Delivered to 7,000+ Participants</p>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="program_card card_5">
+          <div class="card_text">
+            <div class="program_description">
+                <h2>MAN UP: BEING A REAL MAN IN UNREAL TIMES</h2>
+                            <p>Boys are getting masculinity lessons from influencers. This session delivers straight conversation about male influence on culture and practical tools for using it for good.</p>
+                <p class="program_versions">Duration: 60 min | Versions: Gr. 6-12, Teams</p>
+                <div class="button_reviews">
+                  <button class="enroll_btn" data-program="hello-hope">Learn More</button>
+                  <p><span class="star-rating">
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                  </span>Delivered to 6,000+ Participants</p>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="program_card card_6">
+          <div class="card_text">
+            <div class="program_description">
+                <h2>RECONNECT</h2>
+                            <p>Teachers are exhausted. Administrators are overwhelmed. Everyone's running on empty. This one-hour recharge helps your team reconnect to what matters and reach the finish line.</p>
+                <p class="program_versions">Duration: 60 min | Versions: Educators, Administration, Special Teams</p>
+                <div class="button_reviews">
+                  <button class="enroll_btn" data-program="hello-hope">Learn More</button>
+                  <p><span class="star-rating">
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                  </span>Delivered to 3,000+ Participants</p>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stock_image2"></section>
+
+    <section id="testimonials" class="testimonials">
     <div class="section_container">
       <div class="section_title">
         <div class="section_subtitle">
@@ -234,139 +403,6 @@
       </div>
     </div>
   </section>
-
-  <section id="programs" class="programs">
-    <div class="section_container">
-      <div class="section_title">
-        <div class="section_subtitle">
-          <div class="subtitle_header">
-            <svg class="subtitle_icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M5,3H7V5H5V10A2,2 0 0,1 3,8V5A2,2 0 0,1 5,3M11,3H13V5H11V10A2,2 0 0,1 9,8V5A2,2 0 0,1 11,3M17,3H19V5H17V10A2,2 0 0,1 15,8V5A2,2 0 0,1 17,3M12,10.5C13.25,10.5 14.45,10.81 15.5,11.38L14.5,12.82C13.75,12.4 12.9,12.13 12,12.13C11.1,12.13 10.25,12.4 9.5,12.82L8.5,11.38C9.55,10.81 10.75,10.5 12,10.5M12,6A3,3 0 0,1 15,9A3,3 0 0,1 12,12A3,3 0 0,1 9,9A3,3 0 0,1 12,6M12,8A1,1 0 0,0 11,9A1,1 0 0,0 12,10A1,1 0 0,0 13,9A1,1 0 0,0 12,8Z"/>
-            </svg>
-            <span class="subtitle_word">EDUCATION</span>
-          </div>
-        </div>
-        <h1>Programs</h1>
-        <p class="subtitle_description">Character-building programs designed for lasting change</p>
-      </div>
-      <div class="program_cards">
-        <div class="program_card card_1">
-          <div class="card_text">
-            <div class="program_description">
-                <h3>HELLO HOPE:
-                BATTLING STRESS,
-                LONELINESS, AND
-                OTHER THINGS THAT
-                CAN WEIGH US DOWN.</h3>
-                            <p>This session focuses on bringing encouragement and relief
-                to participants to tackle stress and anxiety during and
-                after a pandemic. Learning components include the
-                connection between social media, empathy and the
-                health benefits of face to face interaction, and practical
-                take-aways on how to create stronger bonds with others.
-                (60 min)</p>
-                <p class="program_versions">(VERSIONS: Gr.4-6, Gr. 7-8, Gr.9-10, Gr.11-12, Faculty, Parents/Guardians, Corporate, Teams)</p>
-                <button class="enroll_btn" data-program="hello-hope">Enroll Now</button>
-            </div>
-          </div>
-        </div>
-        <div class="program_card card_2">
-          <div class="card_text">
-            <div class="program_description">
-                <h3>COLOUR BLIND?
-WHY BEING
-'NOT RACIST' IS NOT
-ENOUGH ANYMORE
-(1.0 + 2.0)</h3>
-                            <p>1.0 - focuses on why this issue of fighting racism is even
-worth our time and why it needs to be a matter of the
-heart before change can occur. (60 min)
-2.0 - goes deeper and then lays out some points of
-action where participants can start on their journey of
-addressing racism in their lives and being the opposite of
-racist. (60 min)</p>
-                <p class="program_versions">(VERSIONS: Gr.7-8, Gr.9-10, Gr.11-12, Faculty, Sr. Admin., Parents/Guardians, Corporate, Teams)</p>
-                <button class="enroll_btn" data-program="colour-blind">Enroll Now</button>
-            </div>
-          </div>
-        </div>
-        <div class="program_card card_3">
-          <div class="card_text">
-            <div class="program_description">
-                <h3>STICK WITH THE
-TRUTH
-(1.0 + 2.0)</h3>
-                            <p>1.0 - focuses on the truth about skin colour, identifies the
-reality that lies will be told about skin colour, and that
-there is one thing K-6 students can do with that truth and
-about those lies.
-2.0 - goes deeper and then lays out some points of
-action where participants can start on their journey of
-addressing racism in their lives and being the opposite of
-racist. (60 min)</p>
-                <p class="program_versions">(VERSIONS: Gr.K-3, Gr.4-6)</p>
-                <button class="enroll_btn" data-program="stick-truth">Enroll Now</button>
-            </div>
-          </div>
-        </div>
-                <div class="program_card card_4">
-          <div class="card_text">
-            <div class="program_description">
-                <h3>I'M JUST HERE:
-WHAT AM I DOING?
-WHAT'S THE POINT?
-WHERE CAN I GO?</h3>
-                            <p>"I'm just here." Some of us don't have a clue what we are
-doing, what the point is, or where we can go from here.
-Many of us are existing but not really living as we feel a
-sense of purposelessness.
-
-This raw, sincere, and encouraging talk tackles peer-
-conflicts and motivation for the future by going upstream to
-
-look at self-identity, purpose, and the "secret to supreme
-satisfaction". (60 min)</p>
-                <p class="program_versions">(VERSIONS: Gr.7-8 · Gr.9-10 · Gr.11-12 )</p>
-                <button class="enroll_btn" data-program="just-here">Enroll Now</button>
-            </div>
-          </div>
-        </div>
-                <div class="program_card card_5">
-          <div class="card_text">
-            <div class="program_description">
-                <h3>MAN UP:
-BEING A REAL MAN
-IN UNREAL TIMES</h3>
-                            <p>A no-joke conversation about the reality of the male
-influence on culture, the opportunity to use that influence
-for good, and practical tools to do it solo or with a
-squad. (60 min)</p>
-                <p class="program_versions">(VERSIONS: Gr.6-8 · Gr.9-10 · Gr.11-12 · Teams)</p>
-                <button class="enroll_btn" data-program="man-up">Enroll Now</button>
-            </div>
-          </div>
-        </div>
-                <div class="program_card card_6">
-          <div class="card_text">
-            <div class="program_description">
-                <h3>RECONNECT:</h3>
-                            <p>This one-hour recharge will uplift your team of
-professionals including principals, senior administrators,
-teachers, and other educational support staff. It's easy to
-think about what matters most once in a while, but to
-reconnect to what's important again and again will help
-us reach the finish line. (60 min)</p>
-                <p class="program_versions">(VERSIONS: Educators · Administration · Special Teams)</p>
-                <button class="enroll_btn" data-program="reconnect">Enroll Now</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-    <section class="stock_image2"></section>
-
 
   <section id="contact" class="contact">
     <div class="section_container">

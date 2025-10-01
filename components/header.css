@@ -61,7 +61,7 @@
 }
 
 .mobile_menu_button:focus {
-  outline: 2px solid var(--primary-color);
+  outline: 2px solid var(#C3A9FF);
   outline-offset: 2px;
 }
 
@@ -121,13 +121,50 @@
   font-weight: 500;
   font-size: 1.1rem;
   border-bottom: 1px solid #f5f5f5;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease;
   display: block;
+  overflow: hidden;
+}
+
+/* Mobile Navigation Text Animation */
+.mobile_nav_link .nav-text {
+  position: relative;
+  display: inline-block;
+  height: 1.5em;
+  overflow: hidden;
+}
+
+.mobile_nav_link .nav-text-original,
+.mobile_nav_link .nav-text-hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+.mobile_nav_link .nav-text-original {
+  position: relative;
+  transform: translateY(0);
+  color: inherit;
+}
+
+.mobile_nav_link .nav-text-hover {
+  transform: translateY(100%);
+  color: var(--primary-color);
+}
+
+.mobile_nav_link:hover .nav-text-original {
+  transform: translateY(-100%);
+}
+
+.mobile_nav_link:hover .nav-text-hover {
+  transform: translateY(0);
 }
 
 .mobile_nav_link:hover {
   background-color: rgba(190, 30, 45, 0.05);
-  color: var(--primary-color);
 }
 
 .mobile_nav_link:last-child {
@@ -145,8 +182,18 @@
   border-bottom: none !important;
 }
 
+.mobile_contact_btn .nav-text-original,
+.mobile_contact_btn .nav-text-hover {
+  color: white !important;
+}
+
 .mobile_contact_btn:hover {
   background-color: #a01a26;
+  color: white !important;
+}
+
+.mobile_contact_btn:hover .nav-text-original,
+.mobile_contact_btn:hover .nav-text-hover {
   color: white !important;
 }
 
@@ -166,19 +213,70 @@
   color: var(--text-primary);
   font-weight: 500;
   border-radius: 5px;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease;
   position: relative;
+  overflow: hidden;
 }
 
-.nav-link:hover {
-  color: var(--primary-color);
-  background-color: rgba(190, 30, 45, 0.1);
+/* Text Animation Container */
+.nav-text {
+  position: relative;
+  display: inline-block;
+  height: 1.5em;
+  overflow: hidden;
 }
+
+.contact_button .nav-text {
+  position: relative;
+  display: inline-block;
+  height: 1.2rem;
+  overflow: hidden;
+}
+
+.nav-text-original,
+.nav-text-hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+.nav-text-original {
+  position: relative;
+  transform: translateY(0);
+  color: inherit;
+}
+
+.nav-text-hover {
+  transform: translateY(100%);
+  color: var(--primary-color);
+}
+
+.nav-link:hover .nav-text-original {
+  transform: translateY(-100%);
+}
+
+.nav-link:hover .nav-text-hover {
+  transform: translateY(0);
+}
+
+/* .nav-link:hover {
+  background-color: rgba(190, 30, 45, 0.1);
+} */
 
 .nav-link.active {
-  color: var(--primary-color);
-  background-color: rgba(190, 30, 45, 0.1);
+  /* background-color: rgba(190, 30, 45, 0.1); */
   font-weight: 600;
+}
+
+.nav-link.active .nav-text-original {
+  color: var(--primary-color);
+}
+
+.nav-link.active .nav-text-hover {
+  color: var(--primary-color);
 }
 
 .contact_button {
@@ -196,6 +294,11 @@
   box-shadow: 0 2px 8px rgba(190, 30, 45, 0.2);
 }
 
+.contact-btn .nav-text-original,
+.contact-btn .nav-text-hover {
+  color: white !important;
+}
+
 .contact-btn:hover {
   background-color: #a01a26;
   color: white !important;
@@ -203,11 +306,21 @@
   box-shadow: 0 4px 12px rgba(190, 30, 45, 0.3);
 }
 
+.contact-btn:hover .nav-text-original,
+.contact-btn:hover .nav-text-hover {
+  color: white !important;
+}
+
 .contact-btn.active {
   background-color: #a01a26;
   color: white !important;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(190, 30, 45, 0.3);
+}
+
+.contact-btn.active .nav-text-original,
+.contact-btn.active .nav-text-hover {
+  color: white !important;
 }
 
 .contact-btn.active::after {
@@ -308,4 +421,74 @@
   .header_container {
     padding: 0 0.25rem;
   }
+}
+
+/* Conference Page Specific Styles */
+body[data-page="conference"] .nav-text-hover,
+body[data-page="conference"] .mobile_nav_link .nav-text-hover {
+  color: #C3A9FF;
+}
+
+body[data-page="conference"] .nav-link.active .nav-text-original,
+body[data-page="conference"] .nav-link.active .nav-text-hover {
+  color: #C3A9FF;
+}
+
+/* Conference Page Contact Button */
+body[data-page="conference"] .contact-btn {
+  background-color: transparent;
+  color: #333333 !important;
+  border: 2px solid #333333;
+  box-shadow: 0 2px 8px rgba(51, 51, 51, 0.2);
+}
+
+body[data-page="conference"] .contact-btn .nav-text-original,
+body[data-page="conference"] .contact-btn .nav-text-hover {
+  color: #333333 !important;
+}
+
+body[data-page="conference"] .contact-btn:hover {
+  background-color: transparent;
+  color: #C3A9FF !important;
+  border-color: #C3A9FF;
+  box-shadow: 0 4px 12px rgba(195, 169, 255, 0.3);
+}
+
+body[data-page="conference"] .contact-btn:hover .nav-text-original,
+body[data-page="conference"] .contact-btn:hover .nav-text-hover {
+  color: #C3A9FF !important;
+}
+
+body[data-page="conference"] .contact-btn.active {
+  background-color: transparent;
+  color: #C3A9FF !important;
+  border-color: #C3A9FF;
+  box-shadow: 0 4px 12px rgba(195, 169, 255, 0.3);
+}
+
+body[data-page="conference"] .contact-btn.active .nav-text-original,
+body[data-page="conference"] .contact-btn.active .nav-text-hover {
+  color: #C3A9FF !important;
+}
+
+body[data-page="conference"] .mobile_contact_btn {
+  background-color: transparent;
+  color: #333333 !important;
+  border: 2px solid #333333;
+}
+
+body[data-page="conference"] .mobile_contact_btn .nav-text-original,
+body[data-page="conference"] .mobile_contact_btn .nav-text-hover {
+  color: #333333 !important;
+}
+
+body[data-page="conference"] .mobile_contact_btn:hover {
+  background-color: transparent;
+  color: #C3A9FF !important;
+  border-color: #C3A9FF;
+}
+
+body[data-page="conference"] .mobile_contact_btn:hover .nav-text-original,
+body[data-page="conference"] .mobile_contact_btn:hover .nav-text-hover {
+  color: #C3A9FF !important;
 }
