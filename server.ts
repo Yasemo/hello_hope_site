@@ -12,7 +12,7 @@ const SMTP_CONFIG = {
   password: Deno.env.get("SMTP_PASSWORD") || "",
 };
 
-const RECIPIENT_EMAIL = "yaseen@rep.company";
+const RECIPIENT_EMAIL = "aubrey@hellohope.ca";
 
 // Simple email sending function
 async function sendEmail(formData: any) {

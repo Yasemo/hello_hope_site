@@ -61,7 +61,7 @@
 }
 
 .mobile_menu_button:focus {
-  outline: 2px solid var(#C3A9FF);
+  outline: 2px solid var(#FED14D);
   outline-offset: 2px;
 }
 
@@ -426,12 +426,12 @@
 /* Conference Page Specific Styles */
 body[data-page="conference"] .nav-text-hover,
 body[data-page="conference"] .mobile_nav_link .nav-text-hover {
-  color: #C3A9FF;
+  color: #FED14D;
 }
 
 body[data-page="conference"] .nav-link.active .nav-text-original,
 body[data-page="conference"] .nav-link.active .nav-text-hover {
-  color: #C3A9FF;
+  color: #FED14D;
 }
 
 /* Conference Page Contact Button */
@@ -449,26 +449,26 @@ body[data-page="conference"] .contact-btn .nav-text-hover {
 
 body[data-page="conference"] .contact-btn:hover {
   background-color: transparent;
-  color: #C3A9FF !important;
-  border-color: #C3A9FF;
+  color: #FED14D !important;
+  border-color: #FED14D;
   box-shadow: 0 4px 12px rgba(195, 169, 255, 0.3);
 }
 
 body[data-page="conference"] .contact-btn:hover .nav-text-original,
 body[data-page="conference"] .contact-btn:hover .nav-text-hover {
-  color: #C3A9FF !important;
+  color: #FED14D !important;
 }
 
 body[data-page="conference"] .contact-btn.active {
   background-color: transparent;
-  color: #C3A9FF !important;
-  border-color: #C3A9FF;
+  color: #FED14D !important;
+  border-color: #FED14D;
   box-shadow: 0 4px 12px rgba(195, 169, 255, 0.3);
 }
 
 body[data-page="conference"] .contact-btn.active .nav-text-original,
 body[data-page="conference"] .contact-btn.active .nav-text-hover {
-  color: #C3A9FF !important;
+  color: #FED14D !important;
 }
 
 body[data-page="conference"] .mobile_contact_btn {
@@ -484,11 +484,11 @@ body[data-page="conference"] .mobile_contact_btn .nav-text-hover {
 
 body[data-page="conference"] .mobile_contact_btn:hover {
   background-color: transparent;
-  color: #C3A9FF !important;
-  border-color: #C3A9FF;
+  color: #FED14D !important;
+  border-color: #FED14D;
 }
 
 body[data-page="conference"] .mobile_contact_btn:hover .nav-text-original,
 body[data-page="conference"] .mobile_contact_btn:hover .nav-text-hover {
-  color: #C3A9FF !important;
+  color: #FED14D !important;
 }

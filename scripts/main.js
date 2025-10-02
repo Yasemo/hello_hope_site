@@ -183,21 +183,44 @@ document.addEventListener('DOMContentLoaded', function() {
     aboutObserver.observe(aboutSection);
 });
 
+// Buy Tickets Button Scroll Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const buyTicketsButtons = document.querySelectorAll('.buy_tickets');
+    const ctaSection = document.querySelector('.conference_cta');
+
+    if (buyTicketsButtons.length > 0 && ctaSection) {
+        buyTicketsButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // Scroll to the conference_cta section
+                const headerHeight = 70; // Account for fixed header
+                const targetPosition = ctaSection.offsetTop - headerHeight;
+
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    }
+});
+
 // Conference CTA Animation
 document.addEventListener('DOMContentLoaded', function() {
     const ctaSection = document.querySelector('.conference_cta');
-    
+
     if (!ctaSection) return;
-    
+
     // Check for reduced motion preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    
+
     // Create intersection observer for CTA section
     const ctaObserverOptions = {
         threshold: 0.3, // Trigger when 30% of the section is visible
         rootMargin: '0px 0px -50px 0px' // Trigger slightly before the section is fully in view
     };
-    
+
     const ctaObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -215,13 +238,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         el.style.transform = 'translateY(0)';
                     });
                 }
-                
+
                 // Stop observing after animation is triggered
                 ctaObserver.unobserve(entry.target);
             }
         });
     }, ctaObserverOptions);
-    
+
     // Start observing the CTA section
     ctaObserver.observe(ctaSection);
     
@@ -658,12 +681,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     organization: data.organization || 'Not provided',
                     program: getProgramDisplayName(data.program),
                     message: data.message,
-                    to_email: 'yaseen@rep.company'
+                    to_email: 'aubrey@hellohope.ca'
                 };
 
                 // Send email using EmailJS
                 const response = await emailjs.send(
-                    'service_ct4ha7h',    // Service ID
+                    'service_cwkriuo',    // Service ID
                     'template_pwq5jhb',   // Template ID
                     templateParams
                 );
