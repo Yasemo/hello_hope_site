@@ -649,9 +649,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Form submission using EmailJS
         contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            
+
             const validation = validateForm();
-            
+
             if (!validation.isValid) {
                 showErrors(validation.errors);
                 return;
@@ -668,11 +668,15 @@ document.addEventListener('DOMContentLoaded', function() {
             // Submit form using EmailJS
             const submitBtn = contactForm.querySelector('.submit_btn');
             const originalText = submitBtn.textContent;
-            
+
             submitBtn.textContent = 'Sending...';
             submitBtn.disabled = true;
 
             try {
+                // Load EmailJS configuration from server
+                const configResponse = await fetch('/api/config');
+                const config = await configResponse.json();
+
                 // Prepare template parameters for EmailJS
                 const templateParams = {
                     from_name: data.name,
@@ -684,10 +688,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     to_email: 'aubrey@hellohope.ca'
                 };
 
-                // Send email using EmailJS
+                // Send email using EmailJS with dynamic configuration
                 const response = await emailjs.send(
-                    'service_cwkriuo',    // Service ID
-                    'template_pwq5jhb',   // Template ID
+                    config.emailjs.serviceId,
+                    config.emailjs.templateId,
                     templateParams
                 );
 
@@ -696,14 +700,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (response.status === 200) {
                     // Reset form
                     contactForm.reset();
-                    
+
                     // Show success message
                     showSuccess('Thank you for your message! We will get back to you within 24-48 hours.');
                 } else {
                     // Show error message
                     showErrors(['Sorry, there was an error sending your message. Please try again.']);
                 }
-                
+
             } catch (error) {
                 console.error('EmailJS error:', error);
                 showErrors(['Sorry, there was an error sending your message. Please check your internet connection and try again.']);

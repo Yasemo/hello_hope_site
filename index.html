@@ -522,7 +522,7 @@
           <a href="#aubrey" class="footer_link">About Aubrey</a>
           <a href="#testimonials" class="footer_link">Testimonials</a>
           <a href="#programs" class="footer_link">Programs</a>
-          <a href="conference.html" class="footer_link">Conference</a>
+          <a href="/conference" class="footer_link">Conference</a>
           <a href="#contact" class="footer_link">Contact</a>
         </nav>
       </div>
@@ -587,9 +587,17 @@
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script type="text/javascript">
     (function(){
-      emailjs.init({
-        publicKey: "CpW61Z-YgvGI1LIxY",
-      });
+      // Load EmailJS configuration from server
+      fetch('/api/config')
+        .then(response => response.json())
+        .then(config => {
+          emailjs.init({
+            publicKey: config.emailjs.publicKey,
+          });
+        })
+        .catch(error => {
+          console.error('Failed to load EmailJS configuration:', error);
+        });
     })();
   </script>
   

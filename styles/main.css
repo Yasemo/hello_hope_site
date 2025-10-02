@@ -364,7 +364,7 @@ p {
   }
   
   .aubrey .section_title h1 {
-    font-size: 3rem;
+    font-size: 4rem;
     line-height: 1.0;
     margin: 1.5rem 0 0 0;
   }
@@ -702,7 +702,6 @@ p {
   justify-content: center;
   align-items: center;
   margin: 5rem 0 2rem 0;
-  flex-wrap: wrap;
 }
 
 .call_us,
@@ -899,7 +898,7 @@ p {
 
 @media (max-width: 480px) {
   .testimonials .section_title h1 {
-    font-size: 4.7rem;
+    font-size: 4rem;
   }
 
   .testimonial_card {
@@ -1387,11 +1386,22 @@ p {
 
 @media (max-width: 480px) {
   .contact .section_title h1 {
-    font-size: 4.7rem;
+    font-size: 4rem;
   }
 
   .contact_form_container {
     padding: 1rem 0.5rem;
+  }
+
+    .contact_methods {
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 400px) {
+    .contact_methods {
+    flex-wrap: wrap;
   }
 }
 
@@ -1789,7 +1799,7 @@ p {
   }
   
   .section_title h1 {
-    font-size: 5rem;
+    font-size: 4rem;
     margin: 0 0 2rem 0;
   }
   

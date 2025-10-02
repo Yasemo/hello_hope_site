@@ -14,6 +14,15 @@ const SMTP_CONFIG = {
 
 const RECIPIENT_EMAIL = "aubrey@hellohope.ca";
 
+// Client configuration (safe to expose to frontend)
+const CLIENT_CONFIG = {
+  emailjs: {
+    publicKey: Deno.env.get("EMAILJS_PUBLIC_KEY") || "",
+    serviceId: Deno.env.get("EMAILJS_SERVICE_ID") || "",
+    templateId: Deno.env.get("EMAILJS_TEMPLATE_ID") || "",
+  },
+};
+
 // Simple email sending function
 async function sendEmail(formData: any) {
   try {
@@ -54,7 +63,21 @@ Submitted at: ${new Date().toLocaleString()}
 // Handle API requests
 async function handleApiRequest(req: Request): Promise<Response> {
   const url = new URL(req.url);
-  
+
+  // Serve client configuration
+  if (url.pathname === "/api/config" && req.method === "GET") {
+    return new Response(
+      JSON.stringify(CLIENT_CONFIG),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*"
+        }
+      }
+    );
+  }
+
   if (url.pathname === "/api/contact" && req.method === "POST") {
     try {
       const formData = await req.json();
@@ -142,13 +165,44 @@ async function handleApiRequest(req: Request): Promise<Response> {
 serve(
   async (req) => {
     const url = new URL(req.url);
-    
+
     // Handle API requests
     if (url.pathname.startsWith("/api/")) {
       return await handleApiRequest(req);
     }
-    
-    // Serve static files
+
+    // Route handling
+    if (url.pathname === "/" || url.pathname === "/home") {
+      // Serve index.html for home page
+      try {
+        const file = await Deno.readFile("./index.html");
+        return new Response(file, {
+          headers: {
+            "Content-Type": "text/html",
+            "Cache-Control": "no-cache",
+          },
+        });
+      } catch {
+        return new Response("Home page not found", { status: 404 });
+      }
+    }
+
+    if (url.pathname === "/conference") {
+      // Serve conference.html for conference page
+      try {
+        const file = await Deno.readFile("./conference.html");
+        return new Response(file, {
+          headers: {
+            "Content-Type": "text/html",
+            "Cache-Control": "no-cache",
+          },
+        });
+      } catch {
+        return new Response("Conference page not found", { status: 404 });
+      }
+    }
+
+    // Serve static files for other routes
     return serveDir(req, {
       fsRoot: ".",
       urlRoot: "",
