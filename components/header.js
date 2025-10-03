@@ -104,7 +104,7 @@ class HeaderComponent {
 
             <!-- Desktop Contact Button -->
             <div class="contact_button desktop_contact">
-              <a href="/#contact" class="nav-link contact-btn">
+              <a href="/contact" class="nav-link contact-btn">
                 <span class="nav-text">
                   <span class="nav-text-original">Contact Us</span>
                   <span class="nav-text-hover">Contact Us</span>
@@ -153,7 +153,7 @@ class HeaderComponent {
                   <span class="nav-text-hover">Conference</span>
                 </span>
               </a>
-              <a href="/#contact" class="mobile_nav_link mobile_contact_btn">
+              <a href="/contact" class="mobile_nav_link mobile_contact_btn">
                 <span class="nav-text">
                   <span class="nav-text-original">Contact Us</span>
                   <span class="nav-text-hover">Contact Us</span>

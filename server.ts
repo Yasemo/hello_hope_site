@@ -202,6 +202,21 @@ serve(
       }
     }
 
+    if (url.pathname === "/contact") {
+      // Serve contact.html for contact page
+      try {
+        const file = await Deno.readFile("./contact.html");
+        return new Response(file, {
+          headers: {
+            "Content-Type": "text/html",
+            "Cache-Control": "no-cache",
+          },
+        });
+      } catch {
+        return new Response("Contact page not found", { status: 404 });
+      }
+    }
+
     // Serve static files for other routes
     return serveDir(req, {
       fsRoot: ".",
