@@ -206,6 +206,107 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Aubrey Stats Counter Animation
+document.addEventListener('DOMContentLoaded', function() {
+    const statsSection = document.querySelector('.aubrey_stats');
+    
+    if (!statsSection) return;
+    
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    let hasAnimated = false;
+    
+    // Format number based on the target value
+    function formatNumber(num, target) {
+        if (target === 1000) {
+            return num.toLocaleString(); // "1,000"
+        } else if (target === 50000) {
+            return num.toLocaleString() + '+'; // "50,000+"
+        } else if (target === 95) {
+            return Math.floor(num) + '%'; // "95%"
+        }
+        return num.toString();
+    }
+    
+    // Easing function for smooth animation
+    function easeOutQuart(t) {
+        return 1 - Math.pow(1 - t, 4);
+    }
+    
+    // Animate a single counter
+    function animateCounter(element, target, duration = 2000) {
+        const startTime = performance.now();
+        
+        function updateCounter(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // Apply easing
+            const easedProgress = easeOutQuart(progress);
+            const current = Math.floor(easedProgress * target);
+            
+            element.textContent = formatNumber(current, target);
+            
+            if (progress < 1) {
+                requestAnimationFrame(updateCounter);
+            } else {
+                // Ensure final value is set correctly
+                element.textContent = formatNumber(target, target);
+            }
+        }
+        
+        requestAnimationFrame(updateCounter);
+    }
+    
+    // Intersection Observer to trigger animation
+    const observerOptions = {
+        threshold: 0.5, // Trigger when 50% of the section is visible
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !hasAnimated) {
+                hasAnimated = true;
+                
+                // Get all stat boxes and stat number elements
+                const statBoxes = document.querySelectorAll('.stat_box');
+                const statNumbers = document.querySelectorAll('.stat_number');
+                
+                // Add fade-in class to all stat boxes with staggered delay
+                statBoxes.forEach((box, index) => {
+                    setTimeout(() => {
+                        box.classList.add('fade-in');
+                    }, index * 100); // 100ms stagger between boxes
+                });
+                
+                if (prefersReducedMotion) {
+                    // For users who prefer reduced motion, show final values immediately
+                    statNumbers.forEach(stat => {
+                        const target = parseInt(stat.getAttribute('data-target'));
+                        stat.textContent = formatNumber(target, target);
+                    });
+                } else {
+                    // Animate each counter with a slight delay between them
+                    statNumbers.forEach((stat, index) => {
+                        const target = parseInt(stat.getAttribute('data-target'));
+                        setTimeout(() => {
+                            animateCounter(stat, target);
+                        }, index * 150 + 300); // Start counters after fade-in begins
+                    });
+                }
+                
+                // Stop observing after animation
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    
+    // Start observing the stats section
+    observer.observe(statsSection);
+});
+
 // Conference CTA Animation
 document.addEventListener('DOMContentLoaded', function() {
     const ctaSection = document.querySelector('.conference_cta');

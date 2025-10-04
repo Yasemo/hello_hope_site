@@ -277,6 +277,58 @@ p {
   /* box-shadow: 0 0 0 3px rgba(190, 30, 45, 0.3); */
 }
 
+/* Aubrey Stats Section */
+.aubrey_stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  width: 100%;
+  margin: 3rem 0 2rem 0;
+}
+
+.stat_box {
+  background-image: url('../logos/pattern/light_gray_hello_hope_patterns.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: 1px solid #ececec;
+  border-radius: 10px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 180px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.stat_box.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stat_number {
+  font-family: var(--font-primary);
+  font-size: 4.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  line-height: 1;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.stat_label {
+  font-family: var(--font-primary);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+  max-width: 250px;
+}
+
 /* Aubrey Section Media Queries */
 @media (max-width: 1028px) {
     .aubrey .section_title h1 {
@@ -290,6 +342,26 @@ p {
   }
 }
 
+@media (max-width: 768px) {
+  .aubrey_stats {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin: 2rem 0 1.5rem 0;
+  }
+
+  .stat_box {
+    min-height: 150px;
+    padding: 2rem 1.5rem;
+  }
+
+  .stat_number {
+    font-size: 3.5rem;
+  }
+
+  .stat_label {
+    font-size: 1.1rem;
+  }
+}
 
 @media (max-width: 767px) {
 
