@@ -1,7 +1,7 @@
 {
   "tasks": {
-    "dev": "deno run -A --watch server.ts",
-    "start": "deno run -A server.ts"
+    "dev": "deno run -A --watch --env=.env server.ts",
+    "start": "deno run -A --env=.env server.ts"
   },
   "imports": {
     "std/": "https://deno.land/std@0.208.0/"

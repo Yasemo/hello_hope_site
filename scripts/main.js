@@ -70,7 +70,67 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (index === 1) {
                 document.querySelector('.day2_events').classList.add('active');
             }
+            
+            // Trigger animation for newly visible events
+            setTimeout(() => {
+                animateVisibleEvents();
+            }, 100);
         });
+    });
+    
+    // Function to animate events that are currently visible
+    function animateVisibleEvents() {
+        const events = document.querySelectorAll('.event');
+        
+        events.forEach((event, index) => {
+            // Check if event is in an active container
+            const parentContainer = event.closest('.day1_events, .day2_events');
+            if (parentContainer && parentContainer.classList.contains('active')) {
+                // Add staggered animation
+                setTimeout(() => {
+                    event.classList.add('animate-in');
+                }, index * 100); // 100ms delay between each event
+            }
+        });
+    }
+    
+    // Animate events in the initially active tab
+    setTimeout(() => {
+        animateVisibleEvents();
+    }, 300);
+});
+
+// Event Scroll Animation
+document.addEventListener('DOMContentLoaded', function() {
+    const events = document.querySelectorAll('.event');
+    
+    if (events.length === 0) return;
+    
+    // Create intersection observer for events
+    const eventObserverOptions = {
+        threshold: 0.3, // Trigger when 30% of the event is visible
+        rootMargin: '0px 0px -80px 0px'
+    };
+    
+    const eventObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                // Check if the event is in an active day container
+                const parentContainer = entry.target.closest('.day1_events, .day2_events');
+                if (parentContainer && parentContainer.classList.contains('active')) {
+                    // Animate immediately as it scrolls into view
+                    entry.target.classList.add('animate-in');
+                    
+                    // Stop observing this event after animation
+                    eventObserver.unobserve(entry.target);
+                }
+            }
+        });
+    }, eventObserverOptions);
+    
+    // Start observing each event
+    events.forEach(event => {
+        eventObserver.observe(event);
     });
 });
 
@@ -117,21 +177,57 @@ document.addEventListener('DOMContentLoaded', function() {
     sectionObserver.observe(anEventForSection);
 });
 
-// Conference Hero Page Load Animation
+// Conference Hero Page Load Animation with Sequential Title Words
 document.addEventListener('DOMContentLoaded', function() {
     const heroSection = document.querySelector('.conference_hero');
+    const heroTitle = document.querySelector('.hero_middle h1');
     
-    if (!heroSection) return;
+    if (!heroSection || !heroTitle) return;
     
     // Check for reduced motion preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
+    // Split title into word spans for sequential animation
+    const titleText = heroTitle.innerHTML;
+    const words = titleText.split('<br>');
+    
+    // Create spans for each word
+    heroTitle.innerHTML = '';
+    words.forEach((word, index) => {
+        const span = document.createElement('span');
+        span.className = `hero-word hero-word-${index + 1}`;
+        span.innerHTML = word;
+        heroTitle.appendChild(span);
+        
+        // Add line break after first and second word
+        if (index < words.length - 1) {
+            heroTitle.appendChild(document.createElement('br'));
+        }
+    });
+    
     // Trigger hero animations after page load
     if (!prefersReducedMotion) {
-        // Small delay to ensure page is fully loaded
+        // Add loaded class to trigger background and overlay animations
         setTimeout(() => {
             heroSection.classList.add('loaded');
-        }, 300);
+        }, 100);
+        
+        // Sequential word animations - each word completes before next starts
+        // "STAY" from left starts at 0.6s, takes 1.6s (completes at 2.2s)
+        setTimeout(() => {
+            document.querySelector('.hero-word-1')?.classList.add('animate-in');
+        }, 600);
+        
+        // "SENSITIZED" from right starts after STAY completes (2.2s), takes 1.6s (completes at 3.8s)
+        setTimeout(() => {
+            document.querySelector('.hero-word-2')?.classList.add('animate-in');
+        }, 2200);
+        
+        // "CONFERENCE" fade in starts after SENSITIZED completes (3.8s), takes 0.6s
+        setTimeout(() => {
+            document.querySelector('.hero-word-3')?.classList.add('animate-in');
+        }, 3800);
+        
     } else {
         // For users who prefer reduced motion, show content immediately
         heroSection.classList.add('loaded');
@@ -140,15 +236,19 @@ document.addEventListener('DOMContentLoaded', function() {
             el.style.opacity = '1';
             el.style.transform = 'translateY(0)';
         });
+        document.querySelectorAll('.hero-word').forEach(word => {
+            word.style.opacity = '1';
+            word.style.transform = 'translateX(0)';
+        });
     }
 });
 
 // Conference About Image Animation
 document.addEventListener('DOMContentLoaded', function() {
     const aboutSection = document.querySelector('.conference_about');
-    const aboutImage = document.querySelector('.conference_about img');
+    const aboutImageWrapper = document.querySelector('.about-image-wrapper');
     
-    if (!aboutSection || !aboutImage) return;
+    if (!aboutSection || !aboutImageWrapper) return;
     
     // Check for reduced motion preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -162,15 +262,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const aboutObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                // Add animation class to trigger the slide-in animation
+                // Add animation class to trigger the overlay reveal animation
                 if (!prefersReducedMotion) {
                     setTimeout(() => {
-                        aboutImage.classList.add('animate-in');
+                        aboutImageWrapper.classList.add('animate-in');
                     }, 300); // Small delay for better visual effect
                 } else {
-                    // For users who prefer reduced motion, just show image immediately
-                    aboutImage.style.opacity = '1';
-                    aboutImage.style.transform = 'translateX(0)';
+                    // For users who prefer reduced motion, remove overlay immediately
+                    aboutImageWrapper.classList.add('animate-in');
                 }
                 
                 // Stop observing after animation is triggered
@@ -379,6 +478,311 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Throttled scroll listener for parallax effect
     window.addEventListener('scroll', requestParallaxUpdate, { passive: true });
+});
+
+// Speaker Cards Scroll Animation
+document.addEventListener('DOMContentLoaded', function() {
+    const proCards = document.querySelectorAll('.pro');
+
+    if (proCards.length === 0) return;
+
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Create intersection observer for speaker cards
+    const proObserverOptions = {
+        threshold: 0.2, // Trigger when 20% of the card is visible
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const proObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                // Add slight stagger for visual appeal
+                if (!prefersReducedMotion) {
+                    setTimeout(() => {
+                        entry.target.classList.add('animate-in');
+                    }, index * 100); // Stagger by 100ms
+                } else {
+                    // For users who prefer reduced motion, just show immediately
+                    entry.target.classList.add('animate-in');
+                }
+
+                // Stop observing this card after animation
+                proObserver.unobserve(entry.target);
+            }
+        });
+    }, proObserverOptions);
+
+    // Start observing each speaker card
+    proCards.forEach(card => {
+        proObserver.observe(card);
+    });
+});
+
+// Core Outcomes Cards Scroll Animation
+document.addEventListener('DOMContentLoaded', function() {
+    const outcomeCards = document.querySelectorAll('.outcome_card');
+
+    if (outcomeCards.length === 0) return;
+
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Create intersection observer for outcome cards
+    const outcomeObserverOptions = {
+        threshold: 0.2, // Trigger when 20% of the card is visible
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const outcomeObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                // Add staggered animation for visual appeal
+                if (!prefersReducedMotion) {
+                    setTimeout(() => {
+                        entry.target.classList.add('animate-in');
+                    }, index * 150); // Stagger by 150ms between cards
+                } else {
+                    // For users who prefer reduced motion, just show immediately
+                    entry.target.classList.add('animate-in');
+                }
+
+                // Stop observing this card after animation
+                outcomeObserver.unobserve(entry.target);
+            }
+        });
+    }, outcomeObserverOptions);
+
+    // Start observing each outcome card
+    outcomeCards.forEach(card => {
+        outcomeObserver.observe(card);
+    });
+});
+
+// Venue Cards Scroll Animation
+document.addEventListener('DOMContentLoaded', function() {
+    const venueCards = document.querySelectorAll('.venue_card');
+
+    if (venueCards.length === 0) return;
+
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Create intersection observer for venue cards
+    const venueObserverOptions = {
+        threshold: 0.2,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const venueObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                if (!prefersReducedMotion) {
+                    setTimeout(() => {
+                        entry.target.classList.add('animate-in');
+                    }, index * 150);
+                } else {
+                    entry.target.classList.add('animate-in');
+                }
+
+                venueObserver.unobserve(entry.target);
+            }
+        });
+    }, venueObserverOptions);
+
+    venueCards.forEach(card => {
+        venueObserver.observe(card);
+    });
+});
+
+// FAQ Accordion Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const faqItems = document.querySelectorAll('.faq_item');
+    const faqQuestions = document.querySelectorAll('.faq_question');
+
+    if (faqQuestions.length === 0) return;
+
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Toggle FAQ answer
+    faqQuestions.forEach(question => {
+        question.addEventListener('click', function() {
+            const faqItem = this.parentElement;
+            const answer = faqItem.querySelector('.faq_answer');
+            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+
+            // Toggle aria-expanded attribute
+            this.setAttribute('aria-expanded', !isExpanded);
+
+            // Toggle answer visibility
+            if (isExpanded) {
+                answer.classList.remove('active');
+            } else {
+                answer.classList.add('active');
+            }
+        });
+
+        // Keyboard accessibility - Enter and Space keys
+        question.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.click();
+            }
+        });
+    });
+
+    // Scroll animation for FAQ items
+    const faqObserverOptions = {
+        threshold: 0.2,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const faqObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                if (!prefersReducedMotion) {
+                    setTimeout(() => {
+                        entry.target.classList.add('animate-in');
+                    }, index * 100);
+                } else {
+                    entry.target.classList.add('animate-in');
+                }
+
+                faqObserver.unobserve(entry.target);
+            }
+        });
+    }, faqObserverOptions);
+
+    faqItems.forEach(item => {
+        faqObserver.observe(item);
+    });
+});
+
+// Speaker Modal Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('speakerModal');
+    const modalOverlay = document.querySelector('.modal-overlay');
+    const modalClose = document.querySelector('.modal-close');
+    const speakerCards = document.querySelectorAll('.pro');
+    const body = document.body;
+
+    if (!modal || speakerCards.length === 0) return;
+
+    // Open modal function
+    function openModal(speakerData) {
+        // Populate modal with speaker data
+        document.getElementById('modalImage').src = speakerData.image;
+        document.getElementById('modalImage').alt = speakerData.name;
+        document.getElementById('modalSpeakerName').textContent = speakerData.name;
+        document.getElementById('modalSpeakerTitle').textContent = speakerData.title;
+        document.getElementById('modalBio').textContent = speakerData.bio;
+
+        // Set social media links
+        document.getElementById('modalLinkedin').href = speakerData.linkedin;
+        document.getElementById('modalFacebook').href = speakerData.facebook;
+        document.getElementById('modalInstagram').href = speakerData.instagram;
+
+        // Show modal
+        modal.classList.add('active');
+        modal.setAttribute('aria-hidden', 'false');
+        
+        // Prevent body scroll
+        body.style.overflow = 'hidden';
+
+        // Focus on close button for accessibility
+        setTimeout(() => {
+            modalClose.focus();
+        }, 100);
+    }
+
+    // Close modal function
+    function closeModal() {
+        modal.classList.remove('active');
+        modal.setAttribute('aria-hidden', 'true');
+        
+        // Restore body scroll
+        body.style.overflow = '';
+    }
+
+    // Add click event to each speaker card
+    speakerCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const speakerData = {
+                name: this.getAttribute('data-name'),
+                title: this.getAttribute('data-title'),
+                image: this.getAttribute('data-image'),
+                bio: this.getAttribute('data-bio'),
+                linkedin: this.getAttribute('data-linkedin'),
+                facebook: this.getAttribute('data-facebook'),
+                instagram: this.getAttribute('data-instagram')
+            };
+
+            openModal(speakerData);
+        });
+
+        // Keyboard accessibility for speaker cards
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', `View profile for ${card.getAttribute('data-name')}`);
+        
+        card.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.click();
+            }
+        });
+    });
+
+    // Close modal when clicking close button
+    modalClose.addEventListener('click', closeModal);
+
+    // Close modal when clicking overlay
+    modalOverlay.addEventListener('click', closeModal);
+
+    // Close modal on ESC key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    // Prevent modal content clicks from closing modal
+    const modalContent = document.querySelector('.modal-content');
+    if (modalContent) {
+        modalContent.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    }
+
+    // Focus trap within modal
+    const focusableElements = modal.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    
+    if (focusableElements.length > 0) {
+        const firstFocusable = focusableElements[0];
+        const lastFocusable = focusableElements[focusableElements.length - 1];
+
+        modal.addEventListener('keydown', function(e) {
+            if (!modal.classList.contains('active')) return;
+
+            if (e.key === 'Tab') {
+                if (e.shiftKey) {
+                    if (document.activeElement === firstFocusable) {
+                        e.preventDefault();
+                        lastFocusable.focus();
+                    }
+                } else {
+                    if (document.activeElement === lastFocusable) {
+                        e.preventDefault();
+                        firstFocusable.focus();
+                    }
+                }
+            }
+        });
+    }
 });
 
 // Mobile Menu Functionality
@@ -778,6 +1182,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 const configResponse = await fetch('/api/config');
                 const config = await configResponse.json();
 
+                // Get selected audiences from checkboxes
+                const audienceCheckboxes = document.querySelectorAll('input[name="audience"]:checked');
+                const selectedAudiences = Array.from(audienceCheckboxes).map(cb => cb.value);
+                const audiencesText = selectedAudiences.length > 0 ? selectedAudiences.join(', ') : 'Not specified';
+
                 // Prepare template parameters for EmailJS
                 const templateParams = {
                     from_name: data.name,
@@ -785,6 +1194,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     phone: data.phone || 'Not provided',
                     organization: data.organization || 'Not provided',
                     program: getProgramDisplayName(data.program),
+                    target_audiences: audiencesText,
+                    num_sessions: data.sessions || 'Not specified',
+                    school_info: data.school_info || 'Not provided',
                     message: data.message,
                     to_email: 'aubrey@hellohope.ca'
                 };

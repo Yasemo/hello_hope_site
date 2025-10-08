@@ -124,6 +124,58 @@
             </div>
 
             <div class="form_group">
+              <label>Which audience(s) are you looking at presentations for?</label>
+              <div class="checkbox_group">
+                <label class="checkbox_label">
+                  <input type="checkbox" name="audience" value="K-3">
+                  <span>K-3</span>
+                </label>
+                <label class="checkbox_label">
+                  <input type="checkbox" name="audience" value="Gr4-6">
+                  <span>Gr4-6</span>
+                </label>
+                <label class="checkbox_label">
+                  <input type="checkbox" name="audience" value="Gr7-8">
+                  <span>Gr7-8</span>
+                </label>
+                <label class="checkbox_label">
+                  <input type="checkbox" name="audience" value="Gr9-10">
+                  <span>Gr9-10</span>
+                </label>
+                <label class="checkbox_label">
+                  <input type="checkbox" name="audience" value="Gr.11-12">
+                  <span>Gr.11-12</span>
+                </label>
+                <label class="checkbox_label">
+                  <input type="checkbox" name="audience" value="Faculty">
+                  <span>Faculty</span>
+                </label>
+                <label class="checkbox_label">
+                  <input type="checkbox" name="audience" value="Parents/Guardians">
+                  <span>Parents/Guardians</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form_group">
+              <label for="sessions">How many sessions?</label>
+              <select id="sessions" name="sessions">
+                <option value="">Select...</option>
+                <option value="1 session">1 session</option>
+                <option value="2 sessions">2 sessions</option>
+                <option value="3 sessions">3 sessions</option>
+                <option value="4 sessions">4 sessions</option>
+                <option value="5 sessions">5 sessions</option>
+                <option value="More than 5 sessions">More than 5 sessions</option>
+              </select>
+            </div>
+
+            <div class="form_group">
+              <label for="school_info">If you are a school, what date are you looking at and what is your bell schedule?</label>
+              <textarea id="school_info" name="school_info" rows="4" placeholder="Please provide your preferred date and bell schedule (e.g., 'March 15, 2026 - Period 1: 8:30-9:30, Period 2: 9:35-10:35...')"></textarea>
+            </div>
+
+            <div class="form_group">
               <label for="message">Message/Inquiry *</label>
               <textarea id="message" name="message" rows="5" required placeholder="Please tell us about your event, audience size, preferred dates, and any specific requirements..."></textarea>
             </div>
