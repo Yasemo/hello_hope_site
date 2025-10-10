@@ -125,11 +125,65 @@ p {
   filter: brightness(0.5);
 }
 
-.hero-logo {
-  position: relative;
-  z-index: 1;
-  width: 400px;
-  height: 400px;
+/* Sound Toggle Button */
+.sound-toggle {
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 25px;
+  padding: 0.75rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: var(--font-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  opacity: 0.6;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.sound-toggle:hover {
+  background-color: rgba(0, 0, 0, 0.85);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.sound-toggle:active {
+  transform: scale(0.95);
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+.sound-toggle.active {
+  background-color: rgba(190, 30, 45, 0.8);
+  border-color: var(--primary-color);
+}
+
+.sound-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.sound-text {
+  white-space: nowrap;
+  display: none;
+}
+
+.sound-toggle.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
 }
 
 /* Hero Section Media Queries */
@@ -137,6 +191,18 @@ p {
   .hero-logo {
     width: 250px;
     height: 250px;
+  }
+  
+  .sound-toggle {
+    bottom: 1rem;
+    right: 1rem;
+    padding: 0.625rem 1rem;
+    font-size: 0.85rem;
+  }
+  
+  .sound-icon {
+    width: 18px;
+    height: 18px;
   }
 }
 
@@ -716,7 +782,7 @@ p {
   justify-content: center;
   align-items: center;
   height: calc(100vh - 70px);
-  background-image: url('../media/stock/pexels-andre-furtado-43594-1856488.jpg');
+  background-image: url('https://res.cloudinary.com/dhqqkezip/image/upload/v1759973271/homepage_pic_1_gncee3.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -730,7 +796,7 @@ p {
   justify-content: center;
   align-items: center;
   height: calc(100vh - 70px);
-  background-image: url('../media/stock/pexels-kobeboy-1516440.jpg');
+  background-image: url('https://res.cloudinary.com/dhqqkezip/image/upload/v1759973276/homepage_pic_2_vsp4gs.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -744,7 +810,7 @@ p {
   justify-content: center;
   align-items: center;
   height: calc(100vh - 70px);
-  background-image: url('../media/stock/pexels-olia-danilevich-8093032.jpg');
+  background-image: url('https://res.cloudinary.com/dhqqkezip/image/upload/v1759973280/homepage_pic_3_exnhim.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -1055,7 +1121,7 @@ p {
   align-items: center;
   border-radius: 10px;
   padding: 2rem;
-  height: 450px;
+  height: 460px;
   width: 100%;
   position: sticky;
 }
@@ -1201,7 +1267,7 @@ p {
   z-index: 1021;
   border: 1px solid #ececec;
   margin-top: 50px;
-  background-image: url('../media/stock/pexels-pavel-danilyuk-7942487.jpg');
+  background-image: url('../media/stock/pexels-ron-lach-10646545.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -1216,7 +1282,7 @@ p {
   z-index: 1021;
   border: 1px solid #ececec;
   margin-top: 50px;
-  background-image: url('../media/stock/pexels-ron-lach-10646545.jpg');
+  background-image: url('../media/stock/pexels-pavel-danilyuk-7942487.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

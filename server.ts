@@ -162,6 +162,139 @@ async function handleApiRequest(req: Request): Promise<Response> {
   return new Response("Not Found", { status: 404 });
 }
 
+// Helper function to get MIME type based on file extension
+function getMimeType(filename: string): string {
+  const ext = filename.split('.').pop()?.toLowerCase();
+  const mimeTypes: Record<string, string> = {
+    'mp4': 'video/mp4',
+    'webm': 'video/webm',
+    'ogg': 'video/ogg',
+    'mp3': 'audio/mpeg',
+    'wav': 'audio/wav',
+    'jpg': 'image/jpeg',
+    'jpeg': 'image/jpeg',
+    'png': 'image/png',
+    'gif': 'image/gif',
+    'svg': 'image/svg+xml',
+    'css': 'text/css',
+    'js': 'application/javascript',
+    'json': 'application/json',
+    'html': 'text/html',
+    'woff': 'font/woff',
+    'woff2': 'font/woff2',
+    'ttf': 'font/ttf',
+    'otf': 'font/otf',
+  };
+  return mimeTypes[ext || ''] || 'application/octet-stream';
+}
+
+// Helper function to handle video file requests with range support
+async function handleVideoRequest(req: Request, filePath: string): Promise<Response> {
+  try {
+    // Get file stats first
+    const stat = await Deno.stat(filePath);
+    const fileSize = stat.size;
+    
+    console.log(`Serving video: ${filePath}, size: ${fileSize} bytes`);
+    
+    const range = req.headers.get("range");
+    
+    if (!range) {
+      // No range header - serve entire file with streaming
+      console.log("No range header, serving entire file");
+      const file = await Deno.open(filePath, { read: true });
+      
+      return new Response(file.readable, {
+        status: 200,
+        headers: {
+          "Content-Length": fileSize.toString(),
+          "Content-Type": getMimeType(filePath),
+          "Accept-Ranges": "bytes",
+          "Cache-Control": "public, max-age=31536000",
+        },
+      });
+    }
+    
+    // Parse range header
+    const parts = range.replace(/bytes=/, "").split("-");
+    const start = parseInt(parts[0], 10);
+    const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+    const chunkSize = (end - start) + 1;
+    
+    console.log(`Range request: bytes ${start}-${end}/${fileSize}, chunk size: ${chunkSize}`);
+    
+    // Validate range
+    if (start >= fileSize || end >= fileSize || start > end) {
+      console.error(`Invalid range: start=${start}, end=${end}, fileSize=${fileSize}`);
+      return new Response("Invalid range", { 
+        status: 416,
+        headers: {
+          "Content-Range": `bytes */${fileSize}`,
+        }
+      });
+    }
+    
+    // Open file and seek to start position
+    const file = await Deno.open(filePath, { read: true });
+    await file.seek(start, Deno.SeekMode.Start);
+    
+    // Create a transform stream to limit the bytes read
+    let bytesRead = 0;
+    const limitedStream = file.readable.pipeThrough(
+      new TransformStream({
+        transform(chunk, controller) {
+          const remaining = chunkSize - bytesRead;
+          if (remaining <= 0) {
+            controller.terminate();
+            return;
+          }
+          
+          if (chunk.length <= remaining) {
+            bytesRead += chunk.length;
+            controller.enqueue(chunk);
+          } else {
+            // Only enqueue the remaining bytes
+            bytesRead += remaining;
+            controller.enqueue(chunk.slice(0, remaining));
+            controller.terminate();
+          }
+        },
+      })
+    );
+    
+    return new Response(limitedStream, {
+      status: 206,
+      headers: {
+        "Content-Range": `bytes ${start}-${end}/${fileSize}`,
+        "Accept-Ranges": "bytes",
+        "Content-Length": chunkSize.toString(),
+        "Content-Type": getMimeType(filePath),
+        "Cache-Control": "public, max-age=31536000",
+      },
+    });
+    
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    const errorName = error instanceof Error ? error.name : 'Unknown';
+    
+    console.error(`Error serving video file ${filePath}:`, {
+      error: errorMessage,
+      stack: errorStack,
+      name: errorName,
+    });
+    
+    if (error instanceof Deno.errors.NotFound) {
+      return new Response("Video file not found", { status: 404 });
+    }
+    if (error instanceof Deno.errors.PermissionDenied) {
+      return new Response("Access denied", { status: 403 });
+    }
+    
+    return new Response("Internal server error", { status: 500 });
+  }
+}
+
 serve(
   async (req) => {
     const url = new URL(req.url);
@@ -169,6 +302,13 @@ serve(
     // Handle API requests
     if (url.pathname.startsWith("/api/")) {
       return await handleApiRequest(req);
+    }
+
+    // Handle video files explicitly with range support
+    if (url.pathname.endsWith('.mp4') || url.pathname.endsWith('.webm') || url.pathname.endsWith('.ogg')) {
+      const filePath = `.${url.pathname}`;
+      console.log(`Video request: ${filePath}`);
+      return await handleVideoRequest(req, filePath);
     }
 
     // Route handling

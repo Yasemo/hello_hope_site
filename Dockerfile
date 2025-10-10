@@ -14,7 +14,11 @@ COPY . .
 RUN deno cache server.ts
 
 # Change ownership of the app directory to the existing deno user
-RUN chown -R deno:deno /app
+# Ensure media files are readable
+RUN chown -R deno:deno /app && \
+    chmod -R 755 /app && \
+    find /app/media -type f -exec chmod 644 {} \;
+
 USER deno
 
 # Expose the port (Cloud Run will set the PORT environment variable)

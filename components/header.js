@@ -351,16 +351,24 @@ class HeaderComponent {
 
     setupNavigation() {
         // Enhanced smooth scroll for anchor links
-        const anchorLinks = document.querySelectorAll('a[href^="#"]');
+        // Select both #section and /#section formats
+        const anchorLinks = document.querySelectorAll('a[href^="#"], a[href^="/#"]');
         
         anchorLinks.forEach(link => {
             link.addEventListener('click', (e) => {
-                e.preventDefault();
-                
-                const targetId = link.getAttribute('href').substring(1);
+                // Extract target ID from href (handle both #section and /#section)
+                const href = link.getAttribute('href');
+                const targetId = href.startsWith('/#') ? href.substring(2) : href.substring(1);
                 const targetElement = document.getElementById(targetId);
                 
+                // Only prevent default if the target element exists on this page
                 if (targetElement) {
+                    e.preventDefault();
+                    
+                    // Clean URL FIRST before scrolling to prevent hash from showing
+                    const cleanUrl = window.location.pathname;
+                    history.replaceState(null, '', cleanUrl);
+                    
                     const headerHeight = 70;
                     const targetPosition = targetElement.offsetTop - headerHeight;
                     
@@ -369,6 +377,8 @@ class HeaderComponent {
                         behavior: 'smooth'
                     });
                 }
+                // If target doesn't exist, allow default navigation to the page with hash
+                // The hash will be cleaned up when the target page loads
             });
         });
 

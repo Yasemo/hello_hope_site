@@ -47,10 +47,17 @@
   <div id="header-placeholder"></div>
     
   <section id="hero" class="hero">
-    <video class="hero-video" autoplay muted loop playsinline>
-      <source src="media/videos/istockphoto-1399445857-640_adpp_is.mp4" type="video/mp4">
+    <video class="hero-video" autoplay muted loop playsinline id="heroVideo">
+      <source src="https://res.cloudinary.com/dhqqkezip/video/upload/v1759972615/new_hello_hope_hero_video_jafrdc.mp4" type="video/mp4">
     </video>
-    <img src="logos/red/red_Red 1080 x 1080.png" alt="Hello Hope Canada Logo" class="hero-logo">
+    <button class="sound-toggle" id="soundToggle" aria-label="Toggle sound">
+      <svg class="sound-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+        <line x1="23" y1="9" x2="17" y2="15"/>
+        <line x1="17" y1="9" x2="23" y2="15"/>
+      </svg>
+      <span class="sound-text">Sound Off</span>
+    </button>
   </section>
 
   <section id="aubrey" class="aubrey">
@@ -68,7 +75,7 @@
         <!-- <p class="subtitle_description">Inspiring hope through authentic storytelling and connection</p> -->
       </div>
       <div class="aubrey_description">
-        <img src="media/aubrey_profile.jpg" alt="" class="aubrey_image">
+        <img src="https://res.cloudinary.com/dhqqkezip/image/upload/v1760014133/Aubrey_Noronha_mu15et.jpg" alt="" class="aubrey_image">
         <div class="aubrey_text_area">
           <div class="aubrey_about_us">
               <div class="aubrey_title"><svg class="pattern" width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="Rounded" transform="translate(-138.000000, -4102.000000)"><g id="Social" transform="translate(100.000000, 4044.000000)"><g id="-Round-/-Social-/-person" transform="translate(34.000000, 54.000000)"><g><polygon id="Path" points="0 0 24 0 24 24 0 24"></polygon><path d="M12,12 C14.21,12 16,10.21 16,8 C16,5.79 14.21,4 12,4 C9.79,4 8,5.79 8,8 C8,10.21 9.79,12 12,12 Z M12,14 C9.33,14 4,15.34 4,18 L4,19 C4,19.55 4.45,20 5,20 L19,20 C19.55,20 20,19.55 20,19 L20,18 C20,15.34 14.67,14 12,14 Z" id="🔹-Icon-Color" fill="currentColor"></path></g></g></g></g></g></svg><h2>About Aubrey</h2></div>
@@ -88,7 +95,7 @@
           <div class="stat_label">Sessions Delivered</div>
         </div>
         <div class="stat_box">
-          <div class="stat_number" data-target="50000">0</div>
+          <div class="stat_number" data-target="220000">0</div>
           <div class="stat_label">Students Inspired</div>
         </div>
         <div class="stat_box">
@@ -109,41 +116,48 @@
             <div class="organizations_section">
         <h2 class="organizations_title">Aubrey Has Partnered With / Been Featured On:</h2>
         <div class="organizations_grid">
+          <div class="org_logo"><img src="media/orgs/OPC.png" alt="OPC"></div>
+          <div class="org_logo"><img src="media/orgs/tdsb.png" alt="TDSB"></div>
+          <div class="org_logo"><img src="media/orgs/opg.png" alt="OPG"></div>
+          <div class="org_logo"><img src="media/orgs/global_news.png" alt="Global News"></div>
+          <div class="org_logo"><img src="media/orgs/toronto_star.png" alt="Toronto Star"></div>
+          <div class="org_logo"><img src="media/orgs/city_news.png" alt="City News"></div>
+          <div class="org_logo"><img src="media/orgs/CP24_black_logo.svg" alt="CP24"></div>
           <div class="org_logo"><img src="media/orgs/ajax.png" alt="Ajax"></div>
-        <div class="org_logo"><img src="media/orgs/annapolis.png" alt="Annapolis"></div>
-        <div class="org_logo"><img src="media/orgs/aod.png" alt="AOD"></div>
-        <div class="org_logo"><img src="media/orgs/christ_redeemer.png" alt="Christ Redeemer"></div>
-        <div class="org_logo"><img src="media/orgs/city_news.png" alt="City News"></div>
-        <div class="org_logo"><img src="media/orgs/city_of_pickering.png" alt="City of Pickering"></div>
-        <div class="org_logo"><img src="media/orgs/clarington.png" alt="Clarington"></div>
-        <div class="org_logo"><img src="media/orgs/ddsb.png" alt="DDSB"></div>
-        <div class="org_logo"><img src="media/orgs/durham_catholic.png" alt="Durham Catholic"></div>
-        <div class="org_logo"><img src="media/orgs/durham_region.png" alt="Durham Region"></div>
-        <div class="org_logo"><img src="media/orgs/global_news.png" alt="Global News"></div>
-        <div class="org_logo"><img src="media/orgs/grand_erie.png" alt="Grand Erie"></div>
-        <div class="org_logo"><img src="media/orgs/halton.png" alt="Halton"></div>
-        <div class="org_logo"><img src="media/orgs/humanity.png" alt="Humanity"></div>
-        <div class="org_logo"><img src="media/orgs/kawartha.png" alt="Kawartha"></div>
-        <div class="org_logo"><img src="media/orgs/lakeridge_health.png" alt="Lakeridge Health"></div>
-        <div class="org_logo"><img src="media/orgs/lambton.png" alt="Lambton"></div>
-        <div class="org_logo"><img src="media/orgs/opg.png" alt="OPG"></div>
-        <div class="org_logo"><img src="media/orgs/oshawa_be_amazed.png" alt="Oshawa Be Amazed"></div>
-        <div class="org_logo"><img src="media/orgs/ottawa_catholic.png" alt="Ottawa Catholic"></div>
-        <div class="org_logo"><img src="media/orgs/peterborough.png" alt="Peterborough"></div>
-        <div class="org_logo"><img src="media/orgs/simcoe_county.png" alt="Simcoe County"></div>
-        <div class="org_logo"><img src="media/orgs/simcoe_muskoka.png" alt="Simcoe Muskoka"></div>
-        <div class="org_logo"><img src="media/orgs/tdsb.png" alt="TDSB"></div>
-        <div class="org_logo"><img src="media/orgs/telus.png" alt="Telus"></div>
-        <div class="org_logo"><img src="media/orgs/thames.png" alt="Thames"></div>
-        <div class="org_logo"><img src="media/orgs/the_vine.png" alt="The Vine"></div>
-        <div class="org_logo"><img src="media/orgs/toronto_catholic.png" alt="Toronto Catholic"></div>
-        <div class="org_logo"><img src="media/orgs/toronto_community_housing.png" alt="Toronto Community Housing"></div>
-        <div class="org_logo"><img src="media/orgs/toronto_star.png" alt="Toronto Star"></div>
-        <div class="org_logo"><img src="media/orgs/trillium.png" alt="Trillium"></div>
-        <div class="org_logo"><img src="media/orgs/upper_canada.png" alt="Upper Canada"></div>
-        <div class="org_logo"><img src="media/orgs/workplace_safety.png" alt="Workplace Safety"></div>
-        <div class="org_logo"><img src="media/orgs/york_catholic.png" alt="York Catholic"></div>
-        <div class="org_logo"><img src="media/orgs/york_region.png" alt="York Region"></div>
+          <div class="org_logo"><img src="media/orgs/durham-regional-police-service-logo.png" alt="Durham Regional Police"></div>
+          <div class="org_logo"><img src="media/orgs/annapolis.png" alt="Annapolis"></div>
+          <div class="org_logo"><img src="media/orgs/aod.png" alt="AOD"></div>
+          <div class="org_logo"><img src="media/orgs/cheo_logo.png" alt="CHEO"></div>
+          <div class="org_logo"><img src="media/orgs/christ_redeemer.png" alt="Christ Redeemer"></div>
+          <div class="org_logo"><img src="media/orgs/cornwall_police.png" alt="Cornwall Police"></div>
+          <div class="org_logo"><img src="media/orgs/city_of_pickering.png" alt="City of Pickering"></div>
+          <div class="org_logo"><img src="media/orgs/clarington.png" alt="Clarington"></div>
+          <div class="org_logo"><img src="media/orgs/ddsb.png" alt="DDSB"></div>
+          <div class="org_logo"><img src="media/orgs/durham_catholic.png" alt="Durham Catholic"></div>
+          <div class="org_logo"><img src="media/orgs/durham_region.png" alt="Durham Region"></div>
+          <div class="org_logo"><img src="media/orgs/grand_erie.png" alt="Grand Erie"></div>
+          <div class="org_logo"><img src="media/orgs/halton.png" alt="Halton"></div>
+          <div class="org_logo"><img src="media/orgs/childrens_village.png" alt="Childrens Village"></div>
+          <div class="org_logo"><img src="media/orgs/humanity.png" alt="Humanity"></div>
+          <div class="org_logo"><img src="media/orgs/kawartha.png" alt="Kawartha"></div>
+          <div class="org_logo"><img src="media/orgs/lakeridge_health.png" alt="Lakeridge Health"></div>
+          <div class="org_logo"><img src="media/orgs/lambton.png" alt="Lambton"></div>
+          <div class="org_logo"><img src="media/orgs/avon_maitland.jpeg" alt="Avon Maitland"></div>
+          <div class="org_logo"><img src="media/orgs/oshawa_be_amazed.png" alt="Oshawa Be Amazed"></div>
+          <div class="org_logo"><img src="media/orgs/ottawa_catholic.png" alt="Ottawa Catholic"></div>
+          <div class="org_logo"><img src="media/orgs/peterborough.png" alt="Peterborough"></div>
+          <div class="org_logo"><img src="media/orgs/simcoe_county.png" alt="Simcoe County"></div>
+          <div class="org_logo"><img src="media/orgs/simcoe_muskoka.png" alt="Simcoe Muskoka"></div>
+          <div class="org_logo"><img src="media/orgs/telus.png" alt="Telus"></div>
+          <div class="org_logo"><img src="media/orgs/thames.png" alt="Thames"></div>
+          <div class="org_logo"><img src="media/orgs/the_vine.png" alt="The Vine"></div>
+          <div class="org_logo"><img src="media/orgs/toronto_catholic.png" alt="Toronto Catholic"></div>
+          <div class="org_logo"><img src="media/orgs/toronto_community_housing.png" alt="Toronto Community Housing"></div>
+          <div class="org_logo"><img src="media/orgs/trillium.png" alt="Trillium"></div>
+          <div class="org_logo"><img src="media/orgs/upper_canada.png" alt="Upper Canada"></div>
+          <div class="org_logo"><img src="media/orgs/workplace_safety.png" alt="Workplace Safety"></div>
+          <div class="org_logo"><img src="media/orgs/york_catholic.png" alt="York Catholic"></div>
+          <div class="org_logo"><img src="media/orgs/york_region.png" alt="York Region"></div>
         </div>
       </div>
     </div>
@@ -161,18 +175,19 @@
           </div>
         </div>
         <h1>Programs</h1>
-        <p class="subtitle_description">Character-building programs designed for lasting change</p>
+        <p class="subtitle_description"> Programs designed to build connected communities from the head to the heart</p>
       </div>
       <div class="program_cards">
         <div class="program_card card_1">
           <div class="card_text">
             <div class="program_description">
-                <img src="media/stock/pexels-kobeboy-1516440.jpg" alt="" class="program_img">
+                <img src="https://res.cloudinary.com/dhqqkezip/image/upload/v1759962973/pexels-kobeboy-1516440_m7wc3r.jpg" alt="" class="program_img">
                 <h2>HELLO HOPE</h2>
+                <!-- <h3>Battling Loneliness, Isolation, and the Other Things That Can Weigh Us Down</h3> -->
                 <!-- <h3>BATTLING LONELINESS</h3>  -->
                             <p>Social media promised connection, but delivered toxic comparison. Now AI is replacing friendships. This session delivers practical tools for building real human bonds that actually stick.
 </p>
-                <p class="program_versions">Duration: 60 min | Versions: Gr. 4-12, Faculty, Parents/Guardians, Corporate Teams</p>
+                <p class="program_versions">Duration: 60 min | Versions need to be specific: Gr.4-6, Gr.7-8, Gr.9-10, Gr. 11-12, Faculty, Parents/Guardians, Corporate Teams</p>
                 <div class="button_reviews">
                   <button class="enroll_btn" data-program="hello-hope">Learn More</button>
                   <p><span class="star-rating">
@@ -199,11 +214,12 @@
         <div class="program_card card_2">
           <div class="card_text">
             <div class="program_description">
-                <img src="media/stock/pexels-max-fischer-5211430.jpg" alt="" class="program_img">
+                <img src="https://res.cloudinary.com/dhqqkezip/image/upload/v1759962973/pexels-max-fischer-5211430_tjzcbu.jpg" alt="" class="program_img">
                 <h2>COLOUR BLIND?</h2>
+                <!-- <h3>"Not Racist" Is Not Enough</h3> -->
                  <!-- WHY BEING 'NOT RACIST' IS NOT ENOUGH -->
-                            <p>Good intentions don't fix systemic racism. Silence isn't neutrality. Part 1.0 explores why this fight is a matter of the heart. Part 2.0 delivers actionable steps to be the opposite of racist.</p>
-                <p class="program_versions">Duration: 60 min each | Versions: Gr. 7-12, Faculty, Sr. Admin., Parents/Guardians, Corporate Teams</p>
+                            <p>Good intentions don't fix systemic racism. Silence isn't neutrality. Part 1 explores why this fight is a matter of the heart. Part 2 delivers actionable steps to be the opposite of racist.</p>
+                <p class="program_versions">Duration: 60 min each | Kindergarten to Gr. 3, Gr.4-6, Gr.7-8, Gr.9-10, Gr. 11-12, Faculty, Parents/Guardians, Corporate, and Teams</p>
                 <div class="button_reviews">
                   <button class="enroll_btn" data-program="hello-hope">Learn More</button>
                   <p><span class="star-rating">
@@ -230,10 +246,10 @@
         <div class="program_card card_3">
           <div class="card_text">
             <div class="program_description">
-                <img src="media/stock/pexels-rdne-8419249.jpg" alt="" class="program_img">
+                <img src="https://res.cloudinary.com/dhqqkezip/image/upload/v1759962974/pexels-rdne-8419249_novvx3.jpg" alt="" class="program_img">
                 <h2>STICK WITH THE TRUTH</h2>
-                            <p>Our youngest students deserve truth about skin color, the lies they'll hear, and tools to fight back. Not diluted. Not sanitized. Age-appropriate truth-telling that 8-year-olds can handle</p>
-                <p class="program_versions">Duration: 60 min each (1.0 + 2.0) | Versions: Gr. K-6</p>
+                            <p>Our youngest students learn the three truths about skin colour and are equipped in an age-appropriate way to stick with those truths whenever they may encounter lies about skin colour which can cause hate, hurt, and harm.</p>
+                <p class="program_versions">Duration: 60 min each  |  Kindergarten to Gr. 3 (1 part only)  |  Gr.4-6 (Part 1 and Part 2 available)</p>
                 <div class="button_reviews">
                   <button class="enroll_btn" data-program="hello-hope">Learn More</button>
                   <p><span class="star-rating">
@@ -260,11 +276,12 @@
         <div class="program_card card_4">
           <div class="card_text">
             <div class="program_description">
-                <img src="media/stock/pexels-cottonbro-7207104.jpg" alt="" class="program_img">
+                <img src="https://res.cloudinary.com/dhqqkezip/image/upload/v1759962973/pexels-cottonbro-7207104_zseaiy.jpg" alt="" class="program_img">
                 <h2>I'M JUST HERE</h2>
+                <!-- <h3>What Am I Doing? Whats The Point? Where Can I Go?</h3> -->
                 <!-- : WHAT'S THE POINT? -->
                             <p>Some kids are existing, not living. Purpose feels like a luxury when you're just surviving. Raw talk on self-identity, peer conflicts, and the secret to supreme satisfaction.</p>
-                <p class="program_versions">Duration: 60 min | Versions: Gr. 7-12</p>
+                <p class="program_versions">Duration: 60 min | Versions: Gr.7-8, Gr.9-10, Gr. 11-12. Camps, Teams</p>
                 <div class="button_reviews">
                   <button class="enroll_btn" data-program="hello-hope">Learn More</button>
                   <p><span class="star-rating">
@@ -291,11 +308,11 @@
         <div class="program_card card_5">
           <div class="card_text">
             <div class="program_description">
-                <img src="media/stock/pexels-pavel-danilyuk-7942487.jpg" alt="" class="program_img">
+                <img src="https://res.cloudinary.com/dhqqkezip/image/upload/v1759962974/pexels-ron-lach-10646545_fafykc.jpg" alt="" class="program_img">
                 <h2>MAN UP</h2>
                 <!-- : BEING A REAL MAN IN UNREAL TIMES -->
                             <p>Boys are getting masculinity lessons from influencers. This session delivers straight conversation about male influence on culture and practical tools for using it for good.</p>
-                <p class="program_versions">Duration: 60 min | Versions: Gr. 6-12, Teams</p>
+                <p class="program_versions">Duration: 60 min | Versions: Gr.6-8, Gr.9-10, Gr.11-12</p>
                 <div class="button_reviews">
                   <button class="enroll_btn" data-program="hello-hope">Learn More</button>
                   <p><span class="star-rating">
@@ -322,7 +339,7 @@
         <div class="program_card card_6">
           <div class="card_text">
             <div class="program_description">
-                <img src="media/stock/pexels-ron-lach-10646545.jpg" alt="" class="program_img">
+                <img src="https://res.cloudinary.com/dhqqkezip/image/upload/v1759962973/pexels-pavel-danilyuk-7942487_gpw9ui.jpg" alt="" class="program_img">
                 <h2>RECONNECT</h2>
                             <p>Teachers are exhausted. Administrators are overwhelmed. Everyone's running on empty. This one-hour recharge helps your team reconnect to what matters and reach the finish line.</p>
                 <p class="program_versions">Duration: 60 min | Versions: Educators, Administration, Special Teams</p>
@@ -440,7 +457,7 @@
           <img src="logos/white/white_white 96x96.png" alt="Hello Hope Canada Logo">
         </div>
         <h3 class="footer_tagline">The Power of Hope</h3>
-        <p class="footer_description">"Growing connected communities, one heart at a time."</p>
+        <p class="footer_description">"Building connected communities from the head to the heart."</p>
       </div>
       
       <div class="footer_links">
@@ -486,7 +503,7 @@
     <div class="footer_bottom">
       <div class="footer_bottom_container">
         <p class="footer_copyright">
-          &copy; 2024 Hello Hope Canada. All rights reserved.
+          &copy; 2025 Hello Hope Canada. All rights reserved.
         </p>
         <div class="footer_social">
           <span class="social_label">Follow Us:</span>

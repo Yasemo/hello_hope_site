@@ -1,4 +1,50 @@
 
+// Hero Video Sound Toggle Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const heroVideo = document.getElementById('heroVideo');
+    const soundToggle = document.getElementById('soundToggle');
+    
+    if (heroVideo && soundToggle) {
+        // Function to toggle sound
+        function toggleSound() {
+            if (heroVideo.muted) {
+                // Unmute the video
+                heroVideo.muted = false;
+                soundToggle.classList.add('active');
+                
+                // Update icon to show sound is on (speaker with waves)
+                soundToggle.querySelector('.sound-icon').innerHTML = `
+                    <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                    <path d="M15.54 8.46a5 5 0 010 7.07"/>
+                    <path d="M19.07 4.93a10 10 0 010 14.14"/>
+                `;
+                soundToggle.querySelector('.sound-text').textContent = 'Sound On';
+            } else {
+                // Mute the video
+                heroVideo.muted = true;
+                soundToggle.classList.remove('active');
+                
+                // Update icon to show sound is off (speaker with X)
+                soundToggle.querySelector('.sound-icon').innerHTML = `
+                    <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                    <line x1="23" y1="9" x2="17" y2="15"/>
+                    <line x1="17" y1="9" x2="23" y2="15"/>
+                `;
+                soundToggle.querySelector('.sound-text').textContent = 'Sound Off';
+            }
+        }
+        
+        // Handle click events (desktop and some mobile browsers)
+        soundToggle.addEventListener('click', toggleSound);
+        
+        // Handle touch events for mobile devices (with passive: false to allow preventDefault)
+        soundToggle.addEventListener('touchstart', function(e) {
+            e.preventDefault(); // Prevent click event from also firing
+            toggleSound();
+        }, { passive: false });
+    }
+});
+
 // Conference Countdown Timer Functionality
 document.addEventListener('DOMContentLoaded', function() {
     const countdownElement = document.querySelector('.countdown');
@@ -319,9 +365,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Format number based on the target value
     function formatNumber(num, target) {
         if (target === 1000) {
-            return num.toLocaleString(); // "1,000"
-        } else if (target === 50000) {
-            return num.toLocaleString() + '+'; // "50,000+"
+            return num.toLocaleString() + '+'; // "1,000+"
+        } else if (target === 220000) {
+            return num.toLocaleString() + '+'; // "220,000+"
         } else if (target === 95) {
             return Math.floor(num) + '%'; // "95%"
         }
@@ -901,6 +947,30 @@ document.addEventListener('DOMContentLoaded', function() {
     const sections = document.querySelectorAll('section[id]');
     const contactForm = document.getElementById('contactForm');
     
+    // Clean URL on page load if there's a hash
+    if (window.location.hash) {
+        const hash = window.location.hash.substring(1); // Remove the # character
+        const targetElement = document.getElementById(hash);
+        
+        if (targetElement) {
+            // Scroll to the section
+            const headerHeight = 70;
+            const targetPosition = targetElement.offsetTop - headerHeight;
+            
+            // Use setTimeout to ensure smooth scroll happens after page load
+            setTimeout(() => {
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }, 100);
+        }
+        
+        // Remove hash from URL
+        const cleanUrl = window.location.pathname;
+        history.replaceState(null, '', cleanUrl);
+    }
+    
     // Throttle function for performance
     function throttle(func, limit) {
         let inThrottle;
@@ -953,16 +1023,23 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Enhanced smooth scroll for anchor links (including aubrey buttons)
-    const anchorLinks = document.querySelectorAll('a[href^="#"]');
+    // Select both #section and /#section formats
+    const anchorLinks = document.querySelectorAll('a[href^="#"], a[href^="/#"]');
     
     anchorLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             
-            const targetId = this.getAttribute('href').substring(1);
+            // Extract target ID from href (handle both #section and /#section)
+            const href = this.getAttribute('href');
+            const targetId = href.startsWith('/#') ? href.substring(2) : href.substring(1);
             const targetElement = document.getElementById(targetId);
             
             if (targetElement) {
+                // Clean URL FIRST before scrolling to prevent hash from showing
+                const cleanUrl = window.location.pathname;
+                history.replaceState(null, '', cleanUrl);
+                
                 const headerHeight = 70;
                 const targetPosition = targetElement.offsetTop - headerHeight;
                 
