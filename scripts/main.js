@@ -1,10 +1,11 @@
 
-// Hero Video Sound Toggle Functionality
+// Hero Video Sound Toggle
 document.addEventListener('DOMContentLoaded', function() {
     const heroVideo = document.getElementById('heroVideo');
     const soundToggle = document.getElementById('soundToggle');
     
     if (heroVideo && soundToggle) {
+        
         // Function to toggle sound
         function toggleSound() {
             if (heroVideo.muted) {
@@ -19,6 +20,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     <path d="M19.07 4.93a10 10 0 010 14.14"/>
                 `;
                 soundToggle.querySelector('.sound-text').textContent = 'Sound On';
+                
+                // On mobile, unmuting requires re-initiating play for audio to work
+                // Always call play() after unmuting to ensure proper playback
+                heroVideo.play().catch(err => console.log('Video play failed:', err));
             } else {
                 // Mute the video
                 heroVideo.muted = true;
@@ -31,17 +36,25 @@ document.addEventListener('DOMContentLoaded', function() {
                     <line x1="17" y1="9" x2="23" y2="15"/>
                 `;
                 soundToggle.querySelector('.sound-text').textContent = 'Sound Off';
+                
+                // Ensure video continues playing when muted
+                if (heroVideo.paused) {
+                    heroVideo.play().catch(err => console.log('Video play failed:', err));
+                }
             }
         }
         
-        // Handle click events (desktop and some mobile browsers)
-        soundToggle.addEventListener('click', toggleSound);
-        
-        // Handle touch events for mobile devices (with passive: false to allow preventDefault)
-        soundToggle.addEventListener('touchstart', function(e) {
-            e.preventDefault(); // Prevent click event from also firing
+        // Handle click/touch events (works for both desktop and mobile)
+        soundToggle.addEventListener('click', function(e) {
             toggleSound();
-        }, { passive: false });
+            // Track sound toggle event
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'video_sound_toggle', {
+                    'event_category': 'engagement',
+                    'event_label': heroVideo.muted ? 'muted' : 'unmuted'
+                });
+            }
+        });
     }
 });
 
@@ -334,20 +347,29 @@ document.addEventListener('DOMContentLoaded', function() {
     const ctaSection = document.querySelector('.conference_cta');
 
     if (buyTicketsButtons.length > 0 && ctaSection) {
-        buyTicketsButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
+    buyTicketsButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
 
-                // Scroll to the conference_cta section
-                const headerHeight = 70; // Account for fixed header
-                const targetPosition = ctaSection.offsetTop - headerHeight;
-
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
+            // Track buy tickets button click
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'buy_tickets_clicked', {
+                    'event_category': 'conference',
+                    'event_label': 'buy_tickets_button',
+                    'page_location': window.location.href
                 });
+            }
+
+            // Scroll to the conference_cta section
+            const headerHeight = 70; // Account for fixed header
+            const targetPosition = ctaSection.offsetTop - headerHeight;
+
+            window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth'
             });
         });
+    });
     }
 });
 
@@ -1096,10 +1118,35 @@ document.addEventListener('DOMContentLoaded', function() {
     
     enrollButtons.forEach(button => {
         button.addEventListener('click', function(e) {
+            // Check if this is a link with an external href (to another page)
+            const href = this.getAttribute('href');
+            if (href && (href.startsWith('/') || href.startsWith('http'))) {
+                // Track program learn more click
+                const programValue = this.getAttribute('data-program') || 'unknown';
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'program_learn_more_clicked', {
+                        'event_category': 'programs',
+                        'event_label': programValue,
+                        'page_location': window.location.href
+                    });
+                }
+                // Allow the link to navigate normally
+                return;
+            }
+            
             e.preventDefault();
             
             // Get the program value from data attribute
             const programValue = this.getAttribute('data-program');
+            
+            // Track program enroll button click
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'program_enroll_clicked', {
+                    'event_category': 'programs',
+                    'event_label': programValue || 'unknown',
+                    'page_location': window.location.href
+                });
+            }
             
             // Scroll to contact form
             const contactSection = document.getElementById('contact');
@@ -1288,6 +1335,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('EmailJS response:', response);
 
                 if (response.status === 200) {
+                    // Track successful form submission
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'form_submission', {
+                            'event_category': 'contact',
+                            'event_label': 'contact_form_success',
+                            'program_interest': getProgramDisplayName(data.program),
+                            'page_location': window.location.href
+                        });
+                    }
+
                     // Reset form
                     contactForm.reset();
 

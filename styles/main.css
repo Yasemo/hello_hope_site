@@ -187,6 +187,13 @@ p {
 }
 
 /* Hero Section Media Queries */
+@media (max-width: 480px) {
+  .hero-video {
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
 @media (max-width: 767px) {
   .hero-logo {
     width: 250px;
@@ -1147,6 +1154,8 @@ p {
   height: auto;
   border-radius: 8px;
   margin-bottom: 1rem;
+  object-fit: cover;
+  object-position: center;
 }
 
 .program_description h2 {
@@ -1213,7 +1222,7 @@ p {
   top: 140px;
   z-index: 1020;
   border: 1px solid #ececec;
-  background-image: url('../media/stock/pexels-kobeboy-1516440.jpg');
+  background-image: url('https://res.cloudinary.com/dhqqkezip/image/upload/v1760505864/youssef-naddam-iJ2IG8ckCpA-unsplash_msh2cz.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -1228,7 +1237,7 @@ p {
   z-index: 1021;
   margin-top: 50px;
   border: 1px solid #ececec;
-  background-image: url('../media/stock/pexels-max-fischer-5211430.jpg');
+  background-image: url('https://res.cloudinary.com/dhqqkezip/image/upload/v1760506057/IMG_0787_yav1jy.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -1241,7 +1250,7 @@ p {
   z-index: 1021;
   border: 1px solid #ececec;
   margin-top: 50px;
-  background-image: url('../media/stock/pexels-rdne-8419249.jpg');
+  background-image: url('https://res.cloudinary.com/dhqqkezip/image/upload/v1760506505/IMG_3993-min_qm8kdb.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -1256,9 +1265,10 @@ p {
   z-index: 1021;
   margin-top: 50px;
   border: 1px solid #ececec;
-  background-image: url('../media/stock/pexels-cottonbro-7207104.jpg');
-  background-size: cover;
-  background-position: center;
+  background-image: url('https://res.cloudinary.com/dhqqkezip/image/upload/v1760506604/jesus-rodriguez-NcWNzEAD7Fs-unsplash_d8qj7m.jpg');
+  /* background-size: cover; */
+  background-size: 120%;
+  background-position: right;
   background-repeat: no-repeat;
 }
 
@@ -1267,7 +1277,7 @@ p {
   z-index: 1021;
   border: 1px solid #ececec;
   margin-top: 50px;
-  background-image: url('../media/stock/pexels-ron-lach-10646545.jpg');
+  background-image: url('https://res.cloudinary.com/dhqqkezip/image/upload/v1759962974/pexels-ron-lach-10646545_fafykc.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -1282,9 +1292,9 @@ p {
   z-index: 1021;
   border: 1px solid #ececec;
   margin-top: 50px;
-  background-image: url('../media/stock/pexels-pavel-danilyuk-7942487.jpg');
-  background-size: cover;
-  background-position: center;
+  background-image: url('https://res.cloudinary.com/dhqqkezip/image/upload/v1760506742/premium_photo-1759573977820-58a3fce3fd1f_kwunrc.avif');
+  /* background-size: cover; */
+  background-position: right;
   background-repeat: no-repeat;
 }
 
@@ -1315,6 +1325,7 @@ p {
 
   .program_img {
     display: block;
+    max-height: 300px;
   }
 
   .program_card {
