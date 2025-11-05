@@ -39,22 +39,36 @@
       </a>
     </nav>
 
-    <!-- Desktop Contact Button -->
+    <!-- Desktop Contact and Cart Buttons -->
     <div class="contact_button desktop_contact">
-<a href="/contact" class="nav-link contact-btn">
-  <span class="nav-text">
-    <span class="nav-text-original">Contact Us</span>
-    <span class="nav-text-hover">Contact Us</span>
-  </span>
-</a>
+      <a href="/contact" class="nav-link contact-btn">
+        <span class="nav-text">
+          <span class="nav-text-original">Contact Us</span>
+          <span class="nav-text-hover">Contact Us</span>
+        </span>
+      </a>
+      <button id="cart-button-header" class="cart-button-header" aria-label="Shopping cart">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17,18C15.89,18 15,18.89 15,20A2,2 0 0,0 17,22A2,2 0 0,0 19,20C19,18.89 18.1,18 17,18M1,2V4H3L6.6,11.59L5.24,14.04C5.09,14.32 5,14.65 5,15A2,2 0 0,0 7,17H19V15H7.42A0.25,0.25 0 0,1 7.17,14.75C7.17,14.7 7.18,14.66 7.2,14.63L8.1,13H15.55C16.3,13 16.96,12.58 17.3,11.97L20.88,5.5C20.95,5.34 21,5.17 21,5A1,1 0 0,0 20,4H5.21L4.27,2M7,18C5.89,18 5,18.89 5,20A2,2 0 0,0 7,22A2,2 0 0,0 9,20C9,18.89 8.1,18 7,18Z"/>
+        </svg>
+        <span id="cart-count-header" class="cart-count-header">0</span>
+      </button>
     </div>
     
-    <!-- Mobile Menu Button -->
-    <button class="mobile_menu_button" aria-label="Toggle mobile menu" aria-expanded="false">
-      <span class="hamburger_line"></span>
-      <span class="hamburger_line"></span>
-      <span class="hamburger_line"></span>
-    </button>
+    <!-- Mobile Cart and Menu Buttons -->
+    <div class="mobile_actions">
+      <button id="cart-button-mobile" class="cart-button-mobile" aria-label="Shopping cart">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17,18C15.89,18 15,18.89 15,20A2,2 0 0,0 17,22A2,2 0 0,0 19,20C19,18.89 18.1,18 17,18M1,2V4H3L6.6,11.59L5.24,14.04C5.09,14.32 5,14.65 5,15A2,2 0 0,0 7,17H19V15H7.42A0.25,0.25 0 0,1 7.17,14.75C7.17,14.7 7.18,14.66 7.2,14.63L8.1,13H15.55C16.3,13 16.96,12.58 17.3,11.97L20.88,5.5C20.95,5.34 21,5.17 21,5A1,1 0 0,0 20,4H5.21L4.27,2M7,18C5.89,18 5,18.89 5,20A2,2 0 0,0 7,22A2,2 0 0,0 9,20C9,18.89 8.1,18 7,18Z"/>
+        </svg>
+        <span id="cart-count-mobile" class="cart-count-mobile">0</span>
+      </button>
+      <button class="mobile_menu_button" aria-label="Toggle mobile menu" aria-expanded="false">
+        <span class="hamburger_line"></span>
+        <span class="hamburger_line"></span>
+        <span class="hamburger_line"></span>
+      </button>
+    </div>
   </div>
   
   <!-- Mobile Navigation Menu -->

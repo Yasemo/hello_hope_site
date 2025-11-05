@@ -7,15 +7,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Initialize cart modal
 function initCartModal() {
-    const cartButton = document.getElementById('cart-button');
     const cartModal = document.getElementById('cart-modal');
     const closeCart = document.getElementById('close-cart');
     const overlay = cartModal.querySelector('.cart-modal-overlay');
     const checkoutButton = document.getElementById('checkout-button');
 
-    // Open cart modal
-    cartButton.addEventListener('click', function() {
-        openCartModal();
+    // Use event delegation for cart buttons (works even if header loads after this script)
+    document.addEventListener('click', function(e) {
+        // Check if clicked element is a cart button (or inside one)
+        const cartButton = e.target.closest('#cart-button-header, #cart-button-mobile');
+        if (cartButton) {
+            e.preventDefault();
+            openCartModal();
+        }
     });
 
     // Close cart modal

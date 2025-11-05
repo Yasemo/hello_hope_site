@@ -1,56 +1,6 @@
 /* ========================================
-   CART MODAL AND CART BUTTON STYLES
+   CART MODAL STYLES
    ======================================== */
-
-/* Floating Cart Button */
-.cart-button {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, var(--hello-hope-red), #a01020);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(190, 30, 45, 0.3);
-    transition: all 0.3s ease;
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.cart-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(190, 30, 45, 0.4);
-}
-
-.cart-button.has-items {
-    animation: pulse 2s infinite;
-}
-
-.cart-button svg {
-    width: 28px;
-    height: 28px;
-}
-
-.cart-count {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background-color: #000;
-    color: white;
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 4px 8px;
-    border-radius: 12px;
-    min-width: 24px;
-    display: none;
-    align-items: center;
-    justify-content: center;
-}
 
 /* Cart Modal */
 .cart-modal {
@@ -407,18 +357,6 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .cart-button {
-        bottom: 20px;
-        right: 20px;
-        width: 56px;
-        height: 56px;
-    }
-
-    .cart-button svg {
-        width: 24px;
-        height: 24px;
-    }
-
     .cart-modal-content {
         max-width: 100%;
     }

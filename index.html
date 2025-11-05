@@ -38,6 +38,7 @@
   <link rel="stylesheet" href="components/header.css">
   <link rel="stylesheet" href="styles/main.css">
   <link rel="stylesheet" href="styles/modal.css">
+  <link rel="stylesheet" href="styles/cart.css">
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
@@ -559,7 +560,47 @@
   </script>
   
   <script src="components/header.js"></script>
+  <script src="scripts/cart.js"></script>
+  <script src="scripts/cart-modal.js"></script>
   <script src="scripts/main.js"></script>
   <script src="scripts/program-modal.js"></script>
+  
+  <!-- Cart Modal -->
+  <div id="cart-modal" class="cart-modal">
+    <div class="cart-modal-overlay"></div>
+    <div class="cart-modal-content">
+      <div class="cart-modal-header">
+        <h2>
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17,18C15.89,18 15,18.89 15,20A2,2 0 0,0 17,22A2,2 0 0,0 19,20C19,18.89 18.1,18 17,18M1,2V4H3L6.6,11.59L5.24,14.04C5.09,14.32 5,14.65 5,15A2,2 0 0,0 7,17H19V15H7.42A0.25,0.25 0 0,1 7.17,14.75C7.17,14.7 7.18,14.66 7.2,14.63L8.1,13H15.55C16.3,13 16.96,12.58 17.3,11.97L20.88,5.5C20.95,5.34 21,5.17 21,5A1,1 0 0,0 20,4H5.21L4.27,2M7,18C5.89,18 5,18.89 5,20A2,2 0 0,0 7,22A2,2 0 0,0 9,20C9,18.89 8.1,18 7,18Z"/>
+          </svg>
+          Your Cart
+        </h2>
+        <button id="close-cart" class="close-cart" aria-label="Close cart">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
+          </svg>
+        </button>
+      </div>
+
+      <div id="cart-items" class="cart-items">
+        <!-- Cart items will be dynamically inserted here -->
+      </div>
+
+      <div class="cart-footer">
+        <div class="cart-total">
+          <span>Subtotal:</span>
+          <span id="cart-subtotal">$0.00</span>
+        </div>
+        <button id="checkout-button" class="btn-checkout">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"/>
+          </svg>
+          Proceed to Checkout
+        </button>
+        <p class="checkout-note">You'll be redirected to our secure Shopify checkout</p>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

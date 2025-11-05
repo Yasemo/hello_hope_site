@@ -116,20 +116,36 @@ window.addEventListener('cartUpdated', function() {
 // Update cart count badge
 function updateCartCount() {
     const count = Cart.getCount();
-    const countElement = document.getElementById('cart-count');
     
-    if (countElement) {
-        countElement.textContent = count;
-        countElement.style.display = count > 0 ? 'flex' : 'none';
+    // Update desktop header cart button
+    const countElementHeader = document.getElementById('cart-count-header');
+    if (countElementHeader) {
+        countElementHeader.textContent = count;
+        countElementHeader.style.display = count > 0 ? 'flex' : 'none';
     }
 
-    // Update cart button appearance
-    const cartButton = document.getElementById('cart-button');
-    if (cartButton) {
+    const cartButtonHeader = document.getElementById('cart-button-header');
+    if (cartButtonHeader) {
         if (count > 0) {
-            cartButton.classList.add('has-items');
+            cartButtonHeader.classList.add('has-items');
         } else {
-            cartButton.classList.remove('has-items');
+            cartButtonHeader.classList.remove('has-items');
+        }
+    }
+
+    // Update mobile header cart button
+    const countElementMobile = document.getElementById('cart-count-mobile');
+    if (countElementMobile) {
+        countElementMobile.textContent = count;
+        countElementMobile.style.display = count > 0 ? 'flex' : 'none';
+    }
+
+    const cartButtonMobile = document.getElementById('cart-button-mobile');
+    if (cartButtonMobile) {
+        if (count > 0) {
+            cartButtonMobile.classList.add('has-items');
+        } else {
+            cartButtonMobile.classList.remove('has-items');
         }
     }
 }

@@ -40,6 +40,62 @@
   padding: 0 1rem;
 }
 
+/* Mobile Actions Container */
+.mobile_actions {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Mobile Cart Button */
+.cart-button-mobile {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--primary-color), #a01020);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(190, 30, 45, 0.2);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cart-button-mobile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(190, 30, 45, 0.3);
+}
+
+.cart-button-mobile svg {
+  width: 20px;
+  height: 20px;
+}
+
+.cart-count-mobile {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: #000;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 5px;
+  border-radius: 10px;
+  min-width: 18px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.cart-button-mobile.has-items {
+  animation: pulse-header 2s infinite;
+}
+
 /* Mobile Menu Button */
 .mobile_menu_button {
   display: none;
@@ -281,6 +337,68 @@
 
 .contact_button {
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Cart Button in Header */
+.cart-button-header {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, var(--primary-color), #a01020);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(190, 30, 45, 0.2);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cart-button-header:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(190, 30, 45, 0.3);
+}
+
+.cart-button-header svg {
+  width: 22px;
+  height: 22px;
+}
+
+.cart-count-header {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: #000;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 6px;
+  border-radius: 10px;
+  min-width: 20px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.cart-button-header.has-items {
+  animation: pulse-header 2s infinite;
+}
+
+/* Pulse animation for cart button */
+@keyframes pulse-header {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
 }
 
 /* Contact Button Styling */
@@ -337,6 +455,11 @@
   .desktop_nav,
   .desktop_contact {
     display: none;
+  }
+  
+  /* Show mobile actions container */
+  .mobile_actions {
+    display: flex;
   }
   
   /* Show mobile menu button */
@@ -491,4 +614,21 @@ body[data-page="conference"] .mobile_contact_btn:hover {
 body[data-page="conference"] .mobile_contact_btn:hover .nav-text-original,
 body[data-page="conference"] .mobile_contact_btn:hover .nav-text-hover {
   color: #FED14D !important;
+}
+
+/* Conference Page Cart Button - Yellow Theme */
+body[data-page="conference"] .cart-button-header,
+body[data-page="conference"] .cart-button-mobile {
+  background: white;
+  color: #000;
+}
+
+body[data-page="conference"] .cart-button-header:hover,
+body[data-page="conference"] .cart-button-mobile:hover {
+  box-shadow: 0 4px 12px rgba(254, 209, 77, 0.4);
+}
+
+body[data-page="conference"] .cart-count-header,
+body[data-page="conference"] .cart-count-mobile {
+  background-color: #333333;
 }
