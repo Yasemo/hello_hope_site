@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Build your custom program schedule with Hello Hope Canada - Select from our range of character education and safe schools programs.">
+  <meta name="keywords" content="schedule builder, program booking, character education, safe schools, Aubrey Noronha">
+  <meta name="author" content="Hello Hope Canada">
+  
+  <title>Build Your Schedule - Hello Hope Canada</title>
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4W2D1MV9MZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-4W2D1MV9MZ');
+  </script>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="logos/red/red_Red 36x36.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="logos/red/red_Red 24x24.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="logos/red/red_Red 180x180.png">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="styles/reset.css">
+  <link rel="stylesheet" href="styles/variables.css">
+  <link rel="stylesheet" href="components/header.css">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/programs.css">
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hellohope.ca/programs">
+  <meta property="og:title" content="Build Your Schedule - Hello Hope Canada">
+  <meta property="og:description" content="Create a custom program schedule tailored to your school or organization's needs.">
+  <meta property="og:image" content="logos/red/red_Red 1080 x 1080.png">
+</head>
+<body>
+  <!-- Header Component -->
+  <div id="header-placeholder"></div>
+
+  <!-- Hero Section -->
+  <section class="programs-hero">
+    <div class="section_container">
+      <div class="section_title">
+        <div class="section_subtitle">
+          <div class="subtitle_header">
+            <svg class="pattern" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M542.22 32.05c-54.8 3.11-163.72 14.43-230.96 55.59-4.64 2.84-7.27 7.89-7.27 13.17v363.87c0 11.55 12.63 18.85 23.28 13.49 69.18-34.82 169.23-44.32 218.7-46.92 16.89-.89 30.02-14.43 30.02-30.66V62.75c.01-17.71-15.35-31.74-33.77-30.7zM264.73 87.64C197.5 46.48 88.58 35.17 33.78 32.05 15.36 31.01 0 45.04 0 62.75V400.6c0 16.24 13.13 29.78 30.02 30.66 49.49 2.6 149.59 12.11 218.77 46.95 10.62 5.35 23.21-1.94 23.21-13.46V100.63c0-5.29-2.62-10.14-7.27-12.99z"/></svg>
+            <span class="subtitle_word">SCHEDULE BUILDER</span>
+          </div>
+        </div>
+        <h1>Build Your Program Schedule</h1>
+        <p class="subtitle_description">Select the programs that best fit your organization's needs and create a customized schedule</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="schedule-builder-section">
+    <div class="builder-container">
+      
+      <!-- Program Selection -->
+      <div class="program-selection">
+        <h2 class="section-heading">
+          <svg viewBox="0 0 24 24" fill="currentColor" class="heading-icon">
+            <path d="M19,2H14.82C14.4,0.84 13.3,0 12,0C10.7,0 9.6,0.84 9.18,2H5A2,2 0 0,0 3,4V20A2,2 0 0,0 5,22H19A2,2 0 0,0 21,20V4A2,2 0 0,0 19,2M12,2A1,1 0 0,1 13,3A1,1 0 0,1 12,4A1,1 0 0,1 11,3A1,1 0 0,1 12,2M7,6H17V8H7V6M7,10H17V12H7V10M7,14H17V16H7V14M7,18H14V20H7V18Z"/>
+          </svg>
+          Step 1: Select Programs
+        </h2>
+        <p class="section-description">Choose the programs you'd like to include in your schedule</p>
+        
+        <div class="programs-grid" id="programsGrid">
+          <!-- Programs will be dynamically loaded here -->
+        </div>
+      </div>
+
+      <!-- Active Schedule Panel -->
+      <div class="active-schedule" id="activeSchedule">
+        <div class="schedule-header">
+          <h2 class="section-heading">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="heading-icon">
+              <path d="M19,19H5V8H19M16,1V3H8V1H6V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3H18V1M17,12H12V17H17V12Z"/>
+            </svg>
+            Your Schedule
+            <span class="schedule-count" id="scheduleCount">(0 programs)</span>
+          </h2>
+        </div>
+
+        <div class="schedule-content" id="scheduleContent">
+          <div class="empty-schedule">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="empty-icon">
+              <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+            </svg>
+            <p>No programs added yet</p>
+            <p class="empty-hint">Click "Add to Schedule" on any program above to get started</p>
+          </div>
+        </div>
+
+        <div class="schedule-actions">
+          <button class="btn-clear" id="clearSchedule" style="display: none;">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/>
+            </svg>
+            Clear All
+          </button>
+          <button class="btn-primary" id="proceedToContact" style="display: none;">
+            Continue to Contact Details
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Contact Form Section -->
+      <div class="contact-form-section" id="contactFormSection" style="display: none;">
+        <h2 class="section-heading">
+          <svg viewBox="0 0 24 24" fill="currentColor" class="heading-icon">
+            <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
+          </svg>
+          Step 2: Your Contact Information
+        </h2>
+        <p class="section-description">Please provide your details so we can get in touch about your program schedule</p>
+
+        <form class="schedule-contact-form" id="scheduleContactForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="contactName">Name *</label>
+              <input type="text" id="contactName" name="name" required>
+            </div>
+            <div class="form-group">
+              <label for="contactEmail">Email *</label>
+              <input type="email" id="contactEmail" name="email" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="contactPhone">Phone</label>
+              <input type="tel" id="contactPhone" name="phone">
+            </div>
+            <div class="form-group">
+              <label for="contactOrganization">School/Organization *</label>
+              <input type="text" id="contactOrganization" name="organization" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="preferredDates">Preferred Date Range (Optional)</label>
+            <input type="text" id="preferredDates" name="dates" placeholder="e.g., March 2025, Spring semester, etc.">
+          </div>
+
+          <div class="form-group">
+            <label for="additionalNotes">Additional Notes</label>
+            <textarea id="additionalNotes" name="notes" rows="4" placeholder="Any special requirements, questions, or additional information..."></textarea>
+          </div>
+
+          <div class="schedule-summary" id="scheduleSummary">
+            <!-- Summary will be populated here -->
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" id="backToSchedule">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z"/>
+              </svg>
+              Back to Schedule
+            </button>
+            <button type="submit" class="btn-primary">
+              Submit Schedule Request
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer_container">
+      <div class="footer_brand">
+        <div class="footer_logo">
+          <img src="logos/white/white_white 96x96.png" alt="Hello Hope Canada Logo">
+        </div>
+        <h3 class="footer_tagline">The Power of Hope</h3>
+        <p class="footer_description">"Building connected communities from the head to the heart."</p>
+      </div>
+      
+      <div class="footer_links">
+        <h4>Quick Links</h4>
+        <nav class="footer_nav">
+          <a href="/#hero" class="footer_link">Home</a>
+          <a href="/#aubrey" class="footer_link">About Aubrey</a>
+          <a href="/#testimonials" class="footer_link">Testimonials</a>
+          <a href="/#programs" class="footer_link">Programs</a>
+          <a href="/conference" class="footer_link">Conference</a>
+          <a href="/contact" class="footer_link">Contact</a>
+        </nav>
+      </div>
+      
+      <div class="footer_programs">
+        <h4>Featured Programs</h4>
+        <nav class="footer_nav">
+          <a href="/#programs" class="footer_link">Hello Hope: Battling Stress</a>
+          <a href="/#programs" class="footer_link">Colour Blind?</a>
+          <a href="/#programs" class="footer_link">Stick With The Truth</a>
+          <a href="/#programs" class="footer_link">I'm Just Here</a>
+          <a href="/#programs" class="footer_link">Man Up</a>
+          <a href="/#programs" class="footer_link">Reconnect</a>
+        </nav>
+      </div>
+      
+      <div class="footer_contact">
+        <h4>Get In Touch</h4>
+        <div class="footer_contact_info">
+          <p class="footer_contact_item">
+            <span class="contact_label">Speaking Engagements:</span>
+            Available across Canada
+          </p>
+          <p class="footer_contact_item">
+            <span class="contact_label">Response Time:</span>
+            24-48 hours
+          </p>
+          <a href="/contact" class="footer_cta_button">Contact Us Today</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer_bottom">
+      <div class="footer_bottom_container">
+        <p class="footer_copyright">
+          &copy; 2025 Hello Hope Canada. All rights reserved.
+        </p>
+        <div class="footer_social">
+          <span class="social_label">Follow Us:</span>
+          <div class="social_links">
+            <a href="#" class="social_link" aria-label="Facebook">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </a>
+            <a href="#" class="social_link" aria-label="Twitter">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+              </svg>
+            </a>
+            <a href="#" class="social_link" aria-label="LinkedIn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- EmailJS SDK -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script type="text/javascript">
+    (function(){
+      fetch('/api/config')
+        .then(response => response.json())
+        .then(config => {
+          emailjs.init({
+            publicKey: config.emailjs.publicKey,
+          });
+        })
+        .catch(error => {
+          console.error('Failed to load EmailJS configuration:', error);
+        });
+    })();
+  </script>
+
+  <script src="components/header.js"></script>
+  <script src="scripts/schedule-builder.js"></script>
+</body>
+</html>

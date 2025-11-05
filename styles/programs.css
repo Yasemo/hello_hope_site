@@ -1,0 +1,866 @@
+/* ========================================
+   PROGRAMS PAGE STYLES
+   ======================================== */
+
+/* Hero Section */
+.programs-hero {
+  padding: 0 0 4rem 0;
+  background-color: #fff;
+}
+
+.programs-hero .section_title h1 {
+  text-align: center;
+  margin: 1rem 0 2rem 0;
+}
+
+.programs-hero .subtitle_description {
+  text-align: center;
+  margin: 0 auto;
+}
+
+/* Schedule Builder Section */
+.schedule-builder-section {
+  padding: 3rem 0 5rem 0;
+  background-color: #fff;
+}
+
+.builder-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  gap: 3rem;
+}
+
+/* Section Headings */
+.section-heading {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.heading-icon {
+  width: 2rem;
+  height: 2rem;
+  color: var(--primary-color);
+  flex-shrink: 0;
+}
+
+.section-description {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+.schedule-count {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-left: 0.5rem;
+}
+
+/* Program Selection */
+.program-selection {
+  width: 100%;
+}
+
+.programs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.program-card-builder {
+  background-image: url('../logos/pattern/light_gray_hello_hope_patterns.png');
+  background-size: cover;
+  background-position: center;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 2rem;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.program-card-builder:not(.disabled):hover {
+  transform: translateY(-3px);
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(190, 30, 45, 0.15);
+}
+
+.program-card-builder.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #f5f5f5;
+  position: relative;
+}
+
+.program-card-builder.disabled::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.program-card-builder.disabled * {
+  pointer-events: none;
+}
+
+.disabled-overlay {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  z-index: 10;
+}
+
+.program-card-header {
+  margin-bottom: 1.5rem;
+}
+
+.program-card-header h3 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.program-card-header .program-versions-brief {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.program-card-body {
+ flex: 1;
+  margin-bottom: 1.5rem;
+}
+
+.program-card-body p {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  margin-bottom: 0;
+}
+
+.program-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-add-program {
+  background: linear-gradient(90deg, black 50%, var(--primary-color) 50%);
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 25px;
+  font-family: var(--font-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-add-program:hover {
+  background-position: 0 0;
+  transform: translateY(-2px);
+}
+
+.btn-add-program svg {
+  width: 18px;
+  height: 18px;
+}
+
+.btn-view-details {
+  background: transparent;
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-family: var(--font-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-view-details:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Active Schedule Panel */
+.active-schedule {
+  background-color: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 2rem;
+  position: sticky;
+  top: 90px;
+  max-height: calc(100vh - 110px);
+  display: flex;
+  flex-direction: column;
+}
+
+.schedule-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.schedule-content {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 1.5rem;
+}
+
+.empty-schedule {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-secondary);
+}
+
+.empty-icon {
+  width: 4rem;
+  height: 4rem;
+  color: #ccc;
+  margin-bottom: 1rem;
+}
+
+.empty-schedule p {
+  margin-bottom: 0.5rem;
+}
+
+.empty-hint {
+  font-size: 0.9rem;
+  color: #999;
+}
+
+.schedule-item {
+  background-color: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.schedule-item:hover {
+  border-color: var(--primary-color);
+}
+
+.schedule-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 1rem;
+}
+
+.schedule-item-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 0.25rem;
+}
+
+.btn-remove {
+  background: transparent;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-remove:hover {
+  color: var(--primary-color);
+  transform: scale(1.1);
+}
+
+.btn-remove svg {
+  width: 20px;
+  height: 20px;
+}
+
+.schedule-item-body {
+  margin-bottom: 1rem;
+}
+
+.form-group-inline {
+  margin-bottom: 1rem;
+}
+
+.form-group-inline label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.form-group-inline select,
+.form-group-inline input {
+  width: 100%;
+  padding: 0.625rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-family: var(--font-primary);
+  font-size: 0.95rem;
+  transition: border-color 0.3s ease;
+  background-color: white;
+}
+
+.form-group-inline select:focus,
+.form-group-inline input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.form-group-inline textarea {
+  width: 100%;
+  padding: 0.625rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-family: var(--font-primary);
+  font-size: 0.95rem;
+  resize: vertical;
+  min-height: 60px;
+}
+
+.form-group-inline textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+/* Cost Estimate Card */
+.cost-estimate-card {
+    background: #fff;
+    border: 2px solid var(--hello-hope-red);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.cost-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.cost-header svg {
+    width: 28px;
+    height: 28px;
+    color: var(--hello-hope-red);
+    flex-shrink: 0;
+}
+
+.cost-header h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--hello-hope-red);
+    margin: 0;
+}
+
+.cost-breakdown {
+    margin-bottom: 16px;
+}
+
+.cost-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    font-size: 1.1rem;
+}
+
+.cost-label {
+    color: #333;
+    font-weight: 500;
+}
+
+.cost-value {
+    color: #333;
+    font-weight: 600;
+    font-size: 1.15rem;
+}
+
+.cost-divider {
+    height: 2px;
+    background: #e0e0e0;
+    margin: 8px 0;
+}
+
+.cost-total {
+    padding-top: 16px;
+    border-top: 2px solid var(--hello-hope-red);
+}
+
+.cost-total .cost-label {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--hello-hope-red);
+}
+
+.cost-total .cost-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--hello-hope-red);
+}
+
+.cost-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-top: 12px;
+}
+
+.cost-note svg {
+    width: 20px;
+    height: 20px;
+    color: #666;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.cost-note p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.5;
+}
+
+.cost-note.cost-custom {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+}
+
+.cost-note.cost-custom svg {
+    color: #856404;
+}
+
+.cost-note.cost-custom p {
+    color: #856404;
+}
+
+.cost-note a {
+    color: var(--hello-hope-red);
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.cost-note a:hover {
+    color: #a01020;
+}
+
+.cost-custom-only {
+    text-align: center;
+    padding: 32px 24px;
+}
+
+.cost-custom-only svg {
+    width: 48px;
+    height: 48px;
+    color: var(--hello-hope-red);
+    margin-bottom: 16px;
+}
+
+.cost-custom-only p {
+    margin: 12px 0;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.cost-custom-only strong {
+    font-size: 1.25rem;
+    color: var(--hello-hope-red);
+}
+
+.cost-custom-note {
+    color: #666 !important;
+    font-size: 1rem !important;
+}
+
+.cost-custom-note a {
+    color: var(--hello-hope-red);
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+/* Schedule Actions */
+.schedule-actions {
+  display: flex;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #e0e0e0;
+}
+
+.btn-clear {
+  flex: 1;
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 2px solid #e0e0e0;
+  padding: 0.875rem 1.5rem;
+  border-radius: 25px;
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-clear:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.btn-clear svg {
+  width: 18px;
+  height: 18px;
+}
+
+.btn-primary {
+  flex: 2;
+  background: linear-gradient(90deg, black 50%, var(--primary-color) 50%);
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  color: white;
+  padding: 0.875rem 1.5rem;
+  border: none;
+  border-radius: 25px;
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-primary:hover {
+  background-position: 0 0;
+  transform: translateY(-2px);
+}
+
+.btn-primary svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Contact Form Section */
+.contact-form-section {
+  background-color: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 2.5rem;
+  margin-top: 2rem;
+}
+
+.schedule-contact-form {
+  margin-top: 2rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  background-color: white;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(190, 30, 45, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+/* Schedule Summary */
+.schedule-summary {
+  background-color: white;
+  border: 2px solid var(--primary-color);
+  border-radius: 10px;
+  padding: 2rem;
+  margin: 2rem 0;
+}
+
+.schedule-summary h3 {
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.schedule-summary h3 svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.summary-item {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.summary-item:last-child {
+  margin-bottom: 0;
+}
+
+.summary-item h4 {
+  color: var(--primary-color);
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+}
+
+.summary-detail {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 0.95rem;
+}
+
+.summary-detail:last-child {
+  border-bottom: none;
+}
+
+.summary-label {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.summary-value {
+  color: var(--text-secondary);
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 2px solid #e0e0e0;
+  padding: 0.875rem 1.75rem;
+  border-radius: 25px;
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-secondary:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.btn-secondary svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Success/Error Messages */
+.message {
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-weight: 500;
+}
+
+.message-success {
+  background-color: #d4edda;
+  border: 2px solid #c3e6cb;
+  color: #155724;
+}
+
+.message-error {
+  background-color: #f8d7da;
+  border: 2px solid #f5c6cb;
+  color: #721c24;
+}
+
+.message svg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .programs-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+
+  .active-schedule {
+    position: relative;
+    top: 0;
+    max-height: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .programs-hero {
+    padding: 6rem 0 3rem 0;
+  }
+
+  .programs-hero .section_title h1 {
+    font-size: 4rem;
+  }
+
+  .builder-container {
+    padding: 0 1.5rem;
+    gap: 2rem;
+  }
+
+  .programs-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-heading {
+    font-size: 1.5rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions .btn-secondary,
+  .form-actions .btn-primary {
+    width: 100%;
+  }
+
+  .schedule-actions {
+    flex-direction: column;
+  }
+
+  .btn-clear,
+  .btn-primary {
+    width: 100%;
+  }
+
+  .contact-form-section {
+    padding: 1.5rem;
+  }
+
+  .program-card-footer {
+    flex-direction: column;
+  }
+
+  .btn-add-program,
+  .btn-view-details {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .schedule-builder-section {
+    padding: 2rem 0 3rem 0;
+  }
+
+  .builder-container {
+    padding: 0 1rem;
+  }
+
+  .program-card-builder {
+    padding: 1.5rem;
+  }
+
+  .program-card-header h3 {
+    font-size: 1.5rem;
+  }
+
+  .active-schedule {
+    padding: 1.5rem;
+  }
+
+  .schedule-item {
+    padding: 1.25rem;
+  }
+
+  .schedule-summary {
+    padding: 1.5rem;
+  }
+}

@@ -1,0 +1,322 @@
+/* ========================================
+   PROGRAM MODAL STYLES
+   ======================================== */
+
+.program-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.program-modal.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  position: relative;
+  background-color: white;
+  border-radius: 15px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  transform: translateY(30px) scale(0.95);
+  transition: transform 0.3s ease;
+  z-index: 1;
+}
+
+.program-modal.active .modal-content {
+  transform: translateY(0) scale(1);
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.modal-close:hover {
+  background-color: var(--primary-color);
+  transform: rotate(90deg);
+}
+
+.modal-close svg {
+  width: 20px;
+  height: 20px;
+  stroke: #333;
+}
+
+.modal-close:hover svg {
+  stroke: white;
+}
+
+.modal-header {
+  padding: 2.5rem 2rem 1.5rem 2rem;
+  border-bottom: 2px solid #ececec;
+  background-image: url('../logos/pattern/light_gray_hello_hope_patterns.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.modal-header h2 {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.modal-header .program-tagline {
+  font-size: 1.3rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.modal-body {
+  padding: 2rem;
+}
+
+.modal-section {
+  margin-bottom: 2rem;
+}
+
+.modal-section:last-of-type {
+  margin-bottom: 0;
+}
+
+.modal-section h3 {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modal-section h3 svg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.modal-section p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.modal-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.modal-section ul li {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.modal-section ul li:before {
+  content: "•";
+  color: var(--primary-color);
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+  font-size: 1.5rem;
+  line-height: 1.4;
+}
+
+.versions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.version-tag {
+  background-color: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.version-tag:hover {
+  border-color: var(--primary-color);
+  background-color: rgba(190, 30, 45, 0.05);
+}
+
+.modal-footer {
+  padding: 1.5rem 2rem;
+  border-top: 2px solid #ececec;
+  background-color: #f8f9fa;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-btn {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 25px;
+  font-family: var(--font-primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+.modal-btn-primary {
+  background: linear-gradient(90deg, black 50%, var(--primary-color) 50%);
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  color: white;
+  box-shadow: 0 2px 8px rgba(190, 30, 45, 0.2);
+}
+
+.modal-btn-primary:hover {
+  background-position: 0 0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(190, 30, 45, 0.3);
+  color: white;
+  text-decoration: none;
+}
+
+.modal-btn-secondary {
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 2px solid #e0e0e0;
+}
+
+.modal-btn-secondary:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  background-color: rgba(190, 30, 45, 0.05);
+}
+
+/* Modal Responsive Design */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    max-height: 90vh;
+    border-radius: 10px;
+  }
+
+  .modal-header {
+    padding: 2rem 1.5rem 1rem 1.5rem;
+  }
+
+  .modal-header h2 {
+    font-size: 2rem;
+  }
+
+  .modal-header .program-tagline {
+    font-size: 1.1rem;
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+  }
+
+  .modal-section h3 {
+    font-size: 1.3rem;
+  }
+
+  .modal-section p,
+  .modal-section ul li {
+    font-size: 1rem;
+  }
+
+  .versions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-footer {
+    flex-direction: column;
+    padding: 1rem 1.5rem;
+  }
+
+  .modal-btn {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-close {
+    width: 36px;
+    height: 36px;
+  }
+
+  .modal-header h2 {
+    font-size: 1.75rem;
+  }
+
+  .modal-section h3 {
+    font-size: 1.2rem;
+  }
+}
+
+/* Scrollbar Styling for Modal */
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color);
+}

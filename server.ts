@@ -4,6 +4,12 @@ import { serveDir } from "std/http/file_server.ts";
 // Use PORT environment variable for Cloud Run, fallback to 8000 for local development
 const port = parseInt(Deno.env.get("PORT") || "8000");
 
+// Shopify configuration
+const SHOPIFY_CONFIG = {
+  storeDomain: Deno.env.get("SHOPIFY_STORE_DOMAIN") || "",
+  storefrontAccessToken: Deno.env.get("SHOPIFY_STOREFRONT_ACCESS_TOKEN") || "",
+};
+
 // Email configuration
 const SMTP_CONFIG = {
   hostname: "smtp.gmail.com",
@@ -20,6 +26,7 @@ const CLIENT_CONFIG = {
     publicKey: Deno.env.get("EMAILJS_PUBLIC_KEY") || "",
     serviceId: Deno.env.get("EMAILJS_SERVICE_ID") || "",
     templateId: Deno.env.get("EMAILJS_TEMPLATE_ID") || "",
+    scheduleTemplateId: Deno.env.get("EMAILJS_SCHEDULE_TEMPLATE_ID") || "",
   },
 };
 
@@ -136,6 +143,217 @@ async function handleApiRequest(req: Request): Promise<Response> {
           success: false, 
           message: "Sorry, there was an error processing your request." 
         }),
+        { 
+          status: 500,
+          headers: { 
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
+        }
+      );
+    }
+  }
+
+  // Shopify API - Get Products
+  if (url.pathname === "/api/shopify/products" && req.method === "GET") {
+    try {
+      if (!SHOPIFY_CONFIG.storeDomain || !SHOPIFY_CONFIG.storefrontAccessToken) {
+        return new Response(
+          JSON.stringify({ error: "Shopify configuration missing" }),
+          { 
+            status: 500,
+            headers: { 
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*"
+            }
+          }
+        );
+      }
+
+      const shopifyUrl = `https://${SHOPIFY_CONFIG.storeDomain}/api/2024-01/graphql.json`;
+      
+      const query = `{
+        products(first: 50, query: "product_type:Sweater OR product_type:sweater OR product_type:Apparel") {
+          edges {
+            node {
+              id
+              title
+              description
+              handle
+              priceRange {
+                minVariantPrice {
+                  amount
+                  currencyCode
+                }
+              }
+              images(first: 1) {
+                edges {
+                  node {
+                    url
+                    altText
+                  }
+                }
+              }
+              variants(first: 1) {
+                edges {
+                  node {
+                    id
+                    title
+                    priceV2 {
+                      amount
+                      currencyCode
+                    }
+                    availableForSale
+                  }
+                }
+              }
+            }
+          }
+        }
+      }`;
+
+      const response = await fetch(shopifyUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Storefront-Access-Token": SHOPIFY_CONFIG.storefrontAccessToken,
+        },
+        body: JSON.stringify({ query }),
+      });
+
+      const data = await response.json();
+
+      if (data.errors) {
+        console.error("Shopify API errors:", data.errors);
+        return new Response(
+          JSON.stringify({ error: "Failed to fetch products", details: data.errors }),
+          { 
+            status: 500,
+            headers: { 
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*"
+            }
+          }
+        );
+      }
+
+      return new Response(
+        JSON.stringify(data.data),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      return new Response(
+        JSON.stringify({ error: "Failed to fetch products" }),
+        { 
+          status: 500,
+          headers: { 
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
+        }
+      );
+    }
+  }
+
+  // Shopify API - Create Checkout
+  if (url.pathname === "/api/shopify/checkout" && req.method === "POST") {
+    try {
+      const { items } = await req.json();
+
+      if (!items || !Array.isArray(items) || items.length === 0) {
+        return new Response(
+          JSON.stringify({ error: "No items provided" }),
+          { 
+            status: 400,
+            headers: { 
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*"
+            }
+          }
+        );
+      }
+
+      const shopifyUrl = `https://${SHOPIFY_CONFIG.storeDomain}/api/2024-01/graphql.json`;
+      
+      // Format line items for Shopify
+      const lineItems = items.map((item: any) => ({
+        variantId: item.variantId,
+        quantity: item.quantity,
+      }));
+
+      const mutation = `
+        mutation checkoutCreate($input: CheckoutCreateInput!) {
+          checkoutCreate(input: $input) {
+            checkout {
+              id
+              webUrl
+            }
+            checkoutUserErrors {
+              code
+              field
+              message
+            }
+          }
+        }
+      `;
+
+      const variables = {
+        input: {
+          lineItems: lineItems,
+        },
+      };
+
+      const response = await fetch(shopifyUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Storefront-Access-Token": SHOPIFY_CONFIG.storefrontAccessToken,
+        },
+        body: JSON.stringify({ query: mutation, variables }),
+      });
+
+      const data = await response.json();
+
+      if (data.errors || data.data?.checkoutCreate?.checkoutUserErrors?.length > 0) {
+        console.error("Shopify checkout errors:", data.errors || data.data.checkoutCreate.checkoutUserErrors);
+        return new Response(
+          JSON.stringify({ 
+            error: "Failed to create checkout", 
+            details: data.errors || data.data.checkoutCreate.checkoutUserErrors 
+          }),
+          { 
+            status: 500,
+            headers: { 
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*"
+            }
+          }
+        );
+      }
+
+      return new Response(
+        JSON.stringify({ 
+          checkoutUrl: data.data.checkoutCreate.checkout.webUrl 
+        }),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Error creating checkout:", error);
+      return new Response(
+        JSON.stringify({ error: "Failed to create checkout" }),
         { 
           status: 500,
           headers: { 
@@ -354,6 +572,36 @@ serve(
         });
       } catch {
         return new Response("Contact page not found", { status: 404 });
+      }
+    }
+
+    if (url.pathname === "/programs") {
+      // Serve programs.html for programs page
+      try {
+        const file = await Deno.readFile("./programs.html");
+        return new Response(file, {
+          headers: {
+            "Content-Type": "text/html",
+            "Cache-Control": "no-cache",
+          },
+        });
+      } catch {
+        return new Response("Programs page not found", { status: 404 });
+      }
+    }
+
+    if (url.pathname === "/shop") {
+      // Serve shop.html for shop page
+      try {
+        const file = await Deno.readFile("./shop.html");
+        return new Response(file, {
+          headers: {
+            "Content-Type": "text/html",
+            "Cache-Control": "no-cache",
+          },
+        });
+      } catch {
+        return new Response("Shop page not found", { status: 404 });
       }
     }
 

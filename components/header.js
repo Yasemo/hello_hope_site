@@ -88,7 +88,7 @@ class HeaderComponent {
                   <span class="nav-text-hover">Testimonials</span>
                 </span>
               </a>
-              <a href="/#programs" class="nav-link" data-page="programs">
+              <a href="/programs" class="nav-link" data-page="programs">
                 <span class="nav-text">
                   <span class="nav-text-original">Programs</span>
                   <span class="nav-text-hover">Programs</span>
@@ -141,7 +141,7 @@ class HeaderComponent {
                   <span class="nav-text-hover">Testimonials</span>
                 </span>
               </a>
-              <a href="/#programs" class="mobile_nav_link" data-page="programs">
+              <a href="/programs" class="mobile_nav_link" data-page="programs">
                 <span class="nav-text">
                   <span class="nav-text-original">Programs</span>
                   <span class="nav-text-hover">Programs</span>
@@ -196,6 +196,7 @@ class HeaderComponent {
         const path = window.location.pathname;
 
         if (path === '/conference') return 'conference';
+        if (path === '/programs') return 'programs';
         return 'home'; // Default to home for / or /home
     }
 
