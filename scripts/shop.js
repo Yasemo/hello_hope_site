@@ -62,7 +62,7 @@ function createProductCard(product) {
     const title = product.title || 'Untitled Product';
     const price = product.priceRange.minVariantPrice.amount;
     const currencyCode = product.priceRange.minVariantPrice.currencyCode;
-    const description = product.description ? truncateText(product.description, 100) : 'No description available';
+    const description = product.description ? truncateText(product.description, 100) : null;
     const variant = product.variants.edges[0]?.node;
     const variantId = variant?.id;
     const availableForSale = variant?.availableForSale !== false;
@@ -77,26 +77,33 @@ function createProductCard(product) {
         </div>
         <div class="product-info">
             <h3 class="product-title">${title}</h3>
-            <p class="product-description">${description}</p>
+            ${description ? `<p class="product-description">${description}</p>` : ''}
             <div class="product-footer">
                 <span class="product-price">$${parseFloat(price).toFixed(2)} ${currencyCode}</span>
-                <button 
-                    class="btn-add-to-cart ${inCart ? 'in-cart' : ''}" 
-                    data-product-id="${product.id}"
-                    data-variant-id="${variantId}"
-                    data-title="${title}"
-                    data-price="${price}"
-                    data-image="${image}"
-                    ${!availableForSale ? 'disabled' : ''}
-                >
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        ${inCart 
-                            ? '<path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/>'
-                            : '<path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>'
-                        }
-                    </svg>
-                    ${!availableForSale ? 'Sold Out' : inCart ? 'In Cart' : 'Add to Cart'}
-                </button>
+                <div class="product-actions">
+                    <div class="quantity-selector" ${!availableForSale ? 'style="opacity: 0.5; pointer-events: none;"' : ''}>
+                        <button class="qty-btn qty-minus" type="button">−</button>
+                        <input type="number" class="qty-input" value="1" min="1" max="999">
+                        <button class="qty-btn qty-plus" type="button">+</button>
+                    </div>
+                    <button 
+                        class="btn-add-to-cart ${inCart ? 'in-cart' : ''}" 
+                        data-product-id="${product.id}"
+                        data-variant-id="${variantId}"
+                        data-title="${title}"
+                        data-price="${price}"
+                        data-image="${image}"
+                        ${!availableForSale ? 'disabled' : ''}
+                    >
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            ${inCart 
+                                ? '<path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/>'
+                                : '<path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>'
+                            }
+                        </svg>
+                        ${!availableForSale ? 'Sold Out' : inCart ? 'In Cart' : 'Add to Cart'}
+                    </button>
+                </div>
             </div>
         </div>
     `;
@@ -109,11 +116,41 @@ function createProductCard(product) {
         });
     }
 
+    // Add quantity selector handlers
+    const qtyInput = card.querySelector('.qty-input');
+    const qtyMinus = card.querySelector('.qty-minus');
+    const qtyPlus = card.querySelector('.qty-plus');
+
+    if (qtyMinus && qtyPlus && qtyInput) {
+        qtyMinus.addEventListener('click', function() {
+            const currentValue = parseInt(qtyInput.value) || 1;
+            if (currentValue > 1) {
+                qtyInput.value = currentValue - 1;
+            }
+        });
+
+        qtyPlus.addEventListener('click', function() {
+            const currentValue = parseInt(qtyInput.value) || 1;
+            qtyInput.value = currentValue + 1;
+        });
+
+        qtyInput.addEventListener('change', function() {
+            let value = parseInt(this.value) || 1;
+            if (value < 1) value = 1;
+            if (value > 999) value = 999;
+            this.value = value;
+        });
+    }
+
     return card;
 }
 
 // Handle add to cart
 function handleAddToCart(button) {
+    const productCard = button.closest('.product-card');
+    const qtyInput = productCard.querySelector('.qty-input');
+    const quantity = parseInt(qtyInput.value) || 1;
+
     const productData = {
         id: button.dataset.productId,
         variantId: button.dataset.variantId,
@@ -122,8 +159,11 @@ function handleAddToCart(button) {
         image: button.dataset.image
     };
 
-    // Add to cart
-    Cart.add(productData);
+    // Add to cart with selected quantity
+    Cart.add(productData, quantity);
+
+    // Reset quantity input
+    qtyInput.value = 1;
 
     // Update button state
     button.classList.add('in-cart');
@@ -135,14 +175,16 @@ function handleAddToCart(button) {
     `;
 
     // Show success animation
-    showNotification('Item added to cart!');
+    const message = quantity > 1 ? `${quantity} items added to cart!` : 'Item added to cart!';
+    showNotification(message);
 
     // Track event
     if (typeof gtag !== 'undefined') {
         gtag('event', 'add_to_cart', {
             'event_category': 'ecommerce',
             'event_label': productData.title,
-            'value': parseFloat(productData.price)
+            'value': parseFloat(productData.price) * quantity,
+            'quantity': quantity
         });
     }
 }

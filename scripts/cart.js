@@ -16,8 +16,9 @@ const Cart = {
     },
 
     // Add item to cart
-    add(product) {
+    add(product, quantity = 1) {
         const cart = this.get();
+        quantity = parseInt(quantity) || 1;
         
         // Check if item already exists
         const existingItemIndex = cart.items.findIndex(
@@ -26,7 +27,7 @@ const Cart = {
 
         if (existingItemIndex > -1) {
             // Item exists, increase quantity
-            cart.items[existingItemIndex].quantity += 1;
+            cart.items[existingItemIndex].quantity += quantity;
         } else {
             // New item, add to cart
             cart.items.push({
@@ -35,7 +36,7 @@ const Cart = {
                 title: product.title,
                 price: parseFloat(product.price),
                 image: product.image,
-                quantity: 1
+                quantity: quantity
             });
         }
 

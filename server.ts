@@ -173,7 +173,7 @@ async function handleApiRequest(req: Request): Promise<Response> {
       const shopifyUrl = `https://${SHOPIFY_CONFIG.storeDomain}/api/2024-01/graphql.json`;
       
       const query = `{
-        products(first: 50, query: "product_type:Sweater OR product_type:sweater OR product_type:Apparel") {
+        products(first: 50) {
           edges {
             node {
               id
@@ -262,7 +262,7 @@ async function handleApiRequest(req: Request): Promise<Response> {
     }
   }
 
-  // Shopify API - Create Checkout
+  // Shopify API - Create Cart
   if (url.pathname === "/api/shopify/checkout" && req.method === "POST") {
     try {
       const { items } = await req.json();
@@ -282,20 +282,20 @@ async function handleApiRequest(req: Request): Promise<Response> {
 
       const shopifyUrl = `https://${SHOPIFY_CONFIG.storeDomain}/api/2024-01/graphql.json`;
       
-      // Format line items for Shopify
-      const lineItems = items.map((item: any) => ({
-        variantId: item.variantId,
+      // Format line items for Shopify Cart API
+      const lines = items.map((item: any) => ({
+        merchandiseId: item.variantId,
         quantity: item.quantity,
       }));
 
       const mutation = `
-        mutation checkoutCreate($input: CheckoutCreateInput!) {
-          checkoutCreate(input: $input) {
-            checkout {
+        mutation cartCreate($input: CartInput!) {
+          cartCreate(input: $input) {
+            cart {
               id
-              webUrl
+              checkoutUrl
             }
-            checkoutUserErrors {
+            userErrors {
               code
               field
               message
@@ -306,7 +306,7 @@ async function handleApiRequest(req: Request): Promise<Response> {
 
       const variables = {
         input: {
-          lineItems: lineItems,
+          lines: lines,
         },
       };
 
@@ -321,12 +321,12 @@ async function handleApiRequest(req: Request): Promise<Response> {
 
       const data = await response.json();
 
-      if (data.errors || data.data?.checkoutCreate?.checkoutUserErrors?.length > 0) {
-        console.error("Shopify checkout errors:", data.errors || data.data.checkoutCreate.checkoutUserErrors);
+      if (data.errors || data.data?.cartCreate?.userErrors?.length > 0) {
+        console.error("Shopify cart errors:", data.errors || data.data.cartCreate.userErrors);
         return new Response(
           JSON.stringify({ 
-            error: "Failed to create checkout", 
-            details: data.errors || data.data.checkoutCreate.checkoutUserErrors 
+            error: "Failed to create cart", 
+            details: data.errors || data.data.cartCreate.userErrors 
           }),
           { 
             status: 500,
@@ -340,7 +340,7 @@ async function handleApiRequest(req: Request): Promise<Response> {
 
       return new Response(
         JSON.stringify({ 
-          checkoutUrl: data.data.checkoutCreate.checkout.webUrl 
+          checkoutUrl: data.data.cartCreate.cart.checkoutUrl 
         }),
         {
           status: 200,
@@ -351,9 +351,9 @@ async function handleApiRequest(req: Request): Promise<Response> {
         }
       );
     } catch (error) {
-      console.error("Error creating checkout:", error);
+      console.error("Error creating cart:", error);
       return new Response(
-        JSON.stringify({ error: "Failed to create checkout" }),
+        JSON.stringify({ error: "Failed to create cart" }),
         { 
           status: 500,
           headers: { 

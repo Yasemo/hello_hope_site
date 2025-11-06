@@ -286,7 +286,7 @@
 .btn-checkout {
     width: 100%;
     padding: 1rem 2rem;
-    background: linear-gradient(90deg, black 50%, var(--hello-hope-red) 50%);
+    background: #BE1E2D;
     background-size: 200% 100%;
     background-position: 100% 0;
     color: white;

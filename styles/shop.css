@@ -4,7 +4,7 @@
 
 /* Shop Hero Section */
 .shop-hero {
-    padding: 0 0 4rem 0;
+    padding: 5rem 0 4rem 0;
     background-color: #fff;
 }
 
@@ -104,6 +104,7 @@
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 2.5rem;
     margin-top: 2rem;
+    padding-inline: 2rem;
 }
 
 /* Product Card */
@@ -129,7 +130,7 @@
     position: relative;
     width: 100%;
     padding-top: 100%; /* 1:1 Aspect Ratio */
-    background-color: #f5f5f5;
+    background-color: #ffffff;
     overflow: hidden;
 }
 
@@ -139,7 +140,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     transition: transform 0.3s ease;
 }
 
@@ -185,10 +186,68 @@
 
 .product-footer {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
     gap: 1rem;
     margin-top: auto;
+}
+
+.product-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #f9f9f9;
+}
+
+.qty-btn {
+    background-color: #f9f9f9;
+    border: none;
+    color: var(--text-primary);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.qty-btn:hover {
+    background-color: var(--hello-hope-red);
+    color: white;
+}
+
+.qty-input {
+    border: none;
+    background-color: #f9f9f9;
+    width: 50px;
+    height: 36px;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    -moz-appearance: textfield;
+}
+
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.qty-input:focus {
+    outline: none;
+    background-color: #f0f0f0;
 }
 
 .product-price {
@@ -198,7 +257,7 @@
 }
 
 .btn-add-to-cart {
-    background: linear-gradient(90deg, black 50%, var(--hello-hope-red) 50%);
+    background: #BE1E2D;
     background-size: 200% 100%;
     background-position: 100% 0;
     color: white;
@@ -294,6 +353,16 @@
     .product-footer {
         flex-direction: column;
         align-items: stretch;
+    }
+
+    .product-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .quantity-selector {
+        width: 100%;
+        justify-content: space-between;
     }
 
     .btn-add-to-cart {
