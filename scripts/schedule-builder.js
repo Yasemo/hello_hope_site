@@ -61,6 +61,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Active schedule state
     let activeSchedule = [];
 
+    // Version selection modal state
+    let versionSelectionModal = null;
+    let currentProgramForSelection = null;
+
     // Pricing data
     const pricingData = {
         elementary: {
@@ -109,6 +113,50 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Calculate discount percentage based on selections
+    function calculateDiscount() {
+        let totalVersions = 0;
+        let totalPrograms = activeSchedule.length;
+
+        activeSchedule.forEach(item => {
+            totalVersions += item.selectedVersions.length;
+        });
+
+        // Multi-version discount (same program, multiple versions)
+        let multiVersionDiscount = 0;
+        activeSchedule.forEach(item => {
+            if (item.selectedVersions.length >= 2) {
+                // 10% discount for 2 versions, 15% for 3+, 20% for 4+
+                if (item.selectedVersions.length >= 4) {
+                    multiVersionDiscount += 20;
+                } else if (item.selectedVersions.length >= 3) {
+                    multiVersionDiscount += 15;
+                } else {
+                    multiVersionDiscount += 10;
+                }
+            }
+        });
+
+        // Multi-program discount
+        let multiProgramDiscount = 0;
+        if (totalPrograms >= 3) {
+            multiProgramDiscount = 15; // 15% off for 3+ programs
+        } else if (totalPrograms >= 2) {
+            multiProgramDiscount = 10; // 10% off for 2 programs
+        }
+
+        // Combine discounts (don't exceed 25% total)
+        const totalDiscountPercent = Math.min(multiVersionDiscount + multiProgramDiscount, 25);
+
+        return {
+            totalDiscountPercent,
+            multiVersionDiscount,
+            multiProgramDiscount,
+            totalPrograms,
+            totalVersions
+        };
+    }
+
     // Calculate total cost estimate for schedule
     function calculateTotalCost() {
         let subtotal = 0;
@@ -116,28 +164,41 @@ document.addEventListener('DOMContentLoaded', function() {
         let customPrograms = [];
 
         activeSchedule.forEach(item => {
-            const audience = categorizeAudience(item.selectedVersion);
-            
-            if (audience === 'custom') {
-                hasCustomPricing = true;
-                customPrograms.push(item.name);
-            } else {
-                const cost = calculateProgramCost(audience, item.sessions, item.deliveryMethod);
-                if (cost) {
-                    subtotal += cost;
+            // Calculate cost for each selected version
+            item.selectedVersions.forEach(version => {
+                const audience = categorizeAudience(version);
+
+                if (audience === 'custom') {
+                    hasCustomPricing = true;
+                    if (!customPrograms.includes(item.name)) {
+                        customPrograms.push(item.name);
+                    }
+                } else {
+                    const cost = calculateProgramCost(audience, item.sessions, item.deliveryMethod);
+                    if (cost) {
+                        subtotal += cost;
+                    }
                 }
-            }
+            });
         });
 
-        const hst = subtotal * HST_RATE;
-        const total = subtotal + hst;
+        // Apply discounts
+        const discountInfo = calculateDiscount();
+        const discountAmount = subtotal * (discountInfo.totalDiscountPercent / 100);
+        const discountedSubtotal = subtotal - discountAmount;
+
+        const hst = discountedSubtotal * HST_RATE;
+        const total = discountedSubtotal + hst;
 
         return {
-            subtotal,
+            subtotal: discountedSubtotal,
+            originalSubtotal: subtotal,
             hst,
             total,
             hasCustomPricing,
-            customPrograms
+            customPrograms,
+            discountInfo,
+            discountAmount
         };
     }
 
@@ -238,21 +299,159 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('scheduleContactForm').addEventListener('submit', handleFormSubmission);
     }
 
-    // Add program to schedule
-    function addToSchedule(programId) {
+    // Show version selection modal
+    function showVersionSelectionModal(programId, isEditing = false) {
         const program = programsData[programId];
         if (!program) return;
 
-        const scheduleItem = {
-            id: program.id,
-            name: program.name,
-            selectedVersion: program.versions[0],
-            sessions: program.hasParts ? 2 : 1,
-            deliveryMethod: 'inPerson', // default to in-person
-            notes: ''
+        currentProgramForSelection = program;
+
+        // Create modal if it doesn't exist
+        if (!versionSelectionModal) {
+            versionSelectionModal = createVersionSelectionModal();
+            document.body.appendChild(versionSelectionModal);
+        }
+
+        // Populate modal
+        const modalTitle = versionSelectionModal.querySelector('.modal-title');
+        const checkboxesContainer = versionSelectionModal.querySelector('.version-checkboxes');
+        const addBtn = versionSelectionModal.querySelector('.modal-add-selected');
+
+        modalTitle.textContent = `${isEditing ? 'Edit' : 'Select'} Versions for ${program.name}`;
+        addBtn.textContent = isEditing ? 'Update Versions' : 'Add Selected Versions';
+        checkboxesContainer.innerHTML = '';
+
+        // Get current versions if editing
+        const currentItem = isEditing ? activeSchedule.find(item => item.id === programId) : null;
+        const currentVersions = currentItem ? currentItem.selectedVersions : [];
+
+        program.versions.forEach(version => {
+            const isChecked = currentVersions.includes(version);
+            const checkboxDiv = document.createElement('div');
+            checkboxDiv.className = 'version-checkbox-item';
+            checkboxDiv.innerHTML = `
+                <label class="version-checkbox-label">
+                    <input type="checkbox" value="${version}" class="version-checkbox" ${isChecked ? 'checked' : ''}>
+                    <span class="checkmark"></span>
+                    ${version}
+                </label>
+            `;
+            checkboxesContainer.appendChild(checkboxDiv);
+        });
+
+        // Show modal
+        versionSelectionModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        // Focus on first checkbox
+        setTimeout(() => {
+            const firstCheckbox = versionSelectionModal.querySelector('.version-checkbox');
+            if (firstCheckbox) firstCheckbox.focus();
+        }, 100);
+    }
+
+    // Edit program versions
+    function editProgramVersions(programId) {
+        showVersionSelectionModal(programId, true);
+    }
+
+    // Create version selection modal
+    function createVersionSelectionModal() {
+        const modal = document.createElement('div');
+        modal.className = 'version-selection-modal';
+        modal.innerHTML = `
+            <div class="modal-overlay"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Select Versions</h3>
+                    <button class="modal-close" aria-label="Close modal">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="modal-description">Choose one or more versions of this program to add to your schedule</p>
+                    <div class="version-checkboxes"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary modal-cancel">Cancel</button>
+                    <button class="btn-primary modal-add-selected" disabled>Add Selected Versions</button>
+                </div>
+            </div>
+        `;
+
+        // Event listeners
+        const overlay = modal.querySelector('.modal-overlay');
+        const closeBtn = modal.querySelector('.modal-close');
+        const cancelBtn = modal.querySelector('.modal-cancel');
+        const addBtn = modal.querySelector('.modal-add-selected');
+
+        const closeModal = () => {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            currentProgramForSelection = null;
         };
 
-        activeSchedule.push(scheduleItem);
+        overlay.addEventListener('click', closeModal);
+        closeBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+
+        // Handle checkbox changes
+        modal.addEventListener('change', (e) => {
+            if (e.target.classList.contains('version-checkbox')) {
+                const checkedBoxes = modal.querySelectorAll('.version-checkbox:checked');
+                addBtn.disabled = checkedBoxes.length === 0;
+            }
+        });
+
+        // Handle add selected
+        addBtn.addEventListener('click', () => {
+            const selectedVersions = Array.from(modal.querySelectorAll('.version-checkbox:checked')).map(cb => cb.value);
+            if (selectedVersions.length > 0) {
+                const modalTitle = modal.querySelector('.modal-title');
+                const isEditing = modalTitle && modalTitle.textContent.includes('Edit');
+                addProgramWithVersions(currentProgramForSelection.id, selectedVersions, isEditing);
+                closeModal();
+            }
+        });
+
+        // Keyboard navigation
+        modal.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        return modal;
+    }
+
+    // Add program to schedule with selected versions
+    function addProgramWithVersions(programId, selectedVersions, isEditing = false) {
+        const program = programsData[programId];
+        if (!program || selectedVersions.length === 0) return;
+
+        if (isEditing) {
+            // Update existing item
+            const existingItem = activeSchedule.find(item => item.id === programId);
+            if (existingItem) {
+                existingItem.selectedVersions = selectedVersions;
+            }
+        } else {
+            // Add new item
+            const scheduleItem = {
+                id: program.id,
+                name: program.name,
+                selectedVersions: selectedVersions,
+                sessions: program.hasParts ? 2 : 1,
+                deliveryMethod: 'inPerson', // default to in-person
+                notes: ''
+            };
+
+            activeSchedule.push(scheduleItem);
+        }
+
         updateScheduleDisplay();
         updateProgramCards();
         validateCompatibility();
@@ -260,11 +459,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Track event
         if (typeof gtag !== 'undefined') {
-            gtag('event', 'program_added_to_schedule', {
+            const eventName = isEditing ? 'program_updated_in_schedule' : 'program_added_to_schedule';
+            gtag('event', eventName, {
                 'event_category': 'schedule_builder',
-                'event_label': program.name
+                'event_label': `${program.name} (${selectedVersions.length} versions)`,
+                'value': selectedVersions.length
             });
         }
+    }
+
+    // Update add to schedule button click handler
+    // Add program to schedule
+    function addToSchedule(programId) {
+        showVersionSelectionModal(programId);
     }
 
     // Remove from schedule
@@ -310,16 +517,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
 
-            // Setup change listeners for version selects
-            content.querySelectorAll('.version-select').forEach(select => {
-                select.addEventListener('change', function() {
+            // Setup edit buttons
+            content.querySelectorAll('.btn-edit').forEach(btn => {
+                btn.addEventListener('click', function() {
                     const programId = this.getAttribute('data-program-id');
-                    const item = activeSchedule.find(i => i.id === programId);
-                    if (item) {
-                        item.selectedVersion = this.value;
-                        validateCompatibility();
-                        updateCostEstimate();
-                    }
+                    editProgramVersions(programId);
                 });
             });
 
@@ -330,18 +532,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     const item = activeSchedule.find(i => i.id === programId);
                     if (item) {
                         item.deliveryMethod = this.value;
-                        updateCostEstimate();
-                    }
-                });
-            });
-
-            // Setup change listeners for sessions
-            content.querySelectorAll('.sessions-input').forEach(input => {
-                input.addEventListener('change', function() {
-                    const programId = this.getAttribute('data-program-id');
-                    const item = activeSchedule.find(i => i.id === programId);
-                    if (item) {
-                        item.sessions = parseInt(this.value) || 1;
                         updateCostEstimate();
                     }
                 });
@@ -363,26 +553,32 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create schedule item HTML
     function createScheduleItem(item) {
         const program = programsData[item.id];
-        
+
+        // Create version tags
+        const versionTags = item.selectedVersions.map(version => `<span class="version-tag">${version}</span>`).join('');
+
         return `
             <div class="schedule-item">
                 <div class="schedule-item-header">
                     <div>
                         <h4 class="schedule-item-title">${program.name}</h4>
+                        <div class="selected-versions">${versionTags}</div>
                     </div>
-                    <button class="btn-remove" data-program-id="${item.id}" aria-label="Remove ${program.name}">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
-                        </svg>
-                    </button>
+                    <div class="schedule-item-actions">
+                        <button class="btn-edit" data-program-id="${item.id}" aria-label="Edit ${program.name} versions">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"/>
+                            </svg>
+                            Edit
+                        </button>
+                        <button class="btn-remove" data-program-id="${item.id}" aria-label="Remove ${program.name}">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 <div class="schedule-item-body">
-                    <div class="form-group-inline">
-                        <label for="version-${item.id}">Select Version/Audience *</label>
-                        <select id="version-${item.id}" class="version-select" data-program-id="${item.id}" required>
-                            ${program.versions.map(v => `<option value="${v}" ${v === item.selectedVersion ? 'selected' : ''}>${v}</option>`).join('')}
-                        </select>
-                    </div>
                     <div class="form-group-inline">
                         <label for="delivery-${item.id}">Delivery Method *</label>
                         <select id="delivery-${item.id}" class="delivery-select" data-program-id="${item.id}" required>
@@ -390,24 +586,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             <option value="virtual" ${item.deliveryMethod === 'virtual' ? 'selected' : ''}>Virtual</option>
                         </select>
                     </div>
-                    ${program.hasParts ? `
-                        <div class="form-group-inline">
-                            <label for="sessions-${item.id}">Number of Parts/Sessions *</label>
-                            <select id="sessions-${item.id}" class="sessions-input" data-program-id="${item.id}">
-                                <option value="1" ${item.sessions === 1 ? 'selected' : ''}>Part 1 only</option>
-                                <option value="2" ${item.sessions === 2 ? 'selected' : ''}>Part 1 & Part 2</option>
-                            </select>
-                        </div>
-                    ` : `
-                        <div class="form-group-inline">
-                            <label for="sessions-${item.id}">Number of Sessions</label>
-                            <input type="number" id="sessions-${item.id}" class="sessions-input" data-program-id="${item.id}" 
-                                   min="1" max="10" value="${item.sessions}">
-                        </div>
-                    `}
                     <div class="form-group-inline">
                         <label for="notes-${item.id}">Notes (Optional)</label>
-                        <textarea id="notes-${item.id}" class="notes-textarea" data-program-id="${item.id}" 
+                        <textarea id="notes-${item.id}" class="notes-textarea" data-program-id="${item.id}"
                                   placeholder="Any specific requirements or preferences...">${item.notes}</textarea>
                     </div>
                 </div>
@@ -444,17 +625,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Smart validation - grey out incompatible programs
     function validateCompatibility() {
-        // Get all selected audiences from schedule
-        const selectedAudiences = activeSchedule.map(item => item.selectedVersion);
-        
+        // Get all selected audiences from schedule (flatten the arrays)
+        const selectedAudiences = activeSchedule.flatMap(item => item.selectedVersions);
+
         // Analyze audience types
         const hasYoungStudents = selectedAudiences.some(a => a.includes('K-3'));
         const hasElementary = selectedAudiences.some(a => a.includes('Gr. 4-6'));
         const hasMiddle = selectedAudiences.some(a => a.includes('Gr. 6-8') || a.includes('Gr. 7-8'));
         const hasHigh = selectedAudiences.some(a => a.includes('Gr. 9-10') || a.includes('Gr. 11-12'));
-        const hasAdults = selectedAudiences.some(a => 
-            a.includes('Faculty') || a.includes('Educators') || 
-            a.includes('Admin') || a.includes('Parents') || 
+        const hasAdults = selectedAudiences.some(a =>
+            a.includes('Faculty') || a.includes('Educators') ||
+            a.includes('Admin') || a.includes('Parents') ||
             a.includes('Corporate') || a.includes('Teams')
         );
 
@@ -472,7 +653,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.program-card-builder').forEach(card => {
             const programId = card.getAttribute('data-program-id');
             const program = programsData[programId];
-            
+
             // Skip if already in schedule
             if (activeSchedule.some(item => item.id === programId)) {
                 return;
@@ -494,9 +675,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (hasHigh && program.versions.some(v => v.includes('Gr. 9-10') || v.includes('Gr. 11-12'))) {
                 isCompatible = true;
             }
-            if (hasAdults && program.versions.some(v => 
-                v.includes('Faculty') || v.includes('Educators') || 
-                v.includes('Admin') || v.includes('Parents') || 
+            if (hasAdults && program.versions.some(v =>
+                v.includes('Faculty') || v.includes('Educators') ||
+                v.includes('Admin') || v.includes('Parents') ||
                 v.includes('Corporate') || v.includes('Teams') || v.includes('Sr. Admin.')
             )) {
                 isCompatible = true;
@@ -554,9 +735,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 ` : `
                     <div class="cost-breakdown">
                         <div class="cost-row">
-                            <span class="cost-label">Subtotal:</span>
-                            <span class="cost-value">$${costData.subtotal.toFixed(2)}</span>
+                            <span class="cost-label">Original Subtotal:</span>
+                            <span class="cost-value">$${costData.originalSubtotal.toFixed(2)}</span>
                         </div>
+                        ${costData.discountInfo.totalDiscountPercent > 0 ? `
+                            <div class="cost-row cost-discount">
+                                <span class="cost-label">Discount (${costData.discountInfo.totalDiscountPercent}%):</span>
+                                <span class="cost-value">-$${costData.discountAmount.toFixed(2)}</span>
+                            </div>
+                            <div class="cost-row">
+                                <span class="cost-label">Subtotal (after discount):</span>
+                                <span class="cost-value">$${costData.subtotal.toFixed(2)}</span>
+                            </div>
+                        ` : `
+                            <div class="cost-row">
+                                <span class="cost-label">Subtotal:</span>
+                                <span class="cost-value">$${costData.subtotal.toFixed(2)}</span>
+                            </div>
+                        `}
                         <div class="cost-row">
                             <span class="cost-label">HST (13%):</span>
                             <span class="cost-value">$${costData.hst.toFixed(2)}</span>
@@ -567,6 +763,14 @@ document.addEventListener('DOMContentLoaded', function() {
                             <span class="cost-value">$${costData.total.toFixed(2)}</span>
                         </div>
                     </div>
+                    ${costData.discountInfo.totalDiscountPercent > 0 ? `
+                        <div class="cost-note cost-discount-note">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M11,7H13V9H11V7M11,11H13V17H11V11Z"/>
+                            </svg>
+                            <p><strong>Discount Applied:</strong> ${costData.discountInfo.totalDiscountPercent}% off for ${costData.discountInfo.totalPrograms} program${costData.discountInfo.totalPrograms > 1 ? 's' : ''} with ${costData.discountInfo.totalVersions} version${costData.discountInfo.totalVersions > 1 ? 's' : ''} selected.</p>
+                        </div>
+                    ` : ''}
                     ${costData.hasCustomPricing ? `
                         <div class="cost-note cost-custom">
                             <svg viewBox="0 0 24 24" fill="currentColor">
@@ -637,7 +841,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Populate schedule summary
     function populateScheduleSummary() {
         const summary = document.getElementById('scheduleSummary');
-        
+
         const summaryHTML = `
             <h3>
                 <svg viewBox="0 0 24 24" fill="currentColor">
@@ -652,7 +856,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <h4>${index + 1}. ${program.name}</h4>
                         <div class="summary-detail">
                             <span class="summary-label">Version/Audience:</span>
-                            <span class="summary-value">${item.selectedVersion}</span>
+                            <span class="summary-value">${item.selectedVersions.join(', ')}</span>
                         </div>
                         <div class="summary-detail">
                             <span class="summary-label">Sessions:</span>
@@ -707,7 +911,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const deliveryText = item.deliveryMethod === 'inPerson' ? 'In-Person' : 'Virtual';
                 return `
 ${index + 1}. ${program.name}
-   • Version/Audience: ${item.selectedVersion}
+   • Version/Audience: ${item.selectedVersions.join(', ')}
    • Delivery Method: ${deliveryText}
    • Sessions: ${program.hasParts && item.sessions === 2 ? 'Part 1 & Part 2' : `${item.sessions} session(s)`}
    • Duration: ${program.duration}${item.notes ? `\n   • Notes: ${item.notes}` : ''}
@@ -721,9 +925,18 @@ ${index + 1}. ${program.name}
                 costEstimateText += 'Custom pricing required for all programs.\n';
                 costEstimateText += `Please contact for pricing on: ${costData.customPrograms.join(', ')}`;
             } else {
-                costEstimateText += `Subtotal: $${costData.subtotal.toFixed(2)}\n`;
+                costEstimateText += `Original Subtotal: $${costData.originalSubtotal.toFixed(2)}\n`;
+                if (costData.discountInfo.totalDiscountPercent > 0) {
+                    costEstimateText += `Discount (${costData.discountInfo.totalDiscountPercent}%): -$${costData.discountAmount.toFixed(2)}\n`;
+                    costEstimateText += `Subtotal (after discount): $${costData.subtotal.toFixed(2)}\n`;
+                } else {
+                    costEstimateText += `Subtotal: $${costData.subtotal.toFixed(2)}\n`;
+                }
                 costEstimateText += `HST (13%): $${costData.hst.toFixed(2)}\n`;
                 costEstimateText += `Total: $${costData.total.toFixed(2)}\n`;
+                if (costData.discountInfo.totalDiscountPercent > 0) {
+                    costEstimateText += `\n* Discount applied: ${costData.discountInfo.totalDiscountPercent}% off for ${costData.discountInfo.totalPrograms} program${costData.discountInfo.totalPrograms > 1 ? 's' : ''} with ${costData.discountInfo.totalVersions} version${costData.discountInfo.totalVersions > 1 ? 's' : ''} selected.`;
+                }
                 if (costData.hasCustomPricing) {
                     costEstimateText += `\n* Additional cost required for: ${costData.customPrograms.join(', ')}\n`;
                     costEstimateText += '* Please contact for complete pricing.';

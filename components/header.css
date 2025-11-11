@@ -446,7 +446,7 @@
 }
 
 /* Mobile Responsive Design */
-@media (max-width: 767px) {
+@media (max-width: 919px) {
   .header_container {
     padding: 0 1rem;
   }
@@ -485,7 +485,7 @@
 }
 
 /* Tablet Responsive Design */
-@media (min-width: 768px) and (max-width: 1023px) {
+@media (min-width: 920px) and (max-width: 1023px) {
   .header_container {
     padding: 0 1.5rem;
   }

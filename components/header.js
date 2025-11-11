@@ -31,7 +31,7 @@ class HeaderComponent {
             // Check if we can use fetch (server environment)
             if (window.location.protocol !== 'file:') {
                 // Load header HTML from component file
-                const response = await fetch('components/header.html');
+                const response = await fetch('/components/header.html');
                 const headerHTML = await response.text();
                 
                 // Find existing header or create placeholder
@@ -65,7 +65,7 @@ class HeaderComponent {
         <header class="header">
           <div class="header_container">
             <a href="/#hero" class="header_logo">
-              <img src="logos/red/red_Red 36x36.png" alt="Hello Hope Canada Logo">
+              <img src="/logos/red/red_Red 36x36.png" alt="Hello Hope Canada Logo">
             </a>
 
             <!-- Desktop Navigation -->
@@ -465,9 +465,9 @@ class HeaderComponent {
         const logoImg = document.querySelector('.header_logo img');
         if (logoImg) {
             if (this.currentPage === 'conference') {
-                logoImg.src = 'logos/white/white_white 36x36 .png';
+                logoImg.src = '/logos/white/white_white 36x36 .png';
             } else {
-                logoImg.src = 'logos/red/red_Red 36x36.png';
+                logoImg.src = '/logos/red/red_Red 36x36.png';
             }
         }
     }

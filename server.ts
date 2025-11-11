@@ -20,6 +20,12 @@ const SMTP_CONFIG = {
 
 const RECIPIENT_EMAIL = "aubrey@hellohope.ca";
 
+// Admin configuration
+const ADMIN_CONFIG = {
+  username: Deno.env.get("ADMIN_USERNAME") || "admin",
+  password: Deno.env.get("ADMIN_PASSWORD") || "password",
+};
+
 // Client configuration (safe to expose to frontend)
 const CLIENT_CONFIG = {
   emailjs: {
@@ -37,7 +43,7 @@ async function sendEmail(formData: any) {
     // In production, you'd want to use proper SMTP
     console.log("Email would be sent to:", RECIPIENT_EMAIL);
     console.log("Form data:", formData);
-    
+
     // Simulate email sending - replace with actual SMTP implementation
     const emailContent = `
 New Contact Form Submission from Hello Hope Canada Website
@@ -54,17 +60,146 @@ ${formData.message}
 ---
 Submitted at: ${new Date().toLocaleString()}
     `;
-    
+
     console.log("Email content:", emailContent);
-    
+
     // For development, we'll just log the email
     // In production, implement actual SMTP sending here
     return { success: true, message: "Email sent successfully" };
-    
+
   } catch (error) {
     console.error("Email sending failed:", error);
     return { success: false, message: "Failed to send email" };
   }
+}
+
+// Blog data management functions
+interface BlogPost {
+  id: string;
+  title: string;
+  content: string;
+  excerpt: string;
+  author: string;
+  publishDate: string;
+  lastModified: string;
+  featuredImage?: string;
+  tags: string[];
+  published: boolean;
+}
+
+async function loadPosts(): Promise<BlogPost[]> {
+  try {
+    const data = await Deno.readTextFile("./data/posts.json");
+    return JSON.parse(data);
+  } catch (error) {
+    console.error("Error loading posts:", error);
+    return [];
+  }
+}
+
+async function savePosts(posts: BlogPost[]): Promise<void> {
+  try {
+    await Deno.writeTextFile("./data/posts.json", JSON.stringify(posts, null, 2));
+  } catch (error) {
+    console.error("Error saving posts:", error);
+    throw error;
+  }
+}
+
+async function getPublishedPosts(): Promise<BlogPost[]> {
+  const posts = await loadPosts();
+  return posts.filter(post => post.published).sort((a, b) =>
+    new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime()
+  );
+}
+
+async function getPostById(id: string): Promise<BlogPost | null> {
+  const posts = await loadPosts();
+  return posts.find(post => post.id === id) || null;
+}
+
+async function createPost(postData: Omit<BlogPost, 'id' | 'publishDate' | 'lastModified'>): Promise<BlogPost> {
+  const posts = await loadPosts();
+  const newPost: BlogPost = {
+    ...postData,
+    id: generateId(),
+    publishDate: new Date().toISOString(),
+    lastModified: new Date().toISOString(),
+  };
+  posts.push(newPost);
+  await savePosts(posts);
+  return newPost;
+}
+
+async function updatePost(id: string, postData: Partial<BlogPost>): Promise<BlogPost | null> {
+  const posts = await loadPosts();
+  const index = posts.findIndex(post => post.id === id);
+  if (index === -1) return null;
+
+  posts[index] = {
+    ...posts[index],
+    ...postData,
+    lastModified: new Date().toISOString(),
+  };
+  await savePosts(posts);
+  return posts[index];
+}
+
+async function deletePost(id: string): Promise<boolean> {
+  const posts = await loadPosts();
+  const filteredPosts = posts.filter(post => post.id !== id);
+  if (filteredPosts.length === posts.length) return false;
+
+  await savePosts(filteredPosts);
+  return true;
+}
+
+function generateId(): string {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}
+
+// Authentication functions
+const sessions = new Map<string, { username: string; expires: number }>();
+
+function generateSessionId(): string {
+  return crypto.getRandomValues(new Uint8Array(16)).reduce((a, b) => a + b.toString(16).padStart(2, '0'), '');
+}
+
+function authenticateUser(username: string, password: string): boolean {
+  return username === ADMIN_CONFIG.username && password === ADMIN_CONFIG.password;
+}
+
+function createSession(username: string): string {
+  const sessionId = generateSessionId();
+  const expires = Date.now() + (24 * 60 * 60 * 1000); // 24 hours
+  sessions.set(sessionId, { username, expires });
+  return sessionId;
+}
+
+function validateSession(sessionId: string): boolean {
+  const session = sessions.get(sessionId);
+  if (!session) return false;
+
+  if (Date.now() > session.expires) {
+    sessions.delete(sessionId);
+    return false;
+  }
+
+  return true;
+}
+
+function getSessionUser(sessionId: string): string | null {
+  const session = sessions.get(sessionId);
+  return session ? session.username : null;
+}
+
+function requireAuth(req: Request): boolean {
+  const cookies = req.headers.get('cookie') || '';
+  const sessionCookie = cookies.split(';').find(c => c.trim().startsWith('session='));
+  if (!sessionCookie) return false;
+
+  const sessionId = sessionCookie.split('=')[1];
+  return validateSession(sessionId);
 }
 
 // Handle API requests
@@ -364,15 +499,454 @@ async function handleApiRequest(req: Request): Promise<Response> {
       );
     }
   }
-  
+
+  // Blog API endpoints
+  // GET /api/posts - Get all published posts
+  if (url.pathname === "/api/posts" && req.method === "GET") {
+    try {
+      const posts = await getPublishedPosts();
+      return new Response(
+        JSON.stringify(posts),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+      return new Response(
+        JSON.stringify({ error: "Failed to fetch posts" }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
+        }
+      );
+    }
+  }
+
+  // GET /api/posts/:id - Get individual post
+  if (url.pathname.startsWith("/api/posts/") && req.method === "GET") {
+    try {
+      const id = url.pathname.split("/api/posts/")[1];
+      const post = await getPostById(id);
+
+      if (!post) {
+        return new Response(
+          JSON.stringify({ error: "Post not found" }),
+          {
+            status: 404,
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*"
+            }
+          }
+        );
+      }
+
+      return new Response(
+        JSON.stringify(post),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Error fetching post:", error);
+      return new Response(
+        JSON.stringify({ error: "Failed to fetch post" }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
+        }
+      );
+    }
+  }
+
+  // POST /api/admin/login - Admin login
+  if (url.pathname === "/api/admin/login" && req.method === "POST") {
+    try {
+      const { username, password } = await req.json();
+
+      if (!username || !password) {
+        return new Response(
+          JSON.stringify({ success: false, message: "Username and password required" }),
+          {
+            status: 400,
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Credentials": "true"
+            }
+          }
+        );
+      }
+
+      if (!authenticateUser(username, password)) {
+        return new Response(
+          JSON.stringify({ success: false, message: "Invalid credentials" }),
+          {
+            status: 401,
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Credentials": "true"
+            }
+          }
+        );
+      }
+
+      const sessionId = createSession(username);
+
+      return new Response(
+        JSON.stringify({ success: true, message: "Login successful" }),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true",
+            "Set-Cookie": `session=${sessionId}; HttpOnly; Path=/; Max-Age=86400; SameSite=Strict`
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Login error:", error);
+      return new Response(
+        JSON.stringify({ success: false, message: "Login failed" }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    }
+  }
+
+  // GET /api/admin/posts - Get all posts (admin only)
+  if (url.pathname === "/api/admin/posts" && req.method === "GET") {
+    if (!requireAuth(req)) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        {
+          status: 401,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    }
+
+    try {
+      const posts = await loadPosts();
+      return new Response(
+        JSON.stringify(posts),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Error fetching admin posts:", error);
+      return new Response(
+        JSON.stringify({ error: "Failed to fetch posts" }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    }
+  }
+
+  // GET /api/admin/posts/:id - Get single post for editing (admin only)
+  if (url.pathname.startsWith("/api/admin/posts/") && req.method === "GET") {
+    if (!requireAuth(req)) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        {
+          status: 401,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    }
+
+    try {
+      const id = url.pathname.split("/api/admin/posts/")[1];
+      const post = await getPostById(id);
+
+      if (!post) {
+        return new Response(
+          JSON.stringify({ error: "Post not found" }),
+          {
+            status: 404,
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Credentials": "true"
+            }
+          }
+        );
+      }
+
+      return new Response(
+        JSON.stringify(post),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Error fetching admin post:", error);
+      return new Response(
+        JSON.stringify({ error: "Failed to fetch post" }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    }
+  }
+
+  // POST /api/admin/posts - Create new post (admin only)
+  if (url.pathname === "/api/admin/posts" && req.method === "POST") {
+    if (!requireAuth(req)) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        {
+          status: 401,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    }
+
+    try {
+      const postData = await req.json();
+
+      // Basic validation
+      if (!postData.title || !postData.content || !postData.excerpt || !postData.author) {
+        return new Response(
+          JSON.stringify({ error: "Missing required fields: title, content, excerpt, author" }),
+          {
+            status: 400,
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Credentials": "true"
+            }
+          }
+        );
+      }
+
+      const newPost = await createPost({
+        title: postData.title,
+        content: postData.content,
+        excerpt: postData.excerpt,
+        author: postData.author,
+        featuredImage: postData.featuredImage,
+        tags: postData.tags || [],
+        published: postData.published || false,
+      });
+
+      return new Response(
+        JSON.stringify(newPost),
+        {
+          status: 201,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Error creating post:", error);
+      return new Response(
+        JSON.stringify({ error: "Failed to create post" }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    }
+  }
+
+  // PUT /api/admin/posts/:id - Update post (admin only)
+  if (url.pathname.startsWith("/api/admin/posts/") && req.method === "PUT") {
+    if (!requireAuth(req)) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        {
+          status: 401,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    }
+
+    try {
+      const id = url.pathname.split("/api/admin/posts/")[1];
+      const postData = await req.json();
+
+      const updatedPost = await updatePost(id, postData);
+
+      if (!updatedPost) {
+        return new Response(
+          JSON.stringify({ error: "Post not found" }),
+          {
+            status: 404,
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Credentials": "true"
+            }
+          }
+        );
+      }
+
+      return new Response(
+        JSON.stringify(updatedPost),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Error updating post:", error);
+      return new Response(
+        JSON.stringify({ error: "Failed to update post" }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    }
+  }
+
+  // DELETE /api/admin/posts/:id - Delete post (admin only)
+  if (url.pathname.startsWith("/api/admin/posts/") && req.method === "DELETE") {
+    if (!requireAuth(req)) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        {
+          status: 401,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    }
+
+    try {
+      const id = url.pathname.split("/api/admin/posts/")[1];
+      const deleted = await deletePost(id);
+
+      if (!deleted) {
+        return new Response(
+          JSON.stringify({ error: "Post not found" }),
+          {
+            status: 404,
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Credentials": "true"
+            }
+          }
+        );
+      }
+
+      return new Response(
+        JSON.stringify({ success: true, message: "Post deleted" }),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      return new Response(
+        JSON.stringify({ error: "Failed to delete post" }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    }
+  }
+
   // Handle OPTIONS requests for CORS
   if (req.method === "OPTIONS") {
     return new Response(null, {
       status: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Credentials": "true",
       },
     });
   }
@@ -602,6 +1176,90 @@ serve(
         });
       } catch {
         return new Response("Shop page not found", { status: 404 });
+      }
+    }
+
+    if (url.pathname === "/articles") {
+      // Serve articles.html for articles page
+      try {
+        const file = await Deno.readFile("./articles.html");
+        return new Response(file, {
+          headers: {
+            "Content-Type": "text/html",
+            "Cache-Control": "no-cache",
+          },
+        });
+      } catch {
+        return new Response("Articles page not found", { status: 404 });
+      }
+    }
+
+    if (url.pathname === "/admin") {
+      // Serve admin.html for admin page
+      try {
+        const file = await Deno.readFile("./admin.html");
+        return new Response(file, {
+          headers: {
+            "Content-Type": "text/html",
+            "Cache-Control": "no-cache",
+          },
+        });
+      } catch {
+        return new Response("Admin page not found", { status: 404 });
+      }
+    }
+
+    // Handle individual post routes (/articles/{id})
+    if (url.pathname.startsWith("/articles/")) {
+      try {
+        const postId = url.pathname.split("/articles/")[1];
+        const post = await getPostById(postId);
+
+        if (!post || !post.published) {
+          // Serve 404 page or redirect to articles
+          return new Response("Post not found", { status: 404 });
+        }
+
+        // Read the post template and inject post data
+        let postHtml = await Deno.readTextFile("./post.html");
+
+        // Replace placeholders with post data
+        const publishDate = new Date(post.publishDate).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+
+        postHtml = postHtml
+          .replace(/{{title}}/g, post.title)
+          .replace(/{{excerpt}}/g, post.excerpt || '')
+          .replace(/{{author}}/g, post.author)
+          .replace(/{{publishDate}}/g, publishDate)
+          .replace(/{{featuredImage}}/g, post.featuredImage || '')
+          .replace(/{{tags}}/g, post.tags ? post.tags.join(', ') : '')
+          .replace(/{{content}}/g, post.content);
+
+        // Inject post data as JSON for JavaScript
+        const postDataScript = `<script>
+          window.postData = {
+            title: ${JSON.stringify(post.title)},
+            content: ${JSON.stringify(post.content)},
+            excerpt: ${JSON.stringify(post.excerpt || '')},
+            author: ${JSON.stringify(post.author)},
+            publishDate: ${JSON.stringify(publishDate)},
+            featuredImage: ${JSON.stringify(post.featuredImage || '')},
+            tags: ${JSON.stringify(post.tags || [])}
+          };
+        </script>`;
+
+        return new Response(postHtml + postDataScript, {
+          headers: {
+            "Content-Type": "text/html",
+            "Cache-Control": "no-cache",
+          },
+        });
+      } catch {
+        return new Response("Post not found", { status: 404 });
       }
     }
 

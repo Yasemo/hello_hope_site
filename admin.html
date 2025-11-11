@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Admin Dashboard - Hello Hope Canada">
+  <meta name="author" content="Hello Hope Canada">
+
+  <title>Admin Dashboard - Hello Hope Canada</title>
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="styles/main.css" as="style">
+  <link rel="preload" href="scripts/main.js" as="script">
+
+  <!-- Preload Minion Pro fonts -->
+  <link rel="preload" href="fonts/minion_variable_woff/MinionPro-Regular.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="fonts/minion_variable_woff/MinionPro-Bold.woff" as="font" type="font/woff" crossorigin>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="logos/red/red_Red 36x36.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="logos/red/red_Red 24x24.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="logos/red/red_Red 180x180.png">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="styles/reset.css">
+  <link rel="stylesheet" href="styles/variables.css">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/admin.css">
+
+  <!-- Markdown and Code Highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked@13.0.3/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="login-screen" class="login-screen">
+    <div class="login-container">
+      <div class="login-header">
+        <img src="logos/red/red_Red 96x96.png" alt="Hello Hope Canada Logo" class="login-logo">
+        <h1>Admin Dashboard</h1>
+        <p>Hello Hope Canada</p>
+      </div>
+
+      <form id="login-form" class="login-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+
+        <button type="submit" class="login-btn">Sign In</button>
+      </form>
+
+      <div id="login-error" class="login-error" style="display: none;"></div>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard -->
+  <div id="admin-dashboard" class="admin-dashboard" style="display: none;">
+    <!-- Admin Header -->
+    <header class="admin-header">
+      <div class="admin-header-content">
+        <div class="admin-brand">
+          <img src="logos/red/red_Red 36x36.png" alt="Hello Hope Canada Logo">
+          <span>Admin Dashboard</span>
+        </div>
+        <div class="admin-actions">
+          <a href="/articles" class="view-site-btn">View Site</a>
+          <button id="logout-btn" class="logout-btn">Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Admin Content -->
+    <main class="admin-content">
+      <!-- Posts List -->
+      <div id="posts-list-view" class="posts-list-view">
+        <div class="posts-header">
+          <h2>All Posts</h2>
+          <button id="new-post-btn" class="new-post-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+            </svg>
+            New Post
+          </button>
+        </div>
+
+        <div id="posts-loading" class="posts-loading">
+          <div class="loading-spinner"></div>
+          <p>Loading posts...</p>
+        </div>
+
+        <div id="posts-table" class="posts-table" style="display: none;">
+          <div class="table-header">
+            <div class="col-title">Title</div>
+            <div class="col-author">Author</div>
+            <div class="col-date">Date</div>
+            <div class="col-status">Status</div>
+            <div class="col-actions">Actions</div>
+          </div>
+          <div id="posts-list" class="posts-list">
+            <!-- Posts will be dynamically inserted here -->
+          </div>
+        </div>
+
+        <div id="posts-empty" class="posts-empty" style="display: none;">
+          <h3>No posts yet</h3>
+          <p>Create your first blog post to get started.</p>
+          <button id="create-first-post-btn" class="create-first-post-btn">Create First Post</button>
+        </div>
+      </div>
+
+      <!-- Post Editor -->
+      <div id="post-editor-view" class="post-editor-view" style="display: none;">
+        <div class="editor-header">
+          <button id="back-to-posts" class="back-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"/>
+            </svg>
+            Back to Posts
+          </button>
+          <div class="editor-actions">
+            <button id="preview-btn" class="preview-btn">Preview</button>
+            <button id="save-draft-btn" class="save-draft-btn">Save Draft</button>
+            <button id="publish-btn" class="publish-btn">Publish</button>
+          </div>
+        </div>
+
+        <form id="post-form" class="post-form">
+          <div class="form-row">
+            <div class="form-group title-group">
+              <label for="post-title">Title</label>
+              <input type="text" id="post-title" name="title" required>
+            </div>
+            <div class="form-group author-group">
+              <label for="post-author">Author</label>
+              <input type="text" id="post-author" name="author" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="post-excerpt">Excerpt</label>
+            <textarea id="post-excerpt" name="excerpt" rows="3" placeholder="Brief summary of the post..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="post-image">Featured Image URL (optional)</label>
+            <input type="url" id="post-image" name="featuredImage" placeholder="https://example.com/image.jpg">
+          </div>
+
+          <div class="form-group">
+            <label for="post-tags">Tags (comma-separated)</label>
+            <input type="text" id="post-tags" name="tags" placeholder="hope, inspiration, education">
+          </div>
+
+          <div class="form-group">
+            <label for="post-content">Content (Markdown)</label>
+            <div class="editor-container">
+              <div class="editor-toolbar">
+                <button type="button" class="toolbar-btn" data-command="bold" title="Bold">
+                  <strong>B</strong>
+                </button>
+                <button type="button" class="toolbar-btn" data-command="italic" title="Italic">
+                  <em>I</em>
+                </button>
+                <button type="button" class="toolbar-btn" data-command="heading" title="Heading">
+                  H
+                </button>
+                <button type="button" class="toolbar-btn" data-command="link" title="Link">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3.9,12C3.9,10.29 5.29,8.9 7,8.9H11V7H7A5,5 0 0,0 2,12A5,5 0 0,0 7,17H11V15.1H7C5.29,15.1 3.9,13.71 3.9,12M8,13H16V11H8V13M17,7H13V8.9H17C18.71,8.9 20.1,10.29 20.1,12C20.1,13.71 18.71,15.1 17,15.1H13V17H17A5,5 0 0,0 22,12A5,5 0 0,0 17,7Z"/>
+                  </svg>
+                </button>
+                <button type="button" class="toolbar-btn" data-command="image" title="Image">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8.5,13.5L11,16.5L14.5,12L19,18H5M21,19V5C21,3.89 20.1,3 19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19Z"/>
+                  </svg>
+                </button>
+                <button type="button" class="toolbar-btn" data-command="code" title="Code">
+                  <code>{}</code>
+                </button>
+                <button type="button" class="toolbar-btn" data-command="list" title="List">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M7,5H21V7H7V5M7,13V11H21V13H7M4,4.5A1.5,1.5 0 0,1 5.5,6A1.5,1.5 0 0,1 4,7.5A1.5,1.5 0 0,1 2.5,6A1.5,1.5 0 0,1 4,4.5M4,10.5A1.5,1.5 0 0,1 5.5,12A1.5,1.5 0 0,1 4,13.5A1.5,1.5 0 0,1 2.5,12A1.5,1.5 0 0,1 4,10.5M7,19V17H21V19H7M4,16.5A1.5,1.5 0 0,1 5.5,18A1.5,1.5 0 0,1 4,19.5A1.5,1.5 0 0,1 2.5,18A1.5,1.5 0 0,1 4,16.5Z"/>
+                  </svg>
+                </button>
+                <button type="button" class="toolbar-btn" data-command="tasklist" title="Task List">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3,5H9V11H3V5M5,7V9H7V7H5M3,13H9V19H3V13M5,15V17H7V15H5M21,11V5H11V11H21M19,9H13V7H19V9M11,13H21V19H11V13M13,15V17H19V15H13Z"/>
+                  </svg>
+                </button>
+              </div>
+              <textarea id="post-content" name="content" rows="20" placeholder="Write your post content here using Markdown..."></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Preview Modal -->
+      <div id="preview-modal" class="preview-modal" style="display: none;">
+        <div class="preview-overlay"></div>
+        <div class="preview-content">
+          <div class="preview-header">
+            <h3>Post Preview</h3>
+            <button id="close-preview" class="close-preview">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
+              </svg>
+            </button>
+          </div>
+          <div id="preview-body" class="preview-body">
+            <!-- Preview content will be inserted here -->
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="scripts/admin.js"></script>
+</body>
+</html>

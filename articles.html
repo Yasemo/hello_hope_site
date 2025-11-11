@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Contact Hello Hope Canada - Schedule a speaking engagement or learn more about our character education programs.">
-  <meta name="keywords" content="contact, hello hope, speaking engagement, character education, schools, programs">
+  <meta name="description" content="Articles and blog posts from Hello Hope Canada - Stories of hope, character education, and positive change.">
+  <meta name="keywords" content="blog, articles, hope, character education, stories, inspiration">
   <meta name="author" content="Hello Hope Canada">
 
-  <title>Contact Us - Hello Hope Canada</title>
+  <title>Articles - Hello Hope Canada</title>
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-4W2D1MV9MZ"></script>
@@ -37,26 +37,29 @@
   <link rel="stylesheet" href="styles/variables.css">
   <link rel="stylesheet" href="components/header.css">
   <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/modal.css">
+  <link rel="stylesheet" href="styles/cart.css">
+  <link rel="stylesheet" href="styles/articles.css">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://hellohope.ca/contact">
-  <meta property="og:title" content="Contact Us - Hello Hope Canada">
-  <meta property="og:description" content="Schedule a speaking engagement or learn more about our character education programs.">
+  <meta property="og:url" content="https://hellohope.ca/articles">
+  <meta property="og:title" content="Articles - Hello Hope Canada">
+  <meta property="og:description" content="Articles and blog posts from Hello Hope Canada - Stories of hope, character education, and positive change.">
   <meta property="og:image" content="logos/red/red_Red 1080 x 1080.png">
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://hellohope.ca/contact">
-  <meta property="twitter:title" content="Contact Us - Hello Hope Canada">
-  <meta property="twitter:description" content="Schedule a speaking engagement or learn more about our character education programs.">
+  <meta property="twitter:url" content="https://hellohope.ca/articles">
+  <meta property="twitter:title" content="Articles - Hello Hope Canada">
+  <meta property="twitter:description" content="Articles and blog posts from Hello Hope Canada - Stories of hope, character education, and positive change.">
   <meta property="twitter:image" content="logos/red/red_Red 1080 x 1080.png">
 </head>
 <body>
   <!-- Header Component - Loaded dynamically -->
   <div id="header-placeholder"></div>
 
-  <section id="contact" class="contact">
+  <section id="articles-hero" class="articles-hero">
     <div class="section_container">
       <div class="section_title">
         <div class="section_subtitle">
@@ -75,66 +78,44 @@
   <path fill="currentColor" d="M441 1180l148 -148 0 -1c3,-5 2,-11 -2,-15l-44 -44c-5,-5 -13,-5 -18,0l-145 145c-5,5 -5,13 0,17l45 45c4,4 10,4 14,2l2 -1z"/>
  </g>
 </svg>
-            <span class="subtitle_word">CONNECT</span>
+            <span class="subtitle_word">READ</span>
           </div>
         </div>
-        <h1>Say Hello to Hope</h1>
-        <p class="subtitle_description">Ready to bring hope to your community? Let's start the conversation.</p>
-      </div>
-      <div class="contact_methods">
-        <div class="call_us">
-          <h3>Book A Call With Aubrey</h3>
-          <a href="https://calendly.com/hellohope/chat" class="phone_link">Click To Chat</a>
-        </div>
-        <div class="email_us">
-          <h3>Email Us</h3>
-          <a href="mailto:aubrey@hellohope.ca" class="email_link">aubrey@hellohope.ca</a>
-        </div>
-        <div class="program_builder">
-          <h3>Build Your Program</h3>
-          <a href="/programs" class="program_link">Click To Start</a>
-        </div>
-      </div>
-      <div class="contact_content">
-        <div class="contact_form_subheader">
-          <h3>Send us a message</h3>
-        </div>
-
-        <div class="contact_form_container">
-          <form class="contact_form" id="contactForm">
-            <div class="form_group">
-              <label for="name">Full Name *</label>
-              <input type="text" id="name" name="name" required>
-            </div>
-
-            <div class="form_group">
-              <label for="email">Email Address *</label>
-              <input type="email" id="email" name="email" required>
-            </div>
-
-            <div class="form_group">
-              <label for="phone">Phone Number</label>
-              <input type="tel" id="phone" name="phone">
-            </div>
-
-            <div class="form_group">
-              <label for="organization">Organization/School</label>
-              <input type="text" id="organization" name="organization">
-            </div>
-
-            <div class="form_group">
-              <label for="message">Message/Inquiry *</label>
-              <textarea id="message" name="message" rows="5" required placeholder="Please tell us about your event, audience size, preferred dates, and any specific requirements..."></textarea>
-            </div>
-
-            <button type="submit" class="submit_btn">Send Message</button>
-          </form>
-        </div>
+        <h1>Articles & Stories</h1>
+        <p class="subtitle_description">Discover inspiring stories of hope, character education, and positive change.</p>
       </div>
     </div>
   </section>
 
-  <footer class="footer">
+  <section id="articles-content" class="articles-content">
+    <div class="section_container">
+      <!-- Loading State -->
+      <div id="loading-state" class="loading-state">
+        <div class="loading-spinner"></div>
+        <p>Loading articles...</p>
+      </div>
+
+      <!-- Error State -->
+      <div id="error-state" class="error-state" style="display: none;">
+        <h3>Unable to Load Articles</h3>
+        <p>Please try again later.</p>
+        <button id="retry-btn" class="retry-btn">Try Again</button>
+      </div>
+
+      <!-- Articles Grid -->
+      <div id="articles-grid" class="articles-grid" style="display: none;">
+        <!-- Articles will be dynamically inserted here -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="empty-state" style="display: none;">
+        <h3>No Articles Yet</h3>
+        <p>Check back soon for new stories and insights.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="articles footer">
     <div class="footer_container">
       <div class="footer_brand">
         <div class="footer_logo">
@@ -147,24 +128,25 @@
       <div class="footer_links">
         <h4>Quick Links</h4>
         <nav class="footer_nav">
-          <a href="/" class="footer_link">Home</a>
+          <a href="/#hero" class="footer_link">Home</a>
           <a href="/#aubrey" class="footer_link">About Aubrey</a>
           <a href="/#testimonials" class="footer_link">Testimonials</a>
           <a href="/#programs" class="footer_link">Programs</a>
           <a href="/conference" class="footer_link">Conference</a>
-          <a href="/contact" class="footer_link">Contact</a>
+          <a href="/articles" class="footer_link">Articles</a>
+        <a href="/contact" class="footer_link">Contact</a>
         </nav>
       </div>
 
       <div class="footer_programs">
         <h4>Featured Programs</h4>
         <nav class="footer_nav">
-          <a href="/#programs" class="footer_link">Hello Hope: Battling Stress</a>
-          <a href="/#programs" class="footer_link">Colour Blind?</a>
-          <a href="/#programs" class="footer_link">Stick With The Truth</a>
-          <a href="/#programs" class="footer_link">I'm Just Here</a>
-          <a href="/#programs" class="footer_link">Man Up</a>
-          <a href="/#programs" class="footer_link">Reconnect</a>
+          <a href="#programs" class="footer_link">Hello Hope: Battling Stress</a>
+          <a href="#programs" class="footer_link">Colour Blind?</a>
+          <a href="#programs" class="footer_link">Stick With The Truth</a>
+          <a href="#programs" class="footer_link">I'm Just Here</a>
+          <a href="#programs" class="footer_link">Man Up</a>
+          <a href="#programs" class="footer_link">Reconnect</a>
         </nav>
       </div>
 
@@ -212,6 +194,7 @@
       </div>
     </div>
   </footer>
+
   <!-- EmailJS SDK -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script type="text/javascript">
@@ -231,6 +214,47 @@
   </script>
 
   <script src="components/header.js"></script>
+  <script src="scripts/cart.js"></script>
+  <script src="scripts/cart-modal.js"></script>
   <script src="scripts/main.js"></script>
+  <script src="scripts/articles.js"></script>
+
+  <!-- Cart Modal -->
+  <div id="cart-modal" class="cart-modal">
+    <div class="cart-modal-overlay"></div>
+    <div class="cart-modal-content">
+      <div class="cart-modal-header">
+        <h2>
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17,18C15.89,18 15,18.89 15,20A2,2 0 0,0 17,22A2,2 0 0,0 19,20C19,18.89 18.1,18 17,18M1,2V4H3L6.6,11.59L5.24,14.04C5.09,14.32 5,14.65 5,15A2,2 0 0,0 7,17H19V15H7.42A0.25,0.25 0 0,1 7.17,14.75C7.17,14.7 7.18,14.66 7.2,14.63L8.1,13H15.55C16.3,13 16.96,12.58 17.3,11.97L20.88,5.5C20.95,5.34 21,5.17 21,5A1,1 0 0,0 20,4H5.21L4.27,2M7,18C5.89,18 5,18.89 5,20A2,2 0 0,0 7,22A2,2 0 0,0 9,20C9,18.89 8.1,18 7,18Z"/>
+          </svg>
+          Your Cart
+        </h2>
+        <button id="close-cart" class="close-cart" aria-label="Close cart">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
+          </svg>
+        </button>
+      </div>
+
+      <div id="cart-items" class="cart-items">
+        <!-- Cart items will be dynamically inserted here -->
+      </div>
+
+      <div class="cart-footer">
+        <div class="cart-total">
+          <span>Subtotal:</span>
+          <span id="cart-subtotal">$0.00</span>
+        </div>
+        <button id="checkout-button" class="btn-checkout">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"/>
+          </svg>
+          Proceed to Checkout
+        </button>
+        <p class="checkout-note">You'll be redirected to our secure Shopify checkout</p>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

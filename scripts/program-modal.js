@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
             description: 'Social media promised connection, but delivered toxic comparison. Now AI is replacing friendships. This session delivers practical tools for building real human bonds that actually stick.',
             focus: 'This student session focuses on bringing encouragement and relief to participants to tackle stress and anxiety during and after a pandemic. Learning components include the connection between social media, empathy and the health benefits of face to face interaction, and practical take-aways on how to create stronger bonds with others.',
             materials: 'Students will receive practical handouts with strategies for managing stress, building authentic connections, and creating healthier relationships with technology and peers.',
-            versions: ['Gr. 4-6', 'Gr. 7-8', 'Gr. 9-10', 'Gr. 11-12', 'Faculty', 'Sr. Admin.', 'Parents/Guardians', 'Corporate', 'Teams'],
+            versions: ['Gr. 4-6', 'Gr. 7-8', 'Gr. 9-10', 'Gr. 11-12', 'Faculty', 'Parents/Guardians', 'Corporate', 'Teams'],
             duration: '60 min',
             curriculum: 'Global/responsible citizenship, interrelationships, perspective, the local community, Social-Emotional Learning, Healthy relationships, self-awareness and sense of identity.'
         },
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
             focus: 'PART 1 for Students focuses on why this issue is even worth our time and why it needs to be a matter of the heart before change can occur. The three objectives are: (1) To explain what racism is and isn\'t once and for all, (2) to help us see how it connects to us here and now, and (3) to inspire us to be the opposite of racist for the long haul. PART 2 focuses on practical ways we can interrupt racism and create a sweeter, safer, stronger school community.',
             focusAdult: 'The adult versions have three objectives: (1) to remind you that it is not just "ok" but it is crucial that we come together and have a million of these conversations, (2) to help you identify where you are at on this journey of awareness and combating racism, and (3) to inspire you to be the opposite for the long haul (regardless of how old you are). Part 2 for adults helps us identify where we go from here with actionable steps and guiding principles for your anti-racism practice.',
             materials: 'Grade 7-12 students receive a handout entitled "Stuff to Pack and Steps to Take for Your Anti-Racism Journey" with age-appropriate book titles, articles, and videos. Primary students receive a printable colour poster with the "Three Truths" about skin colour and a working definition of racism in kid-friendly language.',
-            versions: ['K-3', 'Gr. 4-6', 'Gr. 7-8', 'Gr. 9-10', 'Gr. 11-12', 'Faculty', 'Sr. Admin.', 'Parents/Guardians', 'Corporate', 'Teams'],
+            versions: ['Gr. 7-8', 'Gr. 9-10', 'Gr. 11-12', 'Faculty', 'Parents/Guardians', 'Corporate', 'Teams'],
             duration: '60 min each (Part 1 & Part 2 available)',
             curriculum: 'Global/responsible citizenship, interrelationships, perspective, the local community, Social-Emotional Learning, Healthy relationships, self-awareness and sense of identity. Global citizenship and communities, local communities (social studies), Canada a changing society.'
         },
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
             description: 'Some kids are existing, not living. Purpose feels like a luxury when you\'re just surviving. Raw talk on self-identity, peer conflicts, and the secret to supreme satisfaction.',
             focus: '"I\'m just here." Some of us don\'t have a clue what we are doing, what the point is, or where we can go from here. Many of us are existing but not really living as we feel a sense of purposelessness. This raw, sincere, and encouraging talk tackles peer-conflicts and motivation for the future by going upstream to look at self-identity, purpose, and the "secret to supreme satisfaction".',
             materials: 'Students receive guidance materials focused on self-discovery, purpose-finding exercises, and practical strategies for navigating peer relationships and future planning.',
-            versions: ['Gr. 7-8', 'Gr. 9-10', 'Gr. 11-12', 'Camps', 'Teams'],
+            versions: ['Gr. 7-8', 'Gr. 9-10', 'Gr. 11-12'],
             duration: '60 min',
             curriculum: 'Global/responsible citizenship, interrelationships, perspective, the local community, Social-Emotional Learning, Healthy relationships, self-awareness and sense of identity.'
         },
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
             description: 'Boys are getting masculinity lessons from influencers. This session delivers straight conversation about male influence on culture and practical tools for using it for good.',
             focus: 'A no-joke conversation about the reality of the male influence on culture, the opportunity to use that influence for good, and practical tools to do it solo or with a squad.',
             materials: 'Grade 7-12 students will receive a handout entitled "Man Up - Cheat Sheet" which has age-appropriate words of affirmations for young boys to encourage themselves with as well as a couple of tips from the presentation to implement in their own interpersonal relationships.',
-            versions: ['Gr. 6-8', 'Gr. 9-10', 'Gr. 11-12'],
+            versions: ['Gr. 6-8', 'Gr. 9-10', 'Gr. 11-12','Teams'],
             duration: '60 min',
             curriculum: 'Global/responsible citizenship, interrelationships, perspective, the local community, Social-Emotional Learning, Healthy relationships, self-awareness and sense of identity.'
         },
