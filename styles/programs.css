@@ -804,7 +804,6 @@
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-  max-width: 500px;
   width: 90%;
   max-height: 80vh;
   overflow-y: auto;
@@ -814,6 +813,7 @@
 
 .version-selection-modal .modal-header {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   padding: 2rem 2rem 1rem 2rem;
@@ -918,6 +918,7 @@
 
 .version-selection-modal .modal-footer {
   display: flex;
+  flex-direction: row;
   gap: 1rem;
   justify-content: flex-end;
   padding: 1.5rem 2rem 2rem 2rem;

@@ -119,7 +119,7 @@
 .modal-section h3 {
   font-size: 1.5rem;
   color: var(--primary-color);
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -319,4 +319,23 @@
 
 .modal-content::-webkit-scrollbar-thumb:hover {
   background: var(--primary-color);
+}
+
+/* Enhanced modal for schedule builder - ensure proper scrolling */
+.version-selection-modal .modal-content {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.version-selection-modal .modal-body {
+  overflow-y: auto;
+}
+
+/* Ensure modal sections have proper spacing in schedule modal */
+.version-selection-modal .modal-section {
+  margin-bottom: 2.5rem;
+}
+
+.version-selection-modal .modal-section:last-of-type {
+  margin-bottom: 0;
 }
