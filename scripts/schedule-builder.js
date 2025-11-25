@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
             description: 'Practical tools for building real human bonds that actually stick.',
             focus: 'This student session focuses on bringing encouragement and relief to participants to tackle stress and anxiety during and after a pandemic. Learning components include the connection between social media, empathy and the health benefits of face to face interaction, and practical take-aways on how to create stronger bonds with others.',
             materials: 'Students will receive practical handouts with strategies for managing stress, building authentic connections, and creating healthier relationships with technology and peers.',
-            versions: ['Gr. 4-6', 'Gr. 7-8', 'Gr. 9-10', 'Gr. 11-12', 'Faculty', 'Sr. Admin.', 'Parents/Guardians', 'Corporate', 'Teams'],
+            versions: ['Gr. 4-6', 'Gr. 7-8', 'Gr. 9-10', 'Gr. 11-12', 'Elementary Faculty', 'Secondary Faculty', 'Sr. Admin.', 'Elementary Parents/Guardians', 'Secondary Parents/Guardians', 'Corporate', 'Teams'],
             duration: '60 min',
             curriculum: 'Global/responsible citizenship, interrelationships, perspective, the local community, Social-Emotional Learning, Healthy relationships, self-awareness and sense of identity.',
             hasParts: false
@@ -17,12 +17,12 @@ document.addEventListener('DOMContentLoaded', function() {
         'colour-blind': {
             id: 'colour-blind',
             name: 'COLOUR BLIND?',
-            tagline: 'Why Being "Not Racist" Is Not Enough',
-            description: 'Part 1 explores why this fight is a matter of the heart. Part 2 delivers actionable steps.',
+            tagline: 'Why Being "Not Racist" Is Not Enough Anymore',
+            description: 'Part 1 explores why this fight against racism is a matter of the heart. Part 2 delivers actionable steps.',
             focus: 'PART 1 for Students focuses on why this issue is even worth our time and why it needs to be a matter of the heart before change can occur. The three objectives are: (1) To explain what racism is and isn\'t once and for all, (2) to help us see how it connects to us here and now, and (3) to inspire us to be the opposite of racist for the long haul. PART 2 focuses on practical ways we can interrupt racism and create a sweeter, safer, stronger school community.',
             focusAdult: 'The adult versions have three objectives: (1) to remind you that it is not just "ok" but it is crucial that we come together and have a million of these conversations, (2) to help you identify where you are at on this journey of awareness and combating racism, and (3) to inspire you to be the opposite for the long haul (regardless of how old you are). Part 2 for adults helps us identify where we go from here with actionable steps and guiding principles for your anti-racism practice.',
             materials: 'Grade 7-12 students receive a handout entitled "Stuff to Pack and Steps to Take for Your Anti-Racism Journey" with age-appropriate book titles, articles, and videos. Primary students receive a printable colour poster with the "Three Truths" about skin colour and a working definition of racism in kid-friendly language.',
-            versions: ['K-3', 'Gr. 4-6', 'Gr. 7-8', 'Gr. 9-10', 'Gr. 11-12', 'Faculty', 'Sr. Admin.', 'Parents/Guardians', 'Corporate', 'Teams'],
+            versions: ['Gr. 7-8 (Part 1)', 'Gr. 7-8 (Part 2)', 'Gr. 9-10 (Part 1)', 'Gr. 9-10 (Part 2)', 'Gr. 11-12 (Part 1)', 'Gr. 11-12 (Part 2)', 'Elementary Faculty', 'Secondary Faculty', 'Sr. Admin.', 'Elementary Parents/Guardians', 'Secondary Parents/Guardians', 'Corporate', 'Teams'],
             duration: '60 min each',
             curriculum: 'Global/responsible citizenship, interrelationships, perspective, the local community, Social-Emotional Learning, Healthy relationships, self-awareness and sense of identity. Global citizenship and communities, local communities (social studies), Canada a changing society.',
             hasParts: true
@@ -34,10 +34,10 @@ document.addEventListener('DOMContentLoaded', function() {
             description: 'Age-appropriate way to stick with truths about skin colour.',
             focus: 'The Primary Presentation focuses on the three truths about skin colour and on equipping students in an age-appropriate way to stick with those truths so as not to believe any lies about skin colour which cause harm. PART 2 (for Gr. 4-6) focuses on practical ways we can interrupt racism and create a sweeter, safer, stronger school community in an age appropriate way.',
             materials: 'Primary and junior students will receive a printable colour poster with the "Three Truths" about skin colour, and a working definition of racism in kid-friendly language.',
-            versions: ['K-3', 'Gr. 4-6'],
+            versions: ['K-3', 'Gr. 4-6 (Part 1)', 'Gr. 4-6 (Part 2)'],
             duration: '60 min each',
             curriculum: 'Global citizenship and communities, local communities (social studies), Canada a changing society.',
-            hasParts: false
+            hasParts: true
         },
         'just-here': {
             id: 'just-here',
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
             description: 'Help your team reconnect to what matters and reach the finish line.',
             focus: 'A focused session designed specifically for educators and administrators who are experiencing burnout and compassion fatigue. This presentation provides practical strategies for managing stress, reconnecting with purpose, and building resilience within educational teams.',
             materials: 'Educators receive self-care resources, burnout prevention strategies, and team-building exercises to implement in their schools.',
-            versions: ['Educators', 'Administration', 'Special Teams'],
+            versions: ['Elementary Faculty', 'Secondary Faculty', 'Administration', 'Special Teams'],
             duration: '60 min',
             curriculum: 'Professional development, wellness, team building, leadership development.',
             hasParts: false
@@ -100,13 +100,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Categorize audience for pricing
     function categorizeAudience(version) {
+        // Remove part information for categorization
+        const baseVersion = version.replace(/\s*\(Part \d+\)$/, '');
+
         // Elementary: K-8
-        if (version.includes('K-3') || version.includes('Gr. 4-6') || 
-            version.includes('Gr. 6-8') || version.includes('Gr. 7-8')) {
+        if (baseVersion.includes('K-3') || baseVersion.includes('Gr. 4-6') ||
+            baseVersion.includes('Gr. 6-8') || baseVersion.includes('Gr. 7-8') ||
+            baseVersion === 'Elementary Faculty' || baseVersion === 'Elementary Parents/Guardians') {
             return 'elementary';
         }
         // Secondary: 9-12
-        if (version.includes('Gr. 9-10') || version.includes('Gr. 11-12')) {
+        if (baseVersion.includes('Gr. 9-10') || baseVersion.includes('Gr. 11-12') ||
+            baseVersion === 'Secondary Faculty' || baseVersion === 'Secondary Parents/Guardians') {
             return 'secondary';
         }
         // Custom pricing for faculty, corporate, etc.
@@ -178,46 +183,112 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Calculate total cost estimate for schedule
     function calculateTotalCost() {
+        console.log('=== CALCULATE TOTAL COST ===');
+        console.log('Active Schedule:', activeSchedule.map(item => ({
+            name: item.name,
+            versions: item.selectedVersions,
+            sessions: item.sessions,
+            deliveryMethod: item.deliveryMethod
+        })));
+
         let subtotal = 0;
         let hasCustomPricing = false;
-        let customPrograms = [];
+        let customVersions = [];
 
+        // Count total presentations by audience type and delivery method
+        const presentationCounts = {
+            elementary: { virtual: 0, inPerson: 0 },
+            secondary: { virtual: 0, inPerson: 0 }
+        };
+
+        console.log('Counting presentations...');
         activeSchedule.forEach(item => {
-            // Calculate cost for each selected version
+            console.log(`Processing program: ${item.name}`);
+            // Check if any versions require custom pricing
             item.selectedVersions.forEach(version => {
                 const audience = categorizeAudience(version);
-
+                console.log(`  Version: ${version} -> Audience: ${audience}`);
                 if (audience === 'custom') {
                     hasCustomPricing = true;
-                    if (!customPrograms.includes(item.name)) {
-                        customPrograms.push(item.name);
-                    }
+                    customVersions.push(version);
+                    console.log(`  -> Custom pricing required for ${version}`);
                 } else {
-                    const cost = calculateProgramCost(audience, item.sessions, item.deliveryMethod);
-                    if (cost) {
-                        subtotal += cost;
-                    }
+                    // Each selected version counts as 1 presentation
+                    presentationCounts[audience][item.deliveryMethod] += 1;
+                    console.log(`  -> Added 1 ${audience} ${item.deliveryMethod} presentation`);
                 }
             });
         });
 
-        // Apply discounts
-        const discountInfo = calculateDiscount();
-        const discountAmount = subtotal * (discountInfo.totalDiscountPercent / 100);
-        const discountedSubtotal = subtotal - discountAmount;
+        console.log('Final presentation counts:', presentationCounts);
 
-        const hst = discountedSubtotal * HST_RATE;
-        const total = discountedSubtotal + hst;
+        // Calculate cost for each audience type and delivery method
+        if (!hasCustomPricing || presentationCounts.elementary.virtual + presentationCounts.elementary.inPerson + presentationCounts.secondary.virtual + presentationCounts.secondary.inPerson > 0) {
+            console.log('Calculating costs...');
+
+            // Elementary Virtual
+            if (presentationCounts.elementary.virtual > 0) {
+                const cost = calculateProgramCost('elementary', presentationCounts.elementary.virtual, 'virtual');
+                subtotal += cost;
+                console.log(`Elementary Virtual: ${presentationCounts.elementary.virtual} presentations = $${cost}`);
+            }
+
+            // Elementary In-Person
+            if (presentationCounts.elementary.inPerson > 0) {
+                const cost = calculateProgramCost('elementary', presentationCounts.elementary.inPerson, 'inPerson');
+                subtotal += cost;
+                console.log(`Elementary In-Person: ${presentationCounts.elementary.inPerson} presentations = $${cost}`);
+            }
+
+            // Secondary Virtual
+            if (presentationCounts.secondary.virtual > 0) {
+                const cost = calculateProgramCost('secondary', presentationCounts.secondary.virtual, 'virtual');
+                subtotal += cost;
+                console.log(`Secondary Virtual: ${presentationCounts.secondary.virtual} presentations = $${cost}`);
+            }
+
+            // Secondary In-Person
+            if (presentationCounts.secondary.inPerson > 0) {
+                const cost = calculateProgramCost('secondary', presentationCounts.secondary.inPerson, 'inPerson');
+                subtotal += cost;
+                console.log(`Secondary In-Person: ${presentationCounts.secondary.inPerson} presentations = $${cost}`);
+            }
+        }
+
+        // Calculate original subtotal (sum of individual presentation prices)
+        let originalSubtotal = 0;
+        if (!hasCustomPricing || presentationCounts.elementary.virtual + presentationCounts.elementary.inPerson + presentationCounts.secondary.virtual + presentationCounts.secondary.inPerson > 0) {
+            // Calculate what it would cost without tiered pricing
+            originalSubtotal += presentationCounts.elementary.virtual * pricingData.elementary.virtual[0];
+            originalSubtotal += presentationCounts.elementary.inPerson * pricingData.elementary.inPerson[0];
+            originalSubtotal += presentationCounts.secondary.virtual * pricingData.secondary.virtual[0];
+            originalSubtotal += presentationCounts.secondary.inPerson * pricingData.secondary.inPerson[0];
+        }
+
+        // Calculate discount as the difference between original and tiered pricing
+        const discountAmount = originalSubtotal - subtotal;
+        const discountPercent = originalSubtotal > 0 ? ((discountAmount / originalSubtotal) * 100) : 0;
+
+        // Calculate HST and total
+        const hst = subtotal * HST_RATE;
+        const total = subtotal + hst;
+
+        console.log(`Original Subtotal: $${originalSubtotal.toFixed(2)}`);
+        console.log(`Discount (${discountPercent.toFixed(1)}%): -$${discountAmount.toFixed(2)}`);
+        console.log(`Subtotal: $${subtotal.toFixed(2)}`);
+        console.log(`HST (${(HST_RATE * 100).toFixed(0)}%): $${hst.toFixed(2)}`);
+        console.log(`Total: $${total.toFixed(2)}`);
+        console.log('Custom pricing required:', hasCustomPricing, customVersions);
+        console.log('=== END CALCULATION ===\n');
 
         return {
-            subtotal: discountedSubtotal,
-            originalSubtotal: subtotal,
+            subtotal: subtotal,
+            originalSubtotal: originalSubtotal,
             hst,
             total,
             hasCustomPricing,
-            customPrograms,
-            discountInfo,
-            discountAmount
+            customVersions,
+            discountAmount: discountAmount
         };
     }
 
@@ -358,7 +429,33 @@ document.addEventListener('DOMContentLoaded', function() {
         const currentItem = isEditing ? activeSchedule.find(item => item.id === programId) : null;
         const currentVersions = currentItem ? currentItem.selectedVersions : [];
 
-        program.versions.forEach(version => {
+        // Filter out versions based on program
+        let excludedVersions = ['Sr. Admin.', 'Corporate', 'Teams'];
+        let specialNote = null;
+
+        // Special handling for "I'm Just Here" program
+        if (program.id === 'just-here') {
+            excludedVersions = ['Camps', 'Teams'];
+            specialNote = {
+                text: 'For Non-Profit, Teams, Camps, and Special Groups pricing contact us',
+                buttonText: 'Contact Us',
+                buttonLink: '/contact'
+            };
+        }
+
+        // Special handling for "RECONNECT" program
+        if (program.id === 'reconnect') {
+            excludedVersions = ['Administration', 'Special Teams'];
+            specialNote = {
+                text: 'For Principal/Vice-Principal conferences, Senior Administrators, Management, Teams, etc. please contact us for pricing',
+                buttonText: 'Contact Us',
+                buttonLink: '/contact'
+            };
+        }
+
+        const availableVersions = program.versions.filter(version => !excludedVersions.includes(version));
+
+        availableVersions.forEach(version => {
             const isChecked = currentVersions.includes(version);
             const checkboxDiv = document.createElement('div');
             checkboxDiv.className = 'version-checkbox-item';
@@ -371,6 +468,35 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             checkboxesContainer.appendChild(checkboxDiv);
         });
+
+        // Add contact note for excluded versions
+        if (specialNote) {
+            const contactNote = document.createElement('div');
+            contactNote.className = 'contact-note';
+            contactNote.innerHTML = `
+                <p>${specialNote.text}</p>
+                <a href="${specialNote.buttonLink}" class="btn-contact-pricing">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z"/>
+                    </svg>
+                    ${specialNote.buttonText}
+                </a>
+            `;
+            checkboxesContainer.appendChild(contactNote);
+        } else {
+            const contactNote = document.createElement('div');
+            contactNote.className = 'contact-note';
+            contactNote.innerHTML = `
+                <p>For Sr. Admin, Non-Profit, Corporate, and Teams pricing, contact us</p>
+                <a href="/contact" class="btn-contact-pricing">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z"/>
+                    </svg>
+                    Contact Us
+                </a>
+            `;
+            checkboxesContainer.appendChild(contactNote);
+        }
 
         // Update button text
         const addBtn = versionSelectionModal.querySelector('.modal-add-selected');
@@ -494,8 +620,8 @@ document.addEventListener('DOMContentLoaded', function() {
         addBtn.addEventListener('click', () => {
             const selectedVersions = Array.from(modal.querySelectorAll('.version-checkbox:checked')).map(cb => cb.value);
             if (selectedVersions.length > 0) {
-                const modalTitle = modal.querySelector('.modal-title');
-                const isEditing = modalTitle && modalTitle.textContent.includes('Edit');
+                // Check if program is already in schedule to determine if editing
+                const isEditing = activeSchedule.some(item => item.id === currentProgramForSelection.id);
                 addProgramWithVersions(currentProgramForSelection.id, selectedVersions, isEditing);
                 closeModal();
             }
@@ -528,7 +654,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 id: program.id,
                 name: program.name,
                 selectedVersions: selectedVersions,
-                sessions: program.hasParts ? 2 : 1,
+                sessions: 1, // Each selected version counts as 1 presentation
                 deliveryMethod: 'inPerson', // default to in-person
                 notes: ''
             };
@@ -538,7 +664,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         updateScheduleDisplay();
         updateProgramCards();
-        validateCompatibility();
         updateCostEstimate();
 
         // Track event
@@ -563,7 +688,6 @@ document.addEventListener('DOMContentLoaded', function() {
         activeSchedule = activeSchedule.filter(item => item.id !== programId);
         updateScheduleDisplay();
         updateProgramCards();
-        validateCompatibility();
         updateCostEstimate();
     }
 
@@ -707,83 +831,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Smart validation - grey out incompatible programs
-    function validateCompatibility() {
-        // Get all selected audiences from schedule (flatten the arrays)
-        const selectedAudiences = activeSchedule.flatMap(item => item.selectedVersions);
 
-        // Analyze audience types
-        const hasYoungStudents = selectedAudiences.some(a => a.includes('K-3'));
-        const hasElementary = selectedAudiences.some(a => a.includes('Gr. 4-6'));
-        const hasMiddle = selectedAudiences.some(a => a.includes('Gr. 6-8') || a.includes('Gr. 7-8'));
-        const hasHigh = selectedAudiences.some(a => a.includes('Gr. 9-10') || a.includes('Gr. 11-12'));
-        const hasAdults = selectedAudiences.some(a =>
-            a.includes('Faculty') || a.includes('Educators') ||
-            a.includes('Admin') || a.includes('Parents') ||
-            a.includes('Corporate') || a.includes('Teams')
-        );
-
-        // If no programs in schedule, enable all
-        if (activeSchedule.length === 0) {
-            document.querySelectorAll('.program-card-builder').forEach(card => {
-                card.classList.remove('disabled');
-                const overlay = card.querySelector('.disabled-overlay');
-                if (overlay) overlay.remove();
-            });
-            return;
-        }
-
-        // Check each program card for compatibility
-        document.querySelectorAll('.program-card-builder').forEach(card => {
-            const programId = card.getAttribute('data-program-id');
-            const program = programsData[programId];
-
-            // Skip if already in schedule
-            if (activeSchedule.some(item => item.id === programId)) {
-                return;
-            }
-
-            let isCompatible = false;
-            let reason = '';
-
-            // Check if any version of this program is compatible with selected audiences
-            if (hasYoungStudents && program.versions.some(v => v.includes('K-3'))) {
-                isCompatible = true;
-            }
-            if (hasElementary && program.versions.some(v => v.includes('Gr. 4-6'))) {
-                isCompatible = true;
-            }
-            if (hasMiddle && program.versions.some(v => v.includes('Gr. 6-8') || v.includes('Gr. 7-8'))) {
-                isCompatible = true;
-            }
-            if (hasHigh && program.versions.some(v => v.includes('Gr. 9-10') || v.includes('Gr. 11-12'))) {
-                isCompatible = true;
-            }
-            if (hasAdults && program.versions.some(v =>
-                v.includes('Faculty') || v.includes('Educators') ||
-                v.includes('Admin') || v.includes('Parents') ||
-                v.includes('Corporate') || v.includes('Teams') || v.includes('Sr. Admin.')
-            )) {
-                isCompatible = true;
-            }
-
-            // Update card state
-            if (!isCompatible) {
-                card.classList.add('disabled');
-                // Add overlay if not exists
-                if (!card.querySelector('.disabled-overlay')) {
-                    const overlay = document.createElement('div');
-                    overlay.className = 'disabled-overlay';
-                    overlay.textContent = 'Not compatible';
-                    card.appendChild(overlay);
-                }
-            } else {
-                card.classList.remove('disabled');
-                const overlay = card.querySelector('.disabled-overlay');
-                if (overlay) overlay.remove();
-            }
-        });
-    }
 
     // Update cost estimate display
     function updateCostEstimate() {
@@ -798,7 +846,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const costData = calculateTotalCost();
-        
+
+        // Check if any parent/guardian versions are selected
+        const hasParentGuardianVersions = activeSchedule.some(item =>
+            item.selectedVersions.some(version => version.includes('Parents/Guardians'))
+        );
+
         // Create cost estimate HTML
         const costHTML = `
             <div class="cost-estimate-card" id="costEstimate">
@@ -814,7 +867,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <path d="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
                         </svg>
                         <p><strong>Custom Pricing Required</strong></p>
-                        <p class="cost-custom-note">For ${costData.customPrograms.join(', ')}, please contact <a href="mailto:aubrey@hellohope.ca">aubrey@hellohope.ca</a> for pricing.</p>
+                        <p class="cost-custom-note">For ${costData.customVersions.join(', ')}, please contact <a href="mailto:aubrey@hellohope.ca">aubrey@hellohope.ca</a> for pricing.</p>
                     </div>
                 ` : `
                     <div class="cost-breakdown">
@@ -822,21 +875,16 @@ document.addEventListener('DOMContentLoaded', function() {
                             <span class="cost-label">Original Subtotal:</span>
                             <span class="cost-value">$${costData.originalSubtotal.toFixed(2)}</span>
                         </div>
-                        ${costData.discountInfo.totalDiscountPercent > 0 ? `
-                            <div class="cost-row cost-discount">
-                                <span class="cost-label">Discount (${costData.discountInfo.totalDiscountPercent}%):</span>
+                        ${costData.discountAmount > 0 ? `
+                            <div class="cost-row">
+                                <span class="cost-label">Discount (${((costData.discountAmount / costData.originalSubtotal) * 100).toFixed(1)}%):</span>
                                 <span class="cost-value">-$${costData.discountAmount.toFixed(2)}</span>
                             </div>
-                            <div class="cost-row">
-                                <span class="cost-label">Subtotal (after discount):</span>
-                                <span class="cost-value">$${costData.subtotal.toFixed(2)}</span>
-                            </div>
-                        ` : `
-                            <div class="cost-row">
-                                <span class="cost-label">Subtotal:</span>
-                                <span class="cost-value">$${costData.subtotal.toFixed(2)}</span>
-                            </div>
-                        `}
+                        ` : ''}
+                        <div class="cost-row">
+                            <span class="cost-label">Subtotal:</span>
+                            <span class="cost-value">$${costData.subtotal.toFixed(2)}</span>
+                        </div>
                         <div class="cost-row">
                             <span class="cost-label">HST (13%):</span>
                             <span class="cost-value">$${costData.hst.toFixed(2)}</span>
@@ -847,20 +895,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             <span class="cost-value">$${costData.total.toFixed(2)}</span>
                         </div>
                     </div>
-                    ${costData.discountInfo.totalDiscountPercent > 0 ? `
-                        <div class="cost-note cost-discount-note">
-                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M11,7H13V9H11V7M11,11H13V17H11V11Z"/>
-                            </svg>
-                            <p><strong>Discount Applied:</strong> ${costData.discountInfo.totalDiscountPercent}% off for ${costData.discountInfo.totalPrograms} program${costData.discountInfo.totalPrograms > 1 ? 's' : ''} with ${costData.discountInfo.totalVersions} version${costData.discountInfo.totalVersions > 1 ? 's' : ''} selected.</p>
-                        </div>
-                    ` : ''}
                     ${costData.hasCustomPricing ? `
                         <div class="cost-note cost-custom">
                             <svg viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
                             </svg>
-                            <p>Additional cost for ${costData.customPrograms.join(', ')}. Please contact <a href="mailto:aubrey@hellohope.ca">aubrey@hellohope.ca</a> for pricing.</p>
+                            <p>Additional cost for ${costData.customVersions.join(', ')}. Please contact <a href="mailto:aubrey@hellohope.ca">aubrey@hellohope.ca</a> for pricing.</p>
                         </div>
                     ` : ''}
                     <div class="cost-note">
@@ -875,6 +915,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         </svg>
                         <p>Travel expenses for programs taking place more than 180 km outside of the Greater Toronto Area will be an additional cost.</p>
                     </div>
+                    ${hasParentGuardianVersions ? `
+                        <div class="cost-note">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                            </svg>
+                            <p>Contact Aubrey for a multiple school, or family of schools, parent/guardian option.</p>
+                        </div>
+                    ` : ''}
                 `}
             </div>
         `;
@@ -892,10 +940,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function clearSchedule() {
         if (confirm('Are you sure you want to clear your entire schedule?')) {
             activeSchedule = [];
-            updateScheduleDisplay();
-            updateProgramCards();
-            validateCompatibility();
-            updateCostEstimate();
+        updateScheduleDisplay();
+        updateProgramCards();
+        updateCostEstimate();
         }
     }
 
@@ -1007,22 +1054,13 @@ ${index + 1}. ${program.name}
             let costEstimateText = '\n\nESTIMATED COST:\n';
             if (costData.hasCustomPricing && costData.subtotal === 0) {
                 costEstimateText += 'Custom pricing required for all programs.\n';
-                costEstimateText += `Please contact for pricing on: ${costData.customPrograms.join(', ')}`;
+                costEstimateText += `Please contact for pricing on: ${costData.customVersions.join(', ')}`;
             } else {
-                costEstimateText += `Original Subtotal: $${costData.originalSubtotal.toFixed(2)}\n`;
-                if (costData.discountInfo.totalDiscountPercent > 0) {
-                    costEstimateText += `Discount (${costData.discountInfo.totalDiscountPercent}%): -$${costData.discountAmount.toFixed(2)}\n`;
-                    costEstimateText += `Subtotal (after discount): $${costData.subtotal.toFixed(2)}\n`;
-                } else {
-                    costEstimateText += `Subtotal: $${costData.subtotal.toFixed(2)}\n`;
-                }
+                costEstimateText += `Subtotal: $${costData.subtotal.toFixed(2)}\n`;
                 costEstimateText += `HST (13%): $${costData.hst.toFixed(2)}\n`;
                 costEstimateText += `Total: $${costData.total.toFixed(2)}\n`;
-                if (costData.discountInfo.totalDiscountPercent > 0) {
-                    costEstimateText += `\n* Discount applied: ${costData.discountInfo.totalDiscountPercent}% off for ${costData.discountInfo.totalPrograms} program${costData.discountInfo.totalPrograms > 1 ? 's' : ''} with ${costData.discountInfo.totalVersions} version${costData.discountInfo.totalVersions > 1 ? 's' : ''} selected.`;
-                }
                 if (costData.hasCustomPricing) {
-                    costEstimateText += `\n* Additional cost required for: ${costData.customPrograms.join(', ')}\n`;
+                    costEstimateText += `\n* Additional cost required for: ${costData.customVersions.join(', ')}\n`;
                     costEstimateText += '* Please contact for complete pricing.';
                 } else {
                     costEstimateText += '\n* This is an estimate only. Final quote upon confirmation.';
@@ -1068,7 +1106,6 @@ ${index + 1}. ${program.name}
                     hideContactForm();
                     updateScheduleDisplay();
                     updateProgramCards();
-                    validateCompatibility();
                 }, 3000);
             }
         } catch (error) {

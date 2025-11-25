@@ -32,6 +32,10 @@
   <script src="https://cdn.jsdelivr.net/npm/marked@13.0.3/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+  <!-- Toast UI Editor -->
+  <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css">
+  <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 </head>
 <body>
   <!-- Login Screen -->
@@ -160,44 +164,13 @@
           </div>
 
           <div class="form-group">
-            <label for="post-content">Content (Markdown)</label>
-            <div class="editor-container">
-              <div class="editor-toolbar">
-                <button type="button" class="toolbar-btn" data-command="bold" title="Bold">
-                  <strong>B</strong>
-                </button>
-                <button type="button" class="toolbar-btn" data-command="italic" title="Italic">
-                  <em>I</em>
-                </button>
-                <button type="button" class="toolbar-btn" data-command="heading" title="Heading">
-                  H
-                </button>
-                <button type="button" class="toolbar-btn" data-command="link" title="Link">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3.9,12C3.9,10.29 5.29,8.9 7,8.9H11V7H7A5,5 0 0,0 2,12A5,5 0 0,0 7,17H11V15.1H7C5.29,15.1 3.9,13.71 3.9,12M8,13H16V11H8V13M17,7H13V8.9H17C18.71,8.9 20.1,10.29 20.1,12C20.1,13.71 18.71,15.1 17,15.1H13V17H17A5,5 0 0,0 22,12A5,5 0 0,0 17,7Z"/>
-                  </svg>
-                </button>
-                <button type="button" class="toolbar-btn" data-command="image" title="Image">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M8.5,13.5L11,16.5L14.5,12L19,18H5M21,19V5C21,3.89 20.1,3 19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19Z"/>
-                  </svg>
-                </button>
-                <button type="button" class="toolbar-btn" data-command="code" title="Code">
-                  <code>{}</code>
-                </button>
-                <button type="button" class="toolbar-btn" data-command="list" title="List">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M7,5H21V7H7V5M7,13V11H21V13H7M4,4.5A1.5,1.5 0 0,1 5.5,6A1.5,1.5 0 0,1 4,7.5A1.5,1.5 0 0,1 2.5,6A1.5,1.5 0 0,1 4,4.5M4,10.5A1.5,1.5 0 0,1 5.5,12A1.5,1.5 0 0,1 4,13.5A1.5,1.5 0 0,1 2.5,12A1.5,1.5 0 0,1 4,10.5M7,19V17H21V19H7M4,16.5A1.5,1.5 0 0,1 5.5,18A1.5,1.5 0 0,1 4,19.5A1.5,1.5 0 0,1 2.5,18A1.5,1.5 0 0,1 4,16.5Z"/>
-                  </svg>
-                </button>
-                <button type="button" class="toolbar-btn" data-command="tasklist" title="Task List">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3,5H9V11H3V5M5,7V9H7V7H5M3,13H9V19H3V13M5,15V17H7V15H5M21,11V5H11V11H21M19,9H13V7H19V9M11,13H21V19H11V13M13,15V17H19V15H13Z"/>
-                  </svg>
-                </button>
-              </div>
-              <textarea id="post-content" name="content" rows="20" placeholder="Write your post content here using Markdown..."></textarea>
+            <label for="post-content">Content</label>
+            <div class="editor-mode-toggle">
+              <button type="button" id="editor-mode-visual" class="mode-btn active">Visual</button>
+              <button type="button" id="editor-mode-markdown" class="mode-btn">Markdown</button>
             </div>
+            <div id="editor-container" class="toastui-editor-container"></div>
+            <textarea id="post-content" name="content" style="display: none;"></textarea>
           </div>
         </form>
       </div>

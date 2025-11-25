@@ -184,7 +184,7 @@
 
 .version-tag:hover {
   border-color: var(--primary-color);
-  background-color: rgba(190, 30, 45, 0.05);
+  background-color: rgba(190, 30, 45, 0.8);
 }
 
 .modal-footer {

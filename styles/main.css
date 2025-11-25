@@ -2,6 +2,11 @@
    GLOBAL STYLES
    ======================================== */
 
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-primary);
@@ -789,7 +794,7 @@ p {
   justify-content: center;
   align-items: center;
   height: calc(100vh - 70px);
-  background-image: url('https://res.cloudinary.com/dhqqkezip/image/upload/v1759973271/homepage_pic_1_gncee3.png');
+  background-image: url('https://storage.googleapis.com/hello-hope/homepage_pic_1.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -803,7 +808,7 @@ p {
   justify-content: center;
   align-items: center;
   height: calc(100vh - 70px);
-  background-image: url('https://res.cloudinary.com/dhqqkezip/image/upload/v1759973276/homepage_pic_2_vsp4gs.png');
+  background-image: url('https://storage.googleapis.com/hello-hope/homepage_pic_2.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -817,7 +822,7 @@ p {
   justify-content: center;
   align-items: center;
   height: calc(100vh - 70px);
-  background-image: url('https://res.cloudinary.com/dhqqkezip/image/upload/v1759973280/homepage_pic_3_exnhim.png');
+  background-image: url('https://storage.googleapis.com/hello-hope/homepage_pic_3.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -1227,7 +1232,7 @@ p {
   top: 140px;
   z-index: 1020;
   border: 1px solid #ececec;
-  background-image: url('https://res.cloudinary.com/dhqqkezip/image/upload/v1760505864/youssef-naddam-iJ2IG8ckCpA-unsplash_msh2cz.jpg');
+  background-image: url('https://storage.googleapis.com/hello-hope/youssef-naddam-iJ2IG8ckCpA-unsplash.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -1242,7 +1247,7 @@ p {
   z-index: 1021;
   margin-top: 50px;
   border: 1px solid #ececec;
-  background-image: url('https://res.cloudinary.com/dhqqkezip/image/upload/v1760506057/IMG_0787_yav1jy.jpg');
+  background-image: url('https://storage.googleapis.com/hello-hope/IMG_0787.jpeg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -1255,7 +1260,7 @@ p {
   z-index: 1021;
   border: 1px solid #ececec;
   margin-top: 50px;
-  background-image: url('https://res.cloudinary.com/dhqqkezip/image/upload/v1760506505/IMG_3993-min_qm8kdb.jpg');
+  background-image: url('https://storage.googleapis.com/hello-hope/IMG_3993-min.JPG');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -1270,7 +1275,7 @@ p {
   z-index: 1021;
   margin-top: 50px;
   border: 1px solid #ececec;
-  background-image: url('https://res.cloudinary.com/dhqqkezip/image/upload/v1760506604/jesus-rodriguez-NcWNzEAD7Fs-unsplash_d8qj7m.jpg');
+  background-image: url('https://storage.googleapis.com/hello-hope/jesus-rodriguez-NcWNzEAD7Fs-unsplash.jpg');
   /* background-size: cover; */
   background-size: 120%;
   background-position: right;
@@ -1282,7 +1287,7 @@ p {
   z-index: 1021;
   border: 1px solid #ececec;
   margin-top: 50px;
-  background-image: url('https://res.cloudinary.com/dhqqkezip/image/upload/v1759962974/pexels-ron-lach-10646545_fafykc.jpg');
+  background-image: url('https://storage.googleapis.com/hello-hope/pexels-ron-lach-10646545%20(1).jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -1297,7 +1302,7 @@ p {
   z-index: 1021;
   border: 1px solid #ececec;
   margin-top: 50px;
-  background-image: url('https://res.cloudinary.com/dhqqkezip/image/upload/v1760506742/premium_photo-1759573977820-58a3fce3fd1f_kwunrc.avif');
+  background-image: url('https://storage.googleapis.com/hello-hope/premium_photo-1759573977820-58a3fce3fd1f.avif');
   /* background-size: cover; */
   background-position: right;
   background-repeat: no-repeat;
@@ -1770,6 +1775,7 @@ p {
   transition: all 0.3s ease;
   margin-top: 1rem;
   box-shadow: 0 2px 8px rgba(190, 30, 45, 0.3);
+  text-align: center;
 }
 
 .footer_cta_button:hover {

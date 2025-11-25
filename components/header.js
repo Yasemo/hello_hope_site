@@ -379,11 +379,14 @@ class HeaderComponent {
                 // Only prevent default if the target element exists on this page
                 if (targetElement) {
                     e.preventDefault();
-                    
-                    // Clean URL FIRST before scrolling to prevent hash from showing
-                    const cleanUrl = window.location.pathname;
-                    history.replaceState(null, '', cleanUrl);
-                    
+
+                    // Exception for testimonial_video - preserve the hash in URL
+                    if (targetId !== 'testimonials') {
+                        // Clean URL FIRST before scrolling to prevent hash from showing
+                        const cleanUrl = window.location.pathname;
+                        history.replaceState(null, '', cleanUrl);
+                    }
+
                     const headerHeight = 70;
                     const targetPosition = targetElement.offsetTop - headerHeight;
                     

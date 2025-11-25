@@ -968,29 +968,39 @@ document.addEventListener('DOMContentLoaded', function() {
     const navLinks = document.querySelectorAll('.nav-link, .mobile_nav_link');
     const sections = document.querySelectorAll('section[id]');
     const contactForm = document.getElementById('contactForm');
-    
-    // Clean URL on page load if there's a hash
+
+    // Handle URL hash scrolling with better timing and offset calculation
     if (window.location.hash) {
         const hash = window.location.hash.substring(1); // Remove the # character
         const targetElement = document.getElementById(hash);
-        
+
         if (targetElement) {
-            // Scroll to the section
-            const headerHeight = 70;
-            const targetPosition = targetElement.offsetTop - headerHeight;
-            
-            // Use setTimeout to ensure smooth scroll happens after page load
+            // Allow more time for page content to load
             setTimeout(() => {
+                // Calculate the target position accounting for various positioning offsets
+                const headerHeight = 70;
+                const targetRect = targetElement.getBoundingClientRect();
+                const absoluteElementTop = window.pageYOffset + targetRect.top;
+
+                // Additional offset for sections with CSS positioning that affects scroll calculation
+                let positioningOffset = 0;
+                const sectionParent = targetElement.closest('section');
+                if (sectionParent) {
+                    const computedStyle = getComputedStyle(sectionParent);
+                    if (computedStyle.position === 'relative') {
+                        positioningOffset = parseFloat(computedStyle.top) || 0;
+                    }
+                }
+
+                const targetPosition = absoluteElementTop - headerHeight + positioningOffset;
+
+                // Scroll to the calculated position
                 window.scrollTo({
                     top: targetPosition,
                     behavior: 'smooth'
                 });
-            }, 100);
+            }, 200); // Increased delay to ensure all content is loaded
         }
-        
-        // Remove hash from URL
-        const cleanUrl = window.location.pathname;
-        history.replaceState(null, '', cleanUrl);
     }
     
     // Throttle function for performance

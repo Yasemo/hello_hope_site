@@ -64,23 +64,24 @@ function createArticleCard(post) {
     const excerpt = post.excerpt || post.content.substring(0, 150) + '...';
 
     card.innerHTML = `
-        ${post.featuredImage ? `<img src="${post.featuredImage}" alt="${post.title}" class="article-image" loading="lazy">` : ''}
-        <div class="article-content">
-            <div class="article-meta">
-                <span class="article-author">By ${post.author}</span>
-                <span class="article-date">${publishDate}</span>
+        <a href="/articles/${post.id}" class="article-card-link">
+            ${post.featuredImage ? `<img src="${post.featuredImage}" alt="${post.title}" class="article-image" loading="lazy">` : ''}
+            <div class="article-content">
+                <div class="article-meta">
+                    <span class="article-author">By ${post.author}</span>
+                    <span class="article-date">${publishDate}</span>
+                </div>
+                <h2 class="article-title">${post.title}</h2>
+                <p class="article-excerpt">${excerpt}</p>
+                <div class="article-footer">
+                    ${post.tags && post.tags.length > 0 ? `
+                        <div class="article-tags">
+                            ${post.tags.map(tag => `<span class="article-tag">${tag}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                </div>
             </div>
-            <h2 class="article-title">${post.title}</h2>
-            <p class="article-excerpt">${excerpt}</p>
-            <div class="article-footer">
-                ${post.tags && post.tags.length > 0 ? `
-                    <div class="article-tags">
-                        ${post.tags.map(tag => `<span class="article-tag">${tag}</span>`).join('')}
-                    </div>
-                ` : ''}
-                <a href="/articles/${post.id}" class="read-more-btn">Read More</a>
-            </div>
-        </div>
+        </a>
     `;
 
     return card;

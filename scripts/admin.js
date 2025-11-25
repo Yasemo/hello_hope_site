@@ -70,8 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Editor toolbar
-    setupEditorToolbar();
+
 });
 
 // Authentication functions
@@ -271,12 +270,17 @@ function showPostEditor(post = null) {
         document.getElementById('post-excerpt').value = post.excerpt || '';
         document.getElementById('post-image').value = post.featuredImage || '';
         document.getElementById('post-tags').value = post.tags ? post.tags.join(', ') : '';
-        document.getElementById('post-content').value = post.content || '';
         form.dataset.postId = post.id;
+
+        // Initialize editor with existing content
+        initializeEditor(post.content || '');
     } else {
         // New post
         form.reset();
         delete form.dataset.postId;
+
+        // Initialize editor with empty content
+        initializeEditor('');
     }
 }
 
@@ -335,7 +339,7 @@ async function savePost(publish = false) {
         excerpt: formData.get('excerpt'),
         featuredImage: formData.get('featuredImage'),
         tags: formData.get('tags') ? formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag) : [],
-        content: formData.get('content'),
+        content: getEditorContent(), // Get content from Toast UI Editor
         published: publish
     };
 
@@ -374,7 +378,7 @@ async function savePost(publish = false) {
 }
 
 function showPreview() {
-    const content = document.getElementById('post-content').value;
+    const content = getEditorContent(); // Get content from Toast UI Editor
     const title = document.getElementById('post-title').value;
     const author = document.getElementById('post-author').value;
     const excerpt = document.getElementById('post-excerpt').value;
@@ -473,56 +477,86 @@ function hidePreview() {
     document.getElementById('preview-modal').style.display = 'none';
 }
 
-// Editor toolbar functionality
-function setupEditorToolbar() {
-    const toolbar = document.querySelector('.editor-toolbar');
-    if (!toolbar) return;
+// Toast UI Editor instance
+let editor = null;
 
-    toolbar.addEventListener('click', function(e) {
-        if (e.target.classList.contains('toolbar-btn')) {
-            e.preventDefault();
-            const command = e.target.dataset.command;
-            applyFormatting(command);
+// Initialize Toast UI Editor
+function initializeEditor(initialValue = '') {
+    const editorContainer = document.getElementById('editor-container');
+
+    // Destroy existing editor if it exists
+    if (editor) {
+        editor.destroy();
+    }
+
+    // Create new editor instance
+    editor = new toastui.Editor({
+        el: editorContainer,
+        height: '500px',
+        initialEditType: 'wysiwyg', // Start in visual mode
+        previewStyle: 'vertical',
+        initialValue: initialValue,
+        toolbarItems: [
+            ['heading', 'bold', 'italic', 'strike'],
+            ['hr', 'quote'],
+            ['ul', 'ol', 'task', 'indent', 'outdent'],
+            ['table', 'image', 'link'],
+            ['code', 'codeblock'],
+            ['scrollSync']
+        ],
+        hooks: {
+            addImageBlobHook: handleImageUpload
+        },
+        theme: 'light',
+        usageStatistics: false
+    });
+
+    // Set up mode switching
+    setupModeSwitching();
+
+    return editor;
+}
+
+// Handle image upload
+async function handleImageUpload(blob, callback) {
+    // For now, we'll use a placeholder - you can integrate with your image upload API
+    const reader = new FileReader();
+    reader.onload = () => {
+        callback(reader.result, 'uploaded-image');
+    };
+    reader.readAsDataURL(blob);
+}
+
+// Set up mode switching between Visual and Markdown
+function setupModeSwitching() {
+    const visualBtn = document.getElementById('editor-mode-visual');
+    const markdownBtn = document.getElementById('editor-mode-markdown');
+
+    visualBtn.addEventListener('click', () => {
+        if (editor) {
+            editor.changeMode('wysiwyg');
+            visualBtn.classList.add('active');
+            markdownBtn.classList.remove('active');
+        }
+    });
+
+    markdownBtn.addEventListener('click', () => {
+        if (editor) {
+            editor.changeMode('markdown');
+            markdownBtn.classList.add('active');
+            visualBtn.classList.remove('active');
         }
     });
 }
 
-function applyFormatting(command) {
-    const textarea = document.getElementById('post-content');
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = textarea.value.substring(start, end);
-    let replacement = '';
+// Get content from editor (returns markdown)
+function getEditorContent() {
+    return editor ? editor.getMarkdown() : '';
+}
 
-    switch (command) {
-        case 'bold':
-            replacement = `**${selectedText || 'bold text'}**`;
-            break;
-        case 'italic':
-            replacement = `*${selectedText || 'italic text'}*`;
-            break;
-        case 'heading':
-            replacement = `## ${selectedText || 'Heading'}`;
-            break;
-        case 'link':
-            replacement = `[${selectedText || 'link text'}](url)`;
-            break;
-        case 'image':
-            replacement = `![${selectedText || 'alt text'}](image-url)`;
-            break;
-        case 'code':
-            replacement = `\`${selectedText || 'code'}\``;
-            break;
-        case 'list':
-            replacement = `- ${selectedText || 'list item'}`;
-            break;
-        case 'tasklist':
-            replacement = `- [ ] ${selectedText || 'task item'}`;
-            break;
-    }
-
-    if (replacement) {
-        textarea.setRangeText(replacement, start, end, 'end');
-        textarea.focus();
+// Set content in editor
+function setEditorContent(content) {
+    if (editor) {
+        editor.setMarkdown(content);
     }
 }

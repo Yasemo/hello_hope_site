@@ -123,7 +123,7 @@ body {
     height: calc(100vh - 109px);
     display: grid;
     grid-template-rows: 1fr 1fr 1fr;
-    background: url('https://res.cloudinary.com/dhqqkezip/image/upload/v1759962972/Conference_hero_a9msu4.png') no-repeat center center/cover;
+    background: url('https://storage.googleapis.com/hello-hope/Conference%20hero.png') no-repeat center center/cover;
     padding: 3rem;
     position: relative;
     z-index: 10;

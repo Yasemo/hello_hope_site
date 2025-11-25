@@ -529,60 +529,194 @@
   min-height: 100px;
 }
 
-/* Editor Container */
-.editor-container {
+/* Editor Mode Toggle */
+.editor-mode-toggle {
+  display: flex;
+  gap: 0;
+  margin-bottom: var(--space-md);
+  border: 2px solid var(--neutral-gray);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--secondary-color);
+}
+
+.mode-btn {
+  flex: 1;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--secondary-color);
+  color: var(--text-light);
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  transition: all var(--transition-normal);
+  text-align: center;
+}
+
+.mode-btn:hover {
+  background: var(--neutral-gray);
+  color: var(--text-primary);
+}
+
+.mode-btn.active {
+  background: var(--primary-color);
+  color: var(--text-white);
+}
+
+.mode-btn.active:hover {
+  background: #8B1620;
+}
+
+/* Toast UI Editor Container */
+.toastui-editor-container {
   border: 2px solid var(--neutral-gray);
   border-radius: var(--radius-md);
   overflow: hidden;
   transition: border-color var(--transition-normal);
 }
 
-.editor-container:focus-within {
+.toastui-editor-container:focus-within {
   border-color: var(--primary-color);
 }
 
-.editor-toolbar {
-  display: none;
-  gap: 4px;
-  padding: var(--space-sm);
-  background: var(--neutral-gray);
-  border-bottom: 1px solid #e0e0e0;
+/* Toast UI Editor Custom Styles */
+.toastui-editor-defaultUI {
+  border: none !important;
 }
 
-.toolbar-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  background: var(--secondary-color);
-  border: 1px solid #e0e0e0;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all var(--transition-normal);
-  font-size: var(--text-sm);
+.toastui-editor-defaultUI .toastui-editor-toolbar {
+  background: var(--neutral-gray) !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  padding: var(--space-sm) !important;
+  height: fit-content !important;
 }
 
-.toolbar-btn:hover {
-  background: #f8f9fa;
-  border-color: var(--primary-color);
+.toastui-editor-defaultUI .toastui-editor-toolbar .toastui-editor-toolbar-group {
+  margin-right: var(--space-md) !important;
 }
 
-.toolbar-btn strong,
-.toolbar-btn em {
-  font-weight: inherit;
-  font-style: inherit;
+.toastui-editor-defaultUI .toastui-editor-toolbar button {
+  border: 1px solid #e0e0e0 !important;
+  border-radius: var(--radius-sm) !important;
+  color: var(--text-primary) !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all var(--transition-normal) !important;
 }
 
-.editor-container textarea {
-  border: none;
-  border-radius: 0;
-  min-height: 400px;
+.toastui-editor-defaultUI .toastui-editor-toolbar button:hover {
+  border-color: var(--primary-color) !important;
 }
 
-.editor-container textarea:focus {
-  border: none;
-  box-shadow: none;
+.toastui-editor-defaultUI .toastui-editor-toolbar button.active {
+  background: var(--primary-color) !important;
+  color: var(--text-white) !important;
+}
+
+.toastui-editor-defaultUI .toastui-editor-main {
+  background: var(--secondary-color) !important;
+}
+
+.toastui-editor-defaultUI .toastui-editor-md-container,
+.toastui-editor-defaultUI .toastui-editor-ww-container {
+  background: var(--secondary-color) !important;
+}
+
+.toastui-editor-defaultUI .CodeMirror {
+  background: var(--secondary-color) !important;
+  color: var(--text-primary) !important;
+  font-family: 'Courier New', monospace !important;
+}
+
+.toastui-editor-defaultUI .CodeMirror-gutters {
+  background: var(--neutral-gray) !important;
+  border-right: 1px solid #e0e0e0 !important;
+}
+
+.toastui-editor-defaultUI .toastui-editor-md-preview {
+  background: var(--secondary-color) !important;
+  border-left: 1px solid var(--neutral-gray) !important;
+}
+
+.toastui-editor-defaultUI .toastui-editor-contents {
+  color: var(--text-primary) !important;
+  font-family: inherit !important;
+  line-height: 1.6 !important;
+}
+
+.toastui-editor-defaultUI .toastui-editor-contents h1,
+.toastui-editor-defaultUI .toastui-editor-contents h2,
+.toastui-editor-defaultUI .toastui-editor-contents h3,
+.toastui-editor-defaultUI .toastui-editor-contents h4,
+.toastui-editor-defaultUI .toastui-editor-contents h5,
+.toastui-editor-defaultUI .toastui-editor-contents h6 {
+  color: var(--text-primary) !important;
+  margin-top: 1.5em !important;
+  margin-bottom: 0.5em !important;
+}
+
+.toastui-editor-defaultUI .toastui-editor-contents p {
+  margin-bottom: 1em !important;
+}
+
+.toastui-editor-defaultUI .toastui-editor-contents blockquote {
+  border-left: 4px solid var(--primary-color) !important;
+  padding-left: 16px !important;
+  margin: 16px 0 !important;
+  background: var(--neutral-gray) !important;
+  padding: 12px 16px !important;
+  border-radius: 0 6px 6px 0 !important;
+}
+
+.toastui-editor-defaultUI .toastui-editor-contents pre {
+  background: var(--neutral-gray) !important;
+  padding: 16px !important;
+  border-radius: var(--radius-md) !important;
+  overflow-x: auto !important;
+}
+
+.toastui-editor-defaultUI .toastui-editor-contents code {
+  background: var(--neutral-gray) !important;
+  padding: 2px 6px !important;
+  border-radius: var(--radius-sm) !important;
+  font-family: 'Courier New', monospace !important;
+}
+
+.toastui-editor-defaultUI .toastui-editor-contents pre code {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+.toastui-editor-defaultUI .toastui-editor-contents table {
+  border-collapse: collapse !important;
+  width: 100% !important;
+  margin: 16px 0 !important;
+  background: var(--secondary-color) !important;
+  border-radius: var(--radius-md) !important;
+  overflow: hidden !important;
+}
+
+.toastui-editor-defaultUI .toastui-editor-contents th,
+.toastui-editor-defaultUI .toastui-editor-contents td {
+  padding: 12px 16px !important;
+  text-align: left !important;
+  border-bottom: 1px solid var(--neutral-gray) !important;
+}
+
+.toastui-editor-defaultUI .toastui-editor-contents th {
+  background: var(--primary-color) !important;
+  color: var(--text-white) !important;
+  font-weight: 600 !important;
+}
+
+.toastui-editor-defaultUI .toastui-editor-contents img {
+  max-width: 100% !important;
+  height: auto !important;
+  border-radius: var(--radius-md) !important;
+  margin: 16px 0 !important;
 }
 
 /* Preview Modal */
