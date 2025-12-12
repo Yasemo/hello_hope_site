@@ -1209,6 +1209,21 @@ serve(
       }
     }
 
+    if (url.pathname === "/testimonials") {
+      // Serve index.html for testimonials page (clean URL that scrolls to testimonials section)
+      try {
+        const file = await Deno.readFile("./index.html");
+        return new Response(file, {
+          headers: {
+            "Content-Type": "text/html",
+            "Cache-Control": "no-cache",
+          },
+        });
+      } catch {
+        return new Response("Home page not found", { status: 404 });
+      }
+    }
+
     // Handle individual post routes (/articles/{id})
     if (url.pathname.startsWith("/articles/")) {
       try {

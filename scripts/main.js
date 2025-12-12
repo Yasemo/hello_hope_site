@@ -1122,6 +1122,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const fadeElements = document.querySelectorAll('.testimonial_card, .org_logo, .program_card');
     fadeElements.forEach(el => observer.observe(el));
 
+    // Clean URL Auto-scroll Functionality
+    // Check if URL contains clean URLs that need to scroll to sections
+    if (window.location.pathname === '/testimonials') {
+        // Wait for page to load then scroll to testimonials section
+        setTimeout(() => {
+            const testimonialsSection = document.getElementById('testimonials');
+            if (testimonialsSection) {
+                const headerHeight = 70;
+                const targetPosition = testimonialsSection.offsetTop - headerHeight;
+
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+
+                // Optionally replace URL to remove the path (invisible URL bar)
+                history.replaceState(null, '', '/');
+            }
+        }, 500); // Wait for page content to load
+    }
+
     // Enroll Now Button Functionality
     const enrollButtons = document.querySelectorAll('.enroll_btn');
     const programSelect = document.getElementById('program');
