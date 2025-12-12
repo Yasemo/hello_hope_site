@@ -1,5 +1,7 @@
 import { serve } from "std/http/server.ts";
 import { serveDir } from "std/http/file_server.ts";
+import { extractYaml } from "front-matter";
+import { marked } from "marked";
 
 // Use PORT environment variable for Cloud Run, fallback to 8000 for local development
 const port = parseInt(Deno.env.get("PORT") || "8000");
@@ -89,8 +91,41 @@ interface BlogPost {
 
 async function loadPosts(): Promise<BlogPost[]> {
   try {
-    const data = await Deno.readTextFile("./data/posts.json");
-    return JSON.parse(data);
+    const posts: BlogPost[] = [];
+
+    for await (const entry of Deno.readDir("./posts")) {
+      if (entry.isFile && entry.name.endsWith('.md')) {
+        const filePath = `./posts/${entry.name}`;
+        const content = await Deno.readTextFile(filePath);
+
+        try {
+          const { attrs, body } = extractYaml(content);
+          const metadata = attrs as Record<string, any>;
+
+          // Parse markdown content to HTML
+          const htmlContent = await marked(body);
+
+          const post: BlogPost = {
+            id: metadata.id || entry.name.replace('.md', ''),
+            title: metadata.title || 'Untitled',
+            content: htmlContent,
+            excerpt: metadata.excerpt || '',
+            author: metadata.author || 'Unknown',
+            publishDate: metadata.publishDate || new Date().toISOString(),
+            lastModified: metadata.lastModified || new Date().toISOString(),
+            featuredImage: metadata.featuredImage,
+            tags: metadata.tags || [],
+            published: metadata.published || false,
+          };
+
+          posts.push(post);
+        } catch (error) {
+          console.error(`Error parsing ${entry.name}:`, error);
+        }
+      }
+    }
+
+    return posts;
   } catch (error) {
     console.error("Error loading posts:", error);
     return [];
@@ -98,12 +133,9 @@ async function loadPosts(): Promise<BlogPost[]> {
 }
 
 async function savePosts(posts: BlogPost[]): Promise<void> {
-  try {
-    await Deno.writeTextFile("./data/posts.json", JSON.stringify(posts, null, 2));
-  } catch (error) {
-    console.error("Error saving posts:", error);
-    throw error;
-  }
+  // This function is no longer needed for file-based storage
+  // Individual posts are saved as separate files
+  throw new Error("savePosts not implemented for markdown files");
 }
 
 async function getPublishedPosts(): Promise<BlogPost[]> {
@@ -119,39 +151,81 @@ async function getPostById(id: string): Promise<BlogPost | null> {
 }
 
 async function createPost(postData: Omit<BlogPost, 'id' | 'publishDate' | 'lastModified'>): Promise<BlogPost> {
-  const posts = await loadPosts();
+  const id = generateId();
   const newPost: BlogPost = {
     ...postData,
-    id: generateId(),
+    id,
     publishDate: new Date().toISOString(),
     lastModified: new Date().toISOString(),
   };
-  posts.push(newPost);
-  await savePosts(posts);
+
+  await savePostToFile(newPost);
   return newPost;
 }
 
 async function updatePost(id: string, postData: Partial<BlogPost>): Promise<BlogPost | null> {
-  const posts = await loadPosts();
-  const index = posts.findIndex(post => post.id === id);
-  if (index === -1) return null;
+  const existingPost = await getPostById(id);
+  if (!existingPost) return null;
 
-  posts[index] = {
-    ...posts[index],
+  const updatedPost: BlogPost = {
+    ...existingPost,
     ...postData,
     lastModified: new Date().toISOString(),
   };
-  await savePosts(posts);
-  return posts[index];
+
+  await savePostToFile(updatedPost);
+  return updatedPost;
 }
 
 async function deletePost(id: string): Promise<boolean> {
-  const posts = await loadPosts();
-  const filteredPosts = posts.filter(post => post.id !== id);
-  if (filteredPosts.length === posts.length) return false;
+  try {
+    const filePath = `./posts/${id}.md`;
+    await Deno.remove(filePath);
+    return true;
+  } catch (error) {
+    if (error instanceof Deno.errors.NotFound) {
+      return false;
+    }
+    console.error("Error deleting post:", error);
+    return false;
+  }
+}
 
-  await savePosts(filteredPosts);
-  return true;
+async function savePostToFile(post: BlogPost): Promise<void> {
+  const frontmatter = {
+    id: post.id,
+    title: post.title,
+    excerpt: post.excerpt,
+    author: post.author,
+    publishDate: post.publishDate,
+    lastModified: post.lastModified,
+    featuredImage: post.featuredImage,
+    tags: post.tags,
+    published: post.published,
+  };
+
+  // Create YAML frontmatter
+  const yamlFrontmatter = Object.entries(frontmatter)
+    .filter(([_, value]) => value !== undefined && value !== null && value !== '')
+    .map(([key, value]) => {
+      if (Array.isArray(value)) {
+        return `${key}: [${value.map(v => `"${v}"`).join(', ')}]`;
+      } else if (typeof value === 'string') {
+        return `${key}: "${value}"`;
+      } else {
+        return `${key}: ${value}`;
+      }
+    })
+    .join('\n');
+
+  // Convert HTML back to markdown for storage
+  // Note: This is a simplification. In a real app, you'd want to store the original markdown
+  const markdownContent = post.content; // For now, assume content is already markdown
+
+  const fileContent = `---\n${yamlFrontmatter}\n---\n\n${markdownContent}`;
+
+  const filePath = `./posts/${post.id}.md`;
+  await Deno.writeTextFile(filePath, fileContent);
 }
 
 function generateId(): string {

@@ -73,7 +73,6 @@ function createProductCard(product) {
     card.innerHTML = `
         <div class="product-image">
             <img src="${image}" alt="${title}" loading="lazy">
-            ${!availableForSale ? '<div class="sold-out-badge">Sold Out</div>' : ''}
         </div>
         <div class="product-info">
             <h3 class="product-title">${title}</h3>
@@ -81,40 +80,29 @@ function createProductCard(product) {
             <div class="product-footer">
                 <span class="product-price">$${parseFloat(price).toFixed(2)} ${currencyCode}</span>
                 <div class="product-actions">
-                    <div class="quantity-selector" ${!availableForSale ? 'style="opacity: 0.5; pointer-events: none;"' : ''}>
-                        <button class="qty-btn qty-minus" type="button">−</button>
-                        <input type="number" class="qty-input" value="1" min="1" max="999">
-                        <button class="qty-btn qty-plus" type="button">+</button>
+                    <div class="quantity-selector" style="opacity: 0.5; pointer-events: none;">
+                        <button class="qty-btn qty-minus" type="button" disabled>−</button>
+                        <input type="number" class="qty-input" value="1" min="1" max="999" disabled>
+                        <button class="qty-btn qty-plus" type="button" disabled>+</button>
                     </div>
-                    <button 
-                        class="btn-add-to-cart ${inCart ? 'in-cart' : ''}" 
+                    <button
+                        class="btn-add-to-cart"
                         data-product-id="${product.id}"
                         data-variant-id="${variantId}"
                         data-title="${title}"
                         data-price="${price}"
                         data-image="${image}"
-                        ${!availableForSale ? 'disabled' : ''}
+                        disabled
                     >
                         <svg viewBox="0 0 24 24" fill="currentColor">
-                            ${inCart 
-                                ? '<path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/>'
-                                : '<path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>'
-                            }
+                            <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
                         </svg>
-                        ${!availableForSale ? 'Sold Out' : inCart ? 'In Cart' : 'Add to Cart'}
+                        Available soon
                     </button>
                 </div>
             </div>
         </div>
     `;
-
-    // Add click handler for add to cart button
-    const addButton = card.querySelector('.btn-add-to-cart');
-    if (availableForSale) {
-        addButton.addEventListener('click', function() {
-            handleAddToCart(this);
-        });
-    }
 
     // Add quantity selector handlers
     const qtyInput = card.querySelector('.qty-input');

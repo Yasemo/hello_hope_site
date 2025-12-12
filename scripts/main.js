@@ -3,8 +3,43 @@
 document.addEventListener('DOMContentLoaded', function() {
     const heroVideo = document.getElementById('heroVideo');
     const soundToggle = document.getElementById('soundToggle');
-    
+
     if (heroVideo && soundToggle) {
+        // Attempt to autoplay video on load (handles mobile restrictions)
+        function attemptAutoplay() {
+            const playPromise = heroVideo.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    // Autoplay succeeded
+                    console.log('Video autoplay succeeded');
+                }).catch(error => {
+                    // Autoplay failed - this is expected on mobile
+                    console.log('Video autoplay failed:', error.message);
+
+                    // Add one-time click listener to play video on first user interaction
+                    function playOnInteraction() {
+                        heroVideo.play().catch(err => console.log('Video play failed:', err));
+                        // Remove listeners after first interaction
+                        document.removeEventListener('click', playOnInteraction);
+                        document.removeEventListener('touchstart', playOnInteraction);
+                        document.removeEventListener('keydown', playOnInteraction);
+                    }
+
+                    // Add listeners for various user interactions
+                    document.addEventListener('click', playOnInteraction, { once: true });
+                    document.addEventListener('touchstart', playOnInteraction, { once: true });
+                    document.addEventListener('keydown', playOnInteraction, { once: true });
+                });
+            }
+        }
+
+        // Wait for video to be ready before attempting autoplay
+        if (heroVideo.readyState >= 2) { // HAVE_CURRENT_DATA or higher
+            attemptAutoplay();
+        } else {
+            heroVideo.addEventListener('loadeddata', attemptAutoplay, { once: true });
+        }
         
         // Function to toggle sound
         function toggleSound() {
@@ -390,6 +425,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return num.toLocaleString() + '+'; // "1,000+"
         } else if (target === 220000) {
             return num.toLocaleString() + '+'; // "220,000+"
+        } else if (target === 2000) {
+            return num.toLocaleString() + '+'; // "2,000+"
         } else if (target === 95) {
             return Math.floor(num) + '%'; // "95%"
         }

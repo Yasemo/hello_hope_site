@@ -100,6 +100,12 @@ class HeaderComponent {
                   <span class="nav-text-hover">Conference</span>
                 </span>
               </a>
+              <a href="/shop" class="nav-link" data-page="shop">
+                <span class="nav-text">
+                  <span class="nav-text-original">Shop</span>
+                  <span class="nav-text-hover">Shop</span>
+                </span>
+              </a>
             </nav>
 
             <!-- Desktop Contact and Cart Buttons -->
@@ -167,6 +173,12 @@ class HeaderComponent {
                   <span class="nav-text-hover">Conference</span>
                 </span>
               </a>
+              <a href="/shop" class="mobile_nav_link" data-page="shop">
+                <span class="nav-text">
+                  <span class="nav-text-original">Shop</span>
+                  <span class="nav-text-hover">Shop</span>
+                </span>
+              </a>
               <a href="/contact" class="mobile_nav_link mobile_contact_btn">
                 <span class="nav-text">
                   <span class="nav-text-original">Contact Us</span>
@@ -211,6 +223,7 @@ class HeaderComponent {
 
         if (path === '/conference') return 'conference';
         if (path === '/programs') return 'programs';
+        if (path === '/shop') return 'shop';
         return 'home'; // Default to home for / or /home
     }
 

@@ -4,6 +4,9 @@
     "start": "deno run -A --env=.env server.ts"
   },
   "imports": {
-    "std/": "https://deno.land/std@0.208.0/"
+    "@std/front-matter": "jsr:@std/front-matter@^1.0.9",
+    "std/": "https://deno.land/std@0.208.0/",
+    "marked": "npm:marked@^17.0.1",
+    "front-matter": "jsr:@std/front-matter@^1.0.0"
   }
 }
