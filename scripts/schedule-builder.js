@@ -5,8 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
         'hello-hope': {
             id: 'hello-hope',
             name: 'HELLO HOPE',
-            tagline: 'Battling Loneliness & The Other Things That Can Weigh Us Down',
-            description: 'Practical tools for building real human bonds that actually stick.',
+            tagline: 'Staying Human: Mental Health and Connection in an A.I. / Social Media World',
+            description: 'PARENT/GUARDIAN VERSION - Practical tools for fostering mental health and building lasting connection with your kids! \n STUDENT VERSION - Practical tools for fostering mental health and building real human bonds that actually stick',
             focus: 'This student session focuses on bringing encouragement and relief to participants to tackle stress and anxiety during and after a pandemic. Learning components include the connection between social media, empathy and the health benefits of face to face interaction, and practical take-aways on how to create stronger bonds with others.',
             materials: 'Students will receive practical handouts with strategies for managing stress, building authentic connections, and creating healthier relationships with technology and peers.',
             versions: ['Gr. 4-6', 'Gr. 7-8', 'Gr. 9-10', 'Gr. 11-12', 'Elementary Faculty', 'Secondary Faculty', 'Sr. Admin.', 'Elementary Parents/Guardians', 'Secondary Parents/Guardians', 'Corporate', 'Teams'],
@@ -1143,11 +1143,13 @@ ${index + 1}. ${program.name}
 });
 
 // Add spin animation for loading
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-    }
-`;
-document.head.appendChild(style);
+{
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(style);
+}

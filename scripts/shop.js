@@ -11,7 +11,7 @@ async function loadProducts() {
     const productsGrid = document.getElementById('products-grid');
 
     try {
-        const response = await fetch('/api/shopify/products');
+        const response = await fetch('/api/airtable/products');
         
         if (!response.ok) {
             throw new Error('Failed to fetch products');
@@ -23,7 +23,7 @@ async function loadProducts() {
         loadingState.style.display = 'none';
 
         // Check if we have products
-        if (!data.products || data.products.edges.length === 0) {
+        if (!data.products || data.products.length === 0) {
             errorState.querySelector('h3').textContent = 'No Products Available';
             errorState.querySelector('p').textContent = 'Check back soon for new items!';
             errorState.style.display = 'flex';
@@ -31,7 +31,7 @@ async function loadProducts() {
         }
 
         // Display products
-        renderProducts(data.products.edges);
+        renderProducts(data.products);
         productsGrid.style.display = 'grid';
 
     } catch (error) {
@@ -46,7 +46,7 @@ function renderProducts(products) {
     const productsGrid = document.getElementById('products-grid');
     productsGrid.innerHTML = '';
 
-    products.forEach(({ node: product }) => {
+    products.forEach((product) => {
         const productCard = createProductCard(product);
         productsGrid.appendChild(productCard);
     });
@@ -57,18 +57,14 @@ function createProductCard(product) {
     const card = document.createElement('div');
     card.className = 'product-card';
 
-    // Get product data
-    const image = product.images.edges[0]?.node.url || 'https://via.placeholder.com/400x400?text=No+Image';
+    // Get product data from Airtable format
+    const image = product.image || 'https://via.placeholder.com/400x400?text=No+Image';
     const title = product.title || 'Untitled Product';
-    const price = product.priceRange.minVariantPrice.amount;
-    const currencyCode = product.priceRange.minVariantPrice.currencyCode;
+    const price = product.price || '0.00';
+    const currencyCode = product.currencyCode || 'CAD';
     const description = product.description ? truncateText(product.description, 100) : null;
-    const variant = product.variants.edges[0]?.node;
-    const variantId = variant?.id;
-    const availableForSale = variant?.availableForSale !== false;
-
-    // Check if product is in cart
-    const inCart = Cart.hasProduct(variantId);
+    const productId = product.id;
+    const availableForSale = product.availableForSale !== false;
 
     card.innerHTML = `
         <div class="product-image">
@@ -80,24 +76,41 @@ function createProductCard(product) {
             <div class="product-footer">
                 <span class="product-price">$${parseFloat(price).toFixed(2)} ${currencyCode}</span>
                 <div class="product-actions">
-                    <div class="quantity-selector" style="opacity: 0.5; pointer-events: none;">
-                        <button class="qty-btn qty-minus" type="button" disabled>−</button>
-                        <input type="number" class="qty-input" value="1" min="1" max="999" disabled>
-                        <button class="qty-btn qty-plus" type="button" disabled>+</button>
+                    <div class="size-selector" ${!availableForSale ? 'style="opacity: 0.5; pointer-events: none;"' : ''}>
+                        <label for="size-${productId}" class="sr-only">Size</label>
+                        <select id="size-${productId}" class="size-input">
+                            <option value="XS">XS</option>
+                            <option value="S">S</option>
+                            <option value="M" selected>M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                            <option value="XXL">XXL</option>
+                        </select>
+                    </div>
+                    <div class="quantity-selector" ${!availableForSale ? 'style="opacity: 0.5; pointer-events: none;"' : ''}>
+                        <button class="qty-btn qty-minus" type="button">−</button>
+                        <input type="number" class="qty-input" value="1" min="1" max="999">
+                        <button class="qty-btn qty-plus" type="button">+</button>
                     </div>
                     <button
-                        class="btn-add-to-cart"
-                        data-product-id="${product.id}"
-                        data-variant-id="${variantId}"
+                        class="btn-add-to-cart ${!availableForSale ? 'out-of-stock' : ''}"
+                        data-product-id="${productId}"
                         data-title="${title}"
                         data-price="${price}"
                         data-image="${image}"
-                        disabled
+                        ${!availableForSale ? 'disabled' : ''}
                     >
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
-                        </svg>
-                        Available soon
+                        ${!availableForSale ? `
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                            </svg>
+                            Out of Stock
+                        ` : `
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+                            </svg>
+                            Add to Cart
+                        `}
                     </button>
                 </div>
             </div>
@@ -108,6 +121,7 @@ function createProductCard(product) {
     const qtyInput = card.querySelector('.qty-input');
     const qtyMinus = card.querySelector('.qty-minus');
     const qtyPlus = card.querySelector('.qty-plus');
+    const sizeInput = card.querySelector('.size-input');
 
     if (qtyMinus && qtyPlus && qtyInput) {
         qtyMinus.addEventListener('click', function() {
@@ -128,23 +142,71 @@ function createProductCard(product) {
             if (value > 999) value = 999;
             this.value = value;
         });
+
+        if (sizeInput) {
+            sizeInput.addEventListener('change', function() {
+                updateButtonState(card.querySelector('.btn-add-to-cart'), productId, this.value);
+            });
+        }
+
+        // Add add to cart click handler
+        const addToCartBtn = card.querySelector('.btn-add-to-cart');
+        if (addToCartBtn) {
+            addToCartBtn.addEventListener('click', function() {
+                handleAddToCart(this);
+            });
+            // Initial button state
+            updateButtonState(addToCartBtn, productId, sizeInput ? sizeInput.value : null);
+        }
     }
 
     return card;
+}
+
+// Update add to cart button state based on whether variant is in cart
+function updateButtonState(button, productId, size) {
+    if (button.disabled) return;
+    
+    const variantId = size ? `${productId}-${size}` : productId;
+    const inCart = Cart.hasProduct(variantId);
+    
+    if (inCart) {
+        button.classList.add('in-cart');
+        button.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/>
+            </svg>
+            In Cart
+        `;
+    } else {
+        button.classList.remove('in-cart');
+        button.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+            </svg>
+            Add to Cart
+        `;
+    }
 }
 
 // Handle add to cart
 function handleAddToCart(button) {
     const productCard = button.closest('.product-card');
     const qtyInput = productCard.querySelector('.qty-input');
+    const sizeInput = productCard.querySelector('.size-input');
     const quantity = parseInt(qtyInput.value) || 1;
+    const size = sizeInput ? sizeInput.value : null;
 
+    const productId = button.dataset.productId;
+    const title = button.dataset.title;
+    
     const productData = {
-        id: button.dataset.productId,
-        variantId: button.dataset.variantId,
-        title: button.dataset.title,
+        id: productId,
+        variantId: size ? `${productId}-${size}` : productId,
+        title: size ? `${title} (${size})` : title,
         price: button.dataset.price,
-        image: button.dataset.image
+        image: button.dataset.image,
+        size: size
     };
 
     // Add to cart with selected quantity
@@ -153,18 +215,12 @@ function handleAddToCart(button) {
     // Reset quantity input
     qtyInput.value = 1;
 
-    // Update button state
-    button.classList.add('in-cart');
-    button.innerHTML = `
-        <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/>
-        </svg>
-        In Cart
-    `;
-
     // Show success animation
     const message = quantity > 1 ? `${quantity} items added to cart!` : 'Item added to cart!';
     showNotification(message);
+
+    // Update button state immediately
+    updateButtonState(button, productId, size);
 
     // Track event
     if (typeof gtag !== 'undefined') {
@@ -213,27 +269,14 @@ function showNotification(message) {
 
 // Update cart buttons when cart changes
 window.addEventListener('cartUpdated', function() {
-    // Update all add to cart buttons
     document.querySelectorAll('.btn-add-to-cart').forEach(button => {
-        const variantId = button.dataset.variantId;
-        const inCart = Cart.hasProduct(variantId);
+        if (button.disabled) return;
         
-        if (inCart) {
-            button.classList.add('in-cart');
-            button.innerHTML = `
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/>
-                </svg>
-                In Cart
-            `;
-        } else {
-            button.classList.remove('in-cart');
-            button.innerHTML = `
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
-                </svg>
-                Add to Cart
-            `;
-        }
+        const productId = button.dataset.productId;
+        const productCard = button.closest('.product-card');
+        const sizeInput = productCard.querySelector('.size-input');
+        const size = sizeInput ? sizeInput.value : null;
+        
+        updateButtonState(button, productId, size);
     });
 });

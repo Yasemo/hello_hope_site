@@ -12,6 +12,23 @@ const SHOPIFY_CONFIG = {
   storefrontAccessToken: Deno.env.get("SHOPIFY_STOREFRONT_ACCESS_TOKEN") || "",
 };
 
+// Airtable configuration
+const AIRTABLE_CONFIG = {
+  apiKey: Deno.env.get("AIRTABLE_API_KEY") || "",
+  baseId: Deno.env.get("AIRTABLE_BASE_ID") || "",
+  tableId: Deno.env.get("AIRTABLE_TABLE_ID") || "",
+};
+
+// PayPal configuration
+const PAYPAL_CONFIG = {
+  clientId: Deno.env.get("PAYPAL_CLIENT_ID") || "",
+  clientSecret: Deno.env.get("PAYPAL_CLIENT_SECRET") || "",
+  environment: Deno.env.get("PAYPAL_ENVIRONMENT") || "sandbox",
+  baseUrl: Deno.env.get("PAYPAL_ENVIRONMENT") === "live" 
+    ? "https://api-m.paypal.com" 
+    : "https://api-m.sandbox.paypal.com",
+};
+
 // Email configuration
 const SMTP_CONFIG = {
   hostname: "smtp.gmail.com",
@@ -35,6 +52,9 @@ const CLIENT_CONFIG = {
     serviceId: Deno.env.get("EMAILJS_SERVICE_ID") || "",
     templateId: Deno.env.get("EMAILJS_TEMPLATE_ID") || "",
     scheduleTemplateId: Deno.env.get("EMAILJS_SCHEDULE_TEMPLATE_ID") || "",
+  },
+  paypal: {
+    clientId: Deno.env.get("PAYPAL_CLIENT_ID") || "",
   },
 };
 
@@ -232,6 +252,53 @@ function generateId(): string {
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
 }
 
+// PayPal API Helpers
+async function getPayPalAccessToken() {
+  console.log("PayPal Config:", {
+    environment: PAYPAL_CONFIG.environment,
+    baseUrl: PAYPAL_CONFIG.baseUrl,
+    clientId: PAYPAL_CONFIG.clientId ? "Present" : "Missing",
+    clientSecret: PAYPAL_CONFIG.clientSecret ? "Present" : "Missing"
+  });
+
+  try {
+    // Use Deno's built-in btoa for better compatibility
+    const auth = btoa(`${PAYPAL_CONFIG.clientId}:${PAYPAL_CONFIG.clientSecret}`);
+    console.log("Authorization header created successfully");
+
+    const response = await fetch(`${PAYPAL_CONFIG.baseUrl}/v1/oauth2/token`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Basic ${auth}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: "grant_type=client_credentials",
+    });
+
+    console.log("PayPal token request status:", response.status);
+    console.log("PayPal token request headers:", Object.fromEntries(response.headers.entries()));
+
+    const data = await response.json();
+    console.log("PayPal token response:", {
+      hasAccessToken: !!data.access_token,
+      tokenType: data.token_type,
+      expiresIn: data.expires_in,
+      error: data.error,
+      errorDescription: data.error_description
+    });
+
+    if (!response.ok || !data.access_token) {
+      console.error("Failed to get PayPal access token:", data);
+      return null;
+    }
+
+    return data.access_token;
+  } catch (error) {
+    console.error("Error in getPayPalAccessToken:", error);
+    return null;
+  }
+}
+
 // Authentication functions
 const sessions = new Map<string, { username: string; expires: number }>();
 
@@ -363,6 +430,94 @@ async function handleApiRequest(req: Request): Promise<Response> {
     }
   }
 
+  // Airtable API - Get Products
+  if (url.pathname === "/api/airtable/products" && req.method === "GET") {
+    try {
+      if (!AIRTABLE_CONFIG.apiKey || !AIRTABLE_CONFIG.baseId || !AIRTABLE_CONFIG.tableId) {
+        return new Response(
+          JSON.stringify({ error: "Airtable configuration missing" }),
+          { 
+            status: 500,
+            headers: { 
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*"
+            }
+          }
+        );
+      }
+
+      const airtableUrl = `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableId}`;
+      
+      console.log("Fetching products from Airtable...");
+
+      const response = await fetch(airtableUrl, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${AIRTABLE_CONFIG.apiKey}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Airtable API error:", response.status, errorText);
+        return new Response(
+          JSON.stringify({ error: "Failed to fetch products from Airtable", details: errorText }),
+          { 
+            status: response.status,
+            headers: { 
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*"
+            }
+          }
+        );
+      }
+
+      const data = await response.json();
+      
+      // Transform Airtable records to shop format
+      const products = data.records.map((record: any) => {
+        const fields = record.fields;
+        const inventory = fields["Variant Inventory Qty"] || 0;
+        
+        return {
+          id: record.id,
+          title: fields["Title"] || "Untitled Product",
+          price: fields["Variant Price"] || "0.00",
+          image: fields["Image Src"] || "https://via.placeholder.com/400x400?text=No+Image",
+          description: fields["Description"] || "",
+          availableForSale: inventory > 0,
+          currencyCode: "CAD"
+        };
+      });
+
+      console.log(`Successfully fetched ${products.length} products from Airtable`);
+
+      return new Response(
+        JSON.stringify({ products }),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Error fetching products from Airtable:", error);
+      return new Response(
+        JSON.stringify({ error: "Failed to fetch products" }),
+        { 
+          status: 500,
+          headers: { 
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
+        }
+      );
+    }
+  }
+
   // Shopify API - Get Products
   if (url.pathname === "/api/shopify/products" && req.method === "GET") {
     try {
@@ -471,106 +626,110 @@ async function handleApiRequest(req: Request): Promise<Response> {
     }
   }
 
-  // Shopify API - Create Cart
-  if (url.pathname === "/api/shopify/checkout" && req.method === "POST") {
+  // PayPal API - Create Order
+  if (url.pathname === "/api/paypal/create-order" && req.method === "POST") {
     try {
       const { items } = await req.json();
 
       if (!items || !Array.isArray(items) || items.length === 0) {
-        return new Response(
-          JSON.stringify({ error: "No items provided" }),
-          { 
-            status: 400,
-            headers: { 
-              "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "*"
-            }
-          }
-        );
+        return new Response(JSON.stringify({ error: "No items provided" }), { status: 400 });
       }
 
-      const shopifyUrl = `https://${SHOPIFY_CONFIG.storeDomain}/api/2024-01/graphql.json`;
-      
-      // Format line items for Shopify Cart API
-      const lines = items.map((item: any) => ({
-        merchandiseId: item.variantId,
-        quantity: item.quantity,
-      }));
+      const accessToken = await getPayPalAccessToken();
 
-      const mutation = `
-        mutation cartCreate($input: CartInput!) {
-          cartCreate(input: $input) {
-            cart {
-              id
-              checkoutUrl
-            }
-            userErrors {
-              code
-              field
-              message
-            }
-          }
-        }
-      `;
+      if (!accessToken) {
+        console.error("Failed to obtain PayPal access token");
+        return new Response(JSON.stringify({
+          error: "Authentication failed",
+          message: "Unable to authenticate with PayPal. Please check server configuration."
+        }), { status: 500 });
+      }
 
-      const variables = {
-        input: {
-          lines: lines,
-        },
+      const totalAmount = items.reduce((sum: number, item: any) => sum + (parseFloat(item.price) * item.quantity), 0).toFixed(2);
+
+      // We assume CAD for now as per Shopify domain
+      const currencyCode = "CAD";
+
+      const orderData = {
+        intent: "CAPTURE",
+        purchase_units: [{
+          amount: {
+            currency_code: currencyCode,
+            value: totalAmount,
+            breakdown: {
+              item_total: {
+                currency_code: currencyCode,
+                value: totalAmount
+              }
+            }
+          },
+          items: items.map((item: any) => ({
+            name: item.title,
+            quantity: item.quantity.toString(),
+            unit_amount: {
+              currency_code: currencyCode,
+              value: parseFloat(item.price).toFixed(2)
+            }
+          }))
+        }]
       };
 
-      const response = await fetch(shopifyUrl, {
+      console.log("Creating PayPal order with data:", {
+        totalAmount,
+        currencyCode,
+        itemCount: items.length,
+        accessTokenPresent: !!accessToken
+      });
+
+      const response = await fetch(`${PAYPAL_CONFIG.baseUrl}/v2/checkout/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-Shopify-Storefront-Access-Token": SHOPIFY_CONFIG.storefrontAccessToken,
+          "Authorization": `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ query: mutation, variables }),
+        body: JSON.stringify(orderData),
       });
 
       const data = await response.json();
 
-      if (data.errors || data.data?.cartCreate?.userErrors?.length > 0) {
-        console.error("Shopify cart errors:", data.errors || data.data.cartCreate.userErrors);
-        return new Response(
-          JSON.stringify({ 
-            error: "Failed to create cart", 
-            details: data.errors || data.data.cartCreate.userErrors 
-          }),
-          { 
-            status: 500,
-            headers: { 
-              "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "*"
-            }
-          }
-        );
-      }
+      console.log("PayPal order creation response:", {
+        status: response.status,
+        hasId: !!data.id,
+        error: data.details || data.error
+      });
 
-      return new Response(
-        JSON.stringify({ 
-          checkoutUrl: data.data.cartCreate.cart.checkoutUrl 
-        }),
-        {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
-        }
-      );
+      return new Response(JSON.stringify(data), {
+        status: response.status,
+        headers: { "Content-Type": "application/json" }
+      });
     } catch (error) {
-      console.error("Error creating cart:", error);
-      return new Response(
-        JSON.stringify({ error: "Failed to create cart" }),
-        { 
-          status: 500,
-          headers: { 
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*"
-          }
-        }
-      );
+      console.error("PayPal create order error:", error);
+      return new Response(JSON.stringify({ error: "Failed to create PayPal order" }), { status: 500 });
+    }
+  }
+
+  // PayPal API - Capture Order
+  if (url.pathname === "/api/paypal/capture-order" && req.method === "POST") {
+    try {
+      const { orderID } = await req.json();
+      const accessToken = await getPayPalAccessToken();
+
+      const response = await fetch(`${PAYPAL_CONFIG.baseUrl}/v2/checkout/orders/${orderID}/capture`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`,
+        },
+      });
+
+      const data = await response.json();
+      return new Response(JSON.stringify(data), { 
+        status: response.status,
+        headers: { "Content-Type": "application/json" }
+      });
+    } catch (error) {
+      console.error("PayPal capture order error:", error);
+      return new Response(JSON.stringify({ error: "Failed to capture PayPal order" }), { status: 500 });
     }
   }
 

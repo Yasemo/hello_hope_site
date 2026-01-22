@@ -4,9 +4,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const programData = {
         'hello-hope': {
             name: 'HELLO HOPE',
-            tagline: 'Battling Loneliness & The Other Things That Can Weigh Us Down',
-            description: 'Social media promised connection, but delivered toxic comparison. Now AI is replacing friendships. This session delivers practical tools for building real human bonds that actually stick.',
-            focus: 'This student session focuses on bringing encouragement and relief to participants to tackle stress and anxiety during and after a pandemic. Learning components include the connection between social media, empathy and the health benefits of face to face interaction, and practical take-aways on how to create stronger bonds with others.',
+            tagline: 'Staying Human: Mental Health and Connection in an A.I. / Social Media World',
+            description: 'PARENT/GUARDIAN VERSION - Practical tools for fostering mental health and building lasting connection with your kids! \n STUDENT VERSION - Practical tools for fostering mental health and building real human bonds that actually stick',
+            focus: 'This student session focuses on bringing encouragement and relief to participants to tackle stress and anxiety in an A.I. and Social Media flooded world. Learning components include the connection between social media, empathy and the health benefits of face to face interaction, and practical take-aways on how to create stronger bonds with others.',
             materials: 'Students will receive practical handouts with strategies for managing stress, building authentic connections, and creating healthier relationships with technology and peers.',
             versions: ['Gr. 4-6', 'Gr. 7-8', 'Gr. 9-10', 'Gr. 11-12', 'Elementary Faculty', 'Secondary Faculty', 'Parents/Guardians', 'Corporate', 'Teams'],
             duration: '60 min',

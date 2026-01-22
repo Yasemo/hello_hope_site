@@ -19,6 +19,24 @@
     gtag('config', 'G-4W2D1MV9MZ');
   </script>
 
+  <!-- Meta Pixel Code -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1497149528035279');
+    fbq('track', 'PageView');
+  </script>
+  <noscript>
+    <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1497149528035279&ev=PageView&noscript=1" />
+  </noscript>
+  <!-- End Meta Pixel Code -->
+
   <!-- Preload critical resources -->
   <link rel="preload" href="/styles/main.css" as="style">
   <link rel="preload" href="/scripts/main.js" as="script">
@@ -234,13 +252,14 @@
           <span>Subtotal:</span>
           <span id="cart-subtotal">$0.00</span>
         </div>
-        <button id="checkout-button" class="btn-checkout">
+        <div id="paypal-button-container" style="margin-top: 1.5rem;"></div>
+        <button id="checkout-button" class="btn-checkout" style="display: none;">
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"/>
           </svg>
           Proceed to Checkout
         </button>
-        <p class="checkout-note">You'll be redirected to our secure Shopify checkout</p>
+        <p class="checkout-note">Secure payment processed by PayPal</p>
       </div>
     </div>
   </div>

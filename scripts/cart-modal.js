@@ -1,5 +1,7 @@
 // Cart Modal - UI and Checkout Integration
 
+let paypalButtons = null;
+
 document.addEventListener('DOMContentLoaded', function() {
     initCartModal();
     updateCartDisplay();
@@ -58,6 +60,9 @@ function openCartModal() {
     
     // Update display to show latest cart state
     updateCartDisplay();
+
+    // Initialize PayPal
+    initPayPal();
 }
 
 // Close cart modal
@@ -164,64 +169,132 @@ function createCartItemHTML(item) {
     `;
 }
 
-// Handle checkout - Create Shopify checkout and redirect
-async function handleCheckout() {
-    const checkoutButton = document.getElementById('checkout-button');
-    const originalText = checkoutButton.innerHTML;
-    
-    // Disable button and show loading
-    checkoutButton.disabled = true;
-    checkoutButton.innerHTML = `
-        <svg viewBox="0 0 24 24" fill="currentColor" style="animation: spin 1s linear infinite;">
-            <path d="M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z"/>
-        </svg>
-        Processing...
-    `;
-
+// Initialize PayPal SDK and Buttons
+async function initPayPal() {
     try {
-        const cart = Cart.get();
+        // Fetch config to get PayPal Client ID
+        const configResponse = await fetch('/api/config');
+        const config = await configResponse.json();
         
-        if (cart.items.length === 0) {
-            throw new Error('Cart is empty');
+        if (!config.paypal || !config.paypal.clientId) {
+            console.error('PayPal Client ID not found in config');
+            return;
         }
 
-        // Create checkout via API
-        const response = await fetch('/api/shopify/checkout', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ items: cart.items }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok || !data.checkoutUrl) {
-            throw new Error(data.error || 'Failed to create checkout');
-        }
-
-        // Track checkout event
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'begin_checkout', {
-                'event_category': 'ecommerce',
-                'value': Cart.getTotal(),
-                'items': cart.items.length
+        // Load PayPal SDK script
+        if (!window.paypal) {
+            await new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = `https://www.paypal.com/sdk/js?client-id=${config.paypal.clientId}&currency=CAD&components=buttons`;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
             });
         }
 
-        // Redirect to Shopify checkout
-        window.location.href = data.checkoutUrl;
+        // Render PayPal Buttons
+        if (window.paypal && !paypalButtons) {
+            paypalButtons = window.paypal.Buttons({
+                createOrder: async (data, actions) => {
+                    const cart = Cart.get();
+                    const response = await fetch('/api/paypal/create-order', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ items: cart.items })
+                    });
+                    
+                    const order = await response.json();
+                    if (order.id) {
+                        return order.id;
+                    } else {
+                        const errorDetail = order?.details?.[0];
+                        const errorMessage = errorDetail 
+                            ? `${errorDetail.issue} ${errorDetail.description} (${order.debug_id})`
+                            : JSON.stringify(order);
+                        throw new Error(errorMessage);
+                    }
+                },
+                onApprove: async (data, actions) => {
+                    try {
+                        const response = await fetch('/api/paypal/capture-order', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ orderID: data.orderID })
+                        });
+                        
+                        const details = await response.json();
+                        
+                        // Three cases to handle:
+                        //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
+                        //   (2) Other non-recoverable errors -> show a failure message
+                        //   (3) Successful transaction -> show confirmation or thank you
 
+                        const errorDetail = details?.details?.[0];
+
+                        if (errorDetail?.issue === 'INSTRUMENT_DECLINED') {
+                            return actions.restart();
+                        } else if (errorDetail) {
+                            throw new Error(`${errorDetail.description} (${details.debug_id})`);
+                        } else if (!details.purchase_units) {
+                            throw new Error('Transaction could not be processed.');
+                        } else {
+                            // Successful capture
+                            console.log('Capture result', details);
+                            const transaction = details.purchase_units[0].payments.captures[0];
+                            
+                            // Clear cart
+                            Cart.clear();
+                            
+                            // Show success message
+                            showSuccessMessage(`Transaction ${transaction.status}: ${transaction.id}\n\nThank you for your support!`);
+                            
+                            // Close modal after delay
+                            setTimeout(() => {
+                                closeCartModal();
+                            }, 5000);
+                        }
+                    } catch (error) {
+                        console.error('Capture error', error);
+                        showCheckoutError('Sorry, your transaction could not be processed.');
+                    }
+                },
+                onError: (err) => {
+                    console.error('PayPal error', err);
+                    showCheckoutError('An error occurred with PayPal. Please try again.');
+                }
+            });
+            
+            if (document.getElementById('paypal-button-container')) {
+                paypalButtons.render('#paypal-button-container');
+            }
+        }
     } catch (error) {
-        console.error('Checkout error:', error);
-        
-        // Show error message
-        showCheckoutError(error.message || 'Failed to proceed to checkout. Please try again.');
-        
-        // Re-enable button
-        checkoutButton.disabled = false;
-        checkoutButton.innerHTML = originalText;
+        console.error('Failed to initialize PayPal:', error);
     }
+}
+
+// Show success message in cart
+function showSuccessMessage(message) {
+    const cartItems = document.getElementById('cart-items');
+    cartItems.innerHTML = `
+        <div class="success-message-container" style="text-align: center; padding: 2rem;">
+            <svg viewBox="0 0 24 24" fill="#28a745" style="width: 64px; height: 64px; margin-bottom: 1rem;">
+                <path d="M12,2A10,10 0 1,0 22,12A10,10 0 0,0 12,2M10,17L5,12L6.41,10.59L10,14.17L17.59,6.58L19,8L10,17Z"/>
+            </svg>
+            <h3>Payment Successful!</h3>
+            <p style="margin-top: 1rem; color: var(--text-color);">${message}</p>
+        </div>
+    `;
+    
+    // Hide footer
+    const cartFooter = document.querySelector('.cart-footer');
+    if (cartFooter) cartFooter.style.display = 'none';
+}
+
+// Handle checkout - Now handled by PayPal Buttons
+async function handleCheckout() {
+    // This function is kept for backward compatibility but the button is hidden
+    console.log('Using PayPal Buttons for checkout');
 }
 
 // Show checkout error
@@ -248,11 +321,13 @@ function showCheckoutError(message) {
 }
 
 // Add spin animation
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-    }
-`;
-document.head.appendChild(style);
+{
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(style);
+}

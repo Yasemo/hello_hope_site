@@ -5,42 +5,52 @@ document.addEventListener('DOMContentLoaded', function() {
     const soundToggle = document.getElementById('soundToggle');
 
     if (heroVideo && soundToggle) {
-        // Attempt to autoplay video on load (handles mobile restrictions)
+        // Robust autoplay function with mobile restriction handling
         function attemptAutoplay() {
+            // Ensure video is muted for autoplay compliance
+            heroVideo.muted = true;
+            
             const playPromise = heroVideo.play();
 
             if (playPromise !== undefined) {
                 playPromise.then(() => {
-                    // Autoplay succeeded
                     console.log('Video autoplay succeeded');
                 }).catch(error => {
-                    // Autoplay failed - this is expected on mobile
-                    console.log('Video autoplay failed:', error.message);
+                    console.log('Video autoplay blocked by browser:', error.message);
 
-                    // Add one-time click listener to play video on first user interaction
-                    function playOnInteraction() {
-                        heroVideo.play().catch(err => console.log('Video play failed:', err));
-                        // Remove listeners after first interaction
+                    // Fallback: Play on first user interaction (click, touch, scroll)
+                    const playOnInteraction = () => {
+                        heroVideo.play()
+                            .then(() => {
+                                console.log('Video playing after user interaction');
+                                cleanupListeners();
+                            })
+                            .catch(err => console.log('Video interaction play failed:', err));
+                    };
+
+                    const cleanupListeners = () => {
                         document.removeEventListener('click', playOnInteraction);
                         document.removeEventListener('touchstart', playOnInteraction);
                         document.removeEventListener('keydown', playOnInteraction);
-                    }
+                        window.removeEventListener('scroll', playOnInteraction);
+                    };
 
                     // Add listeners for various user interactions
                     document.addEventListener('click', playOnInteraction, { once: true });
                     document.addEventListener('touchstart', playOnInteraction, { once: true });
                     document.addEventListener('keydown', playOnInteraction, { once: true });
+                    window.addEventListener('scroll', playOnInteraction, { once: true, passive: true });
                 });
             }
         }
 
         // Wait for video to be ready before attempting autoplay
-        if (heroVideo.readyState >= 2) { // HAVE_CURRENT_DATA or higher
+        if (heroVideo.readyState >= 3) { // HAVE_FUTURE_DATA or higher
             attemptAutoplay();
         } else {
-            heroVideo.addEventListener('loadeddata', attemptAutoplay, { once: true });
+            heroVideo.addEventListener('canplay', attemptAutoplay, { once: true });
         }
-        
+
         // Function to toggle sound
         function toggleSound() {
             if (heroVideo.muted) {
