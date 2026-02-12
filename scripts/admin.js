@@ -70,6 +70,71 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Navigation
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = this.dataset.section;
+            switchSection(section);
+        });
+    });
+
+    // Discount codes functionality
+    const generateCodesBtn = document.getElementById('generate-codes-btn');
+    if (generateCodesBtn) {
+        generateCodesBtn.addEventListener('click', () => showGenerateModal());
+    }
+
+    const createFirstCodesBtn = document.getElementById('create-first-codes-btn');
+    if (createFirstCodesBtn) {
+        createFirstCodesBtn.addEventListener('click', () => showGenerateModal());
+    }
+
+    // Code generation modal
+    const generateForm = document.getElementById('generate-form');
+    if (generateForm) {
+        generateForm.addEventListener('submit', handleCodeGeneration);
+    }
+
+    const cancelGenerate = document.getElementById('cancel-generate');
+    if (cancelGenerate) {
+        cancelGenerate.addEventListener('click', hideGenerateModal);
+    }
+
+    const closeGenerate = document.getElementById('close-generate');
+    if (closeGenerate) {
+        closeGenerate.addEventListener('click', hideGenerateModal);
+    }
+
+    const generateModal = document.getElementById('generate-modal');
+    if (generateModal) {
+        generateModal.addEventListener('click', function(e) {
+            if (e.target === generateModal) {
+                hideGenerateModal();
+            }
+        });
+    }
+
+    // Delete discount modal
+    const cancelDelete = document.getElementById('cancel-delete');
+    if (cancelDelete) {
+        cancelDelete.addEventListener('click', hideDeleteModal);
+    }
+
+    const confirmDelete = document.getElementById('confirm-delete');
+    if (confirmDelete) {
+        confirmDelete.addEventListener('click', handleDeleteConfirm);
+    }
+
+    const deleteModal = document.getElementById('delete-discount-modal');
+    if (deleteModal) {
+        deleteModal.addEventListener('click', function(e) {
+            if (e.target === deleteModal) {
+                hideDeleteModal();
+            }
+        });
+    }
 
 });
 
@@ -558,5 +623,233 @@ function getEditorContent() {
 function setEditorContent(content) {
     if (editor) {
         editor.setMarkdown(content);
+    }
+}
+
+// Navigation
+function switchSection(section) {
+    // Update navigation
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+        if (link.dataset.section === section) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+
+    // Show/hide sections
+    const sections = document.querySelectorAll('.section-view');
+    sections.forEach(sec => {
+        if (sec.dataset.section === section) {
+            sec.style.display = 'block';
+        } else {
+            sec.style.display = 'none';
+        }
+    });
+
+    // Load data for the section
+    if (section === 'posts') {
+        loadPosts();
+    } else if (section === 'discounts') {
+        loadDiscountCodes();
+    }
+}
+
+// Discount codes management
+async function loadDiscountCodes() {
+    const loadingDiv = document.getElementById('discounts-loading');
+    const tableDiv = document.getElementById('discounts-table');
+    const emptyDiv = document.getElementById('discounts-empty');
+    const codesList = document.getElementById('discounts-list');
+
+    loadingDiv.style.display = 'block';
+    tableDiv.style.display = 'none';
+    emptyDiv.style.display = 'none';
+
+    try {
+        const response = await fetch('/api/admin/discounts', {
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                showLogin();
+                return;
+            }
+            throw new Error('Failed to fetch discount codes');
+        }
+
+        const codes = await response.json();
+
+        // Update stats
+        const activeCount = codes.filter(code => code.isActive).length;
+        const usedCount = codes.length - activeCount;
+        document.getElementById('active-codes-count').querySelector('.stat-number').textContent = activeCount;
+        document.getElementById('used-codes-count').querySelector('.stat-number').textContent = usedCount;
+
+        loadingDiv.style.display = 'none';
+
+        if (codes.length === 0) {
+            emptyDiv.style.display = 'block';
+            return;
+        }
+
+        renderDiscountCodesTable(codes);
+        tableDiv.style.display = 'block';
+
+    } catch (error) {
+        console.error('Error loading discount codes:', error);
+        loadingDiv.style.display = 'none';
+        // Show error state
+    }
+}
+
+function renderDiscountCodesTable(codes) {
+    const codesList = document.getElementById('discounts-list');
+    codesList.innerHTML = '';
+
+    codes.forEach(code => {
+        const row = createDiscountCodeRow(code);
+        codesList.appendChild(row);
+    });
+}
+
+function createDiscountCodeRow(code) {
+    const row = document.createElement('div');
+    row.className = 'discount-row';
+
+    const createdDate = new Date(code.createdAt).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+    row.innerHTML = `
+        <div class="col-code">
+            <code>${code.code}</code>
+        </div>
+        <div class="col-created">${createdDate}</div>
+        <div class="col-status">
+            <span class="status-badge ${code.isActive ? 'active' : 'used'}">
+                ${code.isActive ? 'Active' : 'Used'}
+            </span>
+        </div>
+        <div class="col-actions">
+            ${code.isActive ? `
+                <button class="action-btn delete-btn" data-code="${code.code}">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/>
+                    </svg>
+                    Delete
+                </button>
+            ` : ''}
+        </div>
+    `;
+
+    // Add event listeners
+    const deleteBtn = row.querySelector('.delete-btn');
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', () => showDeleteConfirmation(code.code));
+    }
+
+    return row;
+}
+
+// Code generation modal
+function showGenerateModal() {
+    document.getElementById('generate-modal').style.display = 'flex';
+    document.getElementById('generate-count').focus();
+}
+
+function hideGenerateModal() {
+    document.getElementById('generate-modal').style.display = 'none';
+    document.getElementById('generate-form').reset();
+}
+
+// Handle code generation
+async function handleCodeGeneration(e) {
+    e.preventDefault();
+
+    const count = parseInt(document.getElementById('generate-count').value);
+    const confirmGenerate = document.querySelector('.confirm-generate');
+
+    confirmGenerate.disabled = true;
+    confirmGenerate.textContent = 'Generating...';
+
+    try {
+        const response = await fetch('/api/admin/discounts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ count })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to generate codes');
+        }
+
+        const data = await response.json();
+
+        // Show success message with codes
+        const codesText = data.codes.map(code => code.code).join('\n');
+        alert(`Generated ${data.codes.length} discount codes:\n\n${codesText}`);
+
+        hideGenerateModal();
+        loadDiscountCodes();
+
+    } catch (error) {
+        console.error('Error generating codes:', error);
+        alert('Failed to generate discount codes. Please try again.');
+    } finally {
+        confirmGenerate.disabled = false;
+        confirmGenerate.textContent = 'Generate Codes';
+    }
+}
+
+// Delete confirmation modal
+let codeToDelete = null;
+
+function showDeleteConfirmation(code) {
+    codeToDelete = code;
+    document.getElementById('delete-code-name').textContent = code;
+    document.getElementById('delete-discount-modal').style.display = 'flex';
+}
+
+function hideDeleteModal() {
+    document.getElementById('delete-discount-modal').style.display = 'none';
+    codeToDelete = null;
+}
+
+// Handle delete confirmation
+async function handleDeleteConfirm() {
+    if (!codeToDelete) return;
+
+    const confirmBtn = document.getElementById('confirm-delete');
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = 'Deleting...';
+
+    try {
+        const response = await fetch(`/api/admin/discounts/${encodeURIComponent(codeToDelete)}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete code');
+        }
+
+        alert('Discount code deleted successfully');
+        hideDeleteModal();
+        loadDiscountCodes();
+
+    } catch (error) {
+        console.error('Error deleting code:', error);
+        alert('Failed to delete discount code. Please try again.');
+    } finally {
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = 'Delete Code';
     }
 }

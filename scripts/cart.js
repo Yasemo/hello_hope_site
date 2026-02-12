@@ -5,7 +5,17 @@ const Cart = {
     // Get cart from localStorage
     get() {
         const cart = localStorage.getItem('hellohope_cart');
-        return cart ? JSON.parse(cart) : { items: [] };
+        const parsed = cart ? JSON.parse(cart) : { items: [] };
+
+        // Initialize discount fields if they don't exist
+        if (parsed.discountCode === undefined) {
+            parsed.discountCode = null;
+        }
+        if (parsed.freeItemId === undefined) {
+            parsed.freeItemId = null;
+        }
+
+        return parsed;
     },
 
     // Save cart to localStorage
@@ -34,8 +44,10 @@ const Cart = {
                 id: product.id,
                 variantId: product.variantId,
                 title: product.title,
+                type: product.type,
                 price: parseFloat(product.price),
                 image: product.image,
+                size: product.size,
                 quantity: quantity
             });
         }
@@ -98,6 +110,70 @@ const Cart = {
         const cart = this.get();
         const item = cart.items.find(item => item.variantId === variantId);
         return item ? item.quantity : 0;
+    },
+
+    // Apply discount code
+    applyDiscountCode(code) {
+        const cart = this.get();
+        cart.discountCode = code.toUpperCase();
+        cart.freeItemId = null; // Reset free item selection
+        this.save(cart);
+        return cart;
+    },
+
+    // Remove discount code
+    removeDiscountCode() {
+        const cart = this.get();
+        cart.discountCode = null;
+        cart.freeItemId = null;
+        this.save(cart);
+        return cart;
+    },
+
+    // Check if discount is applied
+    hasDiscount() {
+        const cart = this.get();
+        return cart.discountCode !== null;
+    },
+
+    // Set free item
+    setFreeItem(variantId) {
+        const cart = this.get();
+        cart.freeItemId = variantId;
+        this.save(cart);
+        return cart;
+    },
+
+    // Get discounted total (accounting for free item)
+    getDiscountedTotal() {
+        const cart = this.get();
+
+        if (!cart.discountCode || !cart.freeItemId) {
+            return this.getTotal();
+        }
+
+        // Calculate total with free item discount
+        return cart.items.reduce((total, item) => {
+            if (item.variantId === cart.freeItemId) {
+                // This item is free
+                return total;
+            }
+            return total + (item.price * item.quantity);
+        }, 0);
+    },
+
+    // Get discount amount
+    getDiscountAmount() {
+        return this.getTotal() - this.getDiscountedTotal();
+    },
+
+    // Get discount info
+    getDiscountInfo() {
+        const cart = this.get();
+        return {
+            code: cart.discountCode,
+            freeItemId: cart.freeItemId
+        };
     }
 };
 

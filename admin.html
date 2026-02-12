@@ -99,10 +99,20 @@
       </div>
     </header>
 
+    <!-- Admin Navigation -->
+    <nav class="admin-nav">
+      <div class="admin-nav-content">
+        <ul class="nav-list">
+          <li><a href="#posts" class="nav-link active" data-section="posts">Blog Posts</a></li>
+          <li><a href="#discounts" class="nav-link" data-section="discounts">Discount Codes</a></li>
+        </ul>
+      </div>
+    </nav>
+
     <!-- Admin Content -->
     <main class="admin-content">
       <!-- Posts List -->
-      <div id="posts-list-view" class="posts-list-view">
+      <div id="posts-list-view" class="posts-list-view section-view" data-section="posts">
         <div class="posts-header">
           <h2>All Posts</h2>
           <button id="new-post-btn" class="new-post-btn">
@@ -135,6 +145,102 @@
           <h3>No posts yet</h3>
           <p>Create your first blog post to get started.</p>
           <button id="create-first-post-btn" class="create-first-post-btn">Create First Post</button>
+        </div>
+      </div>
+
+      <!-- Discount Codes -->
+      <div id="discounts-list-view" class="discounts-list-view section-view" data-section="discounts" style="display: none;">
+        <div class="discounts-header">
+          <h2>Discount Codes</h2>
+          <div class="discounts-actions">
+            <button id="generate-codes-btn" class="generate-codes-btn">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.4,12.3C17.135,12.3 17.7,11.74 17.7,11C17.7,10.26 17.135,9.7 16.4,9.7H14.7V8.2C14.7,7.645 14.255,7.2 13.7,7.2C13.145,7.2 12.7,7.645 12.7,8.2V9.7H10.9C10.165,9.7 9.6,10.26 9.6,11C9.6,11.74 10.165,12.3 10.9,12.3H12.7V13.8C12.7,14.355 13.145,14.8 13.7,14.8C14.255,14.8 14.7,14.355 14.7,13.8V12.3H16.4Z"/>
+              </svg>
+              Generate Codes
+            </button>
+          </div>
+        </div>
+
+        <div class="discounts-stats">
+          <div id="active-codes-count" class="stat-card">
+            <h3>Active Codes</h3>
+            <span class="stat-number">0</span>
+          </div>
+          <div id="used-codes-count" class="stat-card">
+            <h3>Used Codes</h3>
+            <span class="stat-number">0</span>
+          </div>
+        </div>
+
+        <div id="discounts-loading" class="discounts-loading">
+          <div class="loading-spinner"></div>
+          <p>Loading discount codes...</p>
+        </div>
+
+        <div id="discounts-table" class="discounts-table" style="display: none;">
+          <div class="table-header">
+            <div class="col-code">Code</div>
+            <div class="col-created">Created</div>
+            <div class="col-status">Status</div>
+            <div class="col-actions">Actions</div>
+          </div>
+          <div id="discounts-list" class="discounts-list">
+            <!-- Discount codes will be dynamically inserted here -->
+          </div>
+        </div>
+
+        <div id="discounts-empty" class="discounts-empty" style="display: none;">
+          <h3>No discount codes yet</h3>
+          <p>Generate discount codes to allow customers to get free items.</p>
+          <button id="create-first-codes-btn" class="create-first-codes-btn">Generate First Codes</button>
+        </div>
+      </div>
+
+      <!-- Code Generation Modal -->
+      <div id="generate-modal" class="generate-modal" style="display: none;">
+        <div class="generate-overlay"></div>
+        <div class="generate-content">
+          <div class="generate-header">
+            <h3>Generate Discount Codes</h3>
+            <button id="close-generate" class="close-generate">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
+              </svg>
+            </button>
+          </div>
+          <form id="generate-form" class="generate-form">
+            <div class="form-group">
+              <label for="generate-count">Number of codes to generate</label>
+              <input type="number" id="generate-count" name="count" value="5" min="1" max="50" required>
+            </div>
+            <div class="form-group">
+              <label>Type</label>
+              <p>Each code allows one free item per purchase (one-time use)</p>
+            </div>
+            <div class="generate-actions">
+              <button type="button" id="cancel-generate" class="cancel-generate">Cancel</button>
+              <button type="submit" class="confirm-generate">Generate Codes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Delete Confirmation Modal -->
+      <div id="delete-discount-modal" class="delete-modal" style="display: none;">
+        <div class="delete-overlay"></div>
+        <div class="delete-content">
+          <div class="delete-header">
+            <h3>Delete Discount Code</h3>
+          </div>
+          <div class="delete-body">
+            <p>Are you sure you want to delete discount code <strong id="delete-code-name"></strong>?</p>
+            <p class="delete-warning">This action cannot be undone.</p>
+          </div>
+          <div class="delete-actions">
+            <button id="cancel-delete" class="cancel-delete">Cancel</button>
+            <button id="confirm-delete" class="confirm-delete">Delete Code</button>
+          </div>
         </div>
       </div>
 

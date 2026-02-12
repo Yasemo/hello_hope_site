@@ -39,6 +39,9 @@ function initCartModal() {
         handleCheckout();
     });
 
+    // Discount code functionality
+    initDiscountCode();
+
     // Listen for cart updates
     window.addEventListener('cartUpdated', function() {
         updateCartDisplay();
@@ -118,17 +121,41 @@ function updateCartDisplay() {
             btn.addEventListener('click', function() {
                 const variantId = this.dataset.variantId;
                 const title = this.dataset.title;
-                
-                if (confirm(`Remove "${title}" from cart?`)) {
-                    Cart.remove(variantId);
-                }
+                showRemoveConfirmationModal(variantId, title);
             });
         });
     }
 
-    // Update subtotal
-    const total = Cart.getTotal();
-    cartSubtotal.textContent = `$${total.toFixed(2)}`;
+    // Update subtotal, shipping, discount, and total
+    const subtotal = Cart.getTotal();
+    const discountAmount = Cart.getDiscountAmount();
+    const discountedTotal = Cart.getDiscountedTotal();
+    const shipping = cart.items.length > 0 ? 15.00 : 0.00;
+    const total = discountedTotal + shipping;
+
+    const cartSubtotalElement = document.getElementById('cart-subtotal');
+    const cartDiscountElement = document.getElementById('cart-discount');
+    const cartDiscountAmountElement = document.getElementById('cart-discount-amount');
+    const cartShippingElement = document.getElementById('cart-shipping');
+    const cartTotalElement = document.getElementById('cart-total');
+
+    if (cartSubtotalElement) cartSubtotalElement.textContent = `$${subtotal.toFixed(2)}`;
+
+    // Show/hide discount line
+    if (cartDiscountElement && cartDiscountAmountElement) {
+        if (discountAmount > 0) {
+            cartDiscountElement.style.display = 'flex';
+            cartDiscountAmountElement.textContent = `-$${discountAmount.toFixed(2)}`;
+        } else {
+            cartDiscountElement.style.display = 'none';
+        }
+    }
+
+    if (cartShippingElement) cartShippingElement.textContent = `$${shipping.toFixed(2)}`;
+    if (cartTotalElement) cartTotalElement.textContent = `$${total.toFixed(2)}`;
+
+    // Update discount UI
+    updateDiscountUI();
 }
 
 // Create cart item HTML
@@ -197,18 +224,30 @@ async function initPayPal() {
             paypalButtons = window.paypal.Buttons({
                 createOrder: async (data, actions) => {
                     const cart = Cart.get();
+                    const discountInfo = Cart.getDiscountInfo();
+                    const payload = { items: cart.items };
+
+                    if (discountInfo.code && discountInfo.freeItemId) {
+                        payload.discountCode = discountInfo.code;
+                        // Apply discount by setting free item price to 0
+                        const freeItemIndex = payload.items.findIndex(item => item.variantId === discountInfo.freeItemId);
+                        if (freeItemIndex > -1) {
+                            payload.items[freeItemIndex].price = "0.00";
+                        }
+                    }
+
                     const response = await fetch('/api/paypal/create-order', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ items: cart.items })
+                        body: JSON.stringify(payload)
                     });
-                    
+
                     const order = await response.json();
                     if (order.id) {
                         return order.id;
                     } else {
                         const errorDetail = order?.details?.[0];
-                        const errorMessage = errorDetail 
+                        const errorMessage = errorDetail
                             ? `${errorDetail.issue} ${errorDetail.description} (${order.debug_id})`
                             : JSON.stringify(order);
                         throw new Error(errorMessage);
@@ -318,6 +357,207 @@ function showCheckoutError(message) {
 
     // Remove after 5 seconds
     setTimeout(() => error.remove(), 5000);
+}
+
+// Show remove confirmation modal
+function showRemoveConfirmationModal(variantId, title) {
+    // Remove any existing confirmation modal
+    const existingModal = document.querySelector('.remove-confirmation-modal');
+    if (existingModal) existingModal.remove();
+
+    // Create confirmation modal
+    const modal = document.createElement('div');
+    modal.className = 'remove-confirmation-modal';
+    modal.innerHTML = `
+        <div class="remove-confirmation-overlay"></div>
+        <div class="remove-confirmation-content">
+            <h3>Remove Item?</h3>
+            <p>Are you sure you want to remove <strong>"${title}"</strong> from your cart?</p>
+            <div class="remove-confirmation-actions">
+                <button class="btn-cancel-remove">Cancel</button>
+                <button class="btn-confirm-remove">Remove</button>
+            </div>
+        </div>
+    `;
+
+    // Add to document body to ensure proper z-index and centering
+    document.body.appendChild(modal);
+
+    // Show modal
+    setTimeout(() => modal.classList.add('show'), 10);
+
+    // Handle cancel button
+    modal.querySelector('.btn-cancel-remove').addEventListener('click', function() {
+        modal.classList.remove('show');
+        setTimeout(() => modal.remove(), 200);
+    });
+
+    // Handle confirm button
+    modal.querySelector('.btn-confirm-remove').addEventListener('click', function() {
+        Cart.remove(variantId);
+        modal.classList.remove('show');
+        setTimeout(() => modal.remove(), 200);
+    });
+
+    // Handle overlay click
+    modal.querySelector('.remove-confirmation-overlay').addEventListener('click', function() {
+        modal.classList.remove('show');
+        setTimeout(() => modal.remove(), 200);
+    });
+
+    // Handle escape key
+    document.addEventListener('keydown', function escapeHandler(e) {
+        if (e.key === 'Escape' && modal.classList.contains('show')) {
+            modal.classList.remove('show');
+            setTimeout(() => modal.remove(), 200);
+            document.removeEventListener('keydown', escapeHandler);
+        }
+    });
+}
+
+// Initialize discount code functionality
+function initDiscountCode() {
+    const discountInput = document.getElementById('discount-code');
+    const applyButton = document.getElementById('apply-discount');
+
+    if (!discountInput || !applyButton) return;
+
+    // Enable/disable apply button based on input
+    discountInput.addEventListener('input', function() {
+        const code = this.value.trim().toUpperCase();
+        applyButton.disabled = code.length === 0;
+    });
+
+    // Apply discount on button click
+    applyButton.addEventListener('click', function() {
+        applyDiscountCode();
+    });
+
+    // Apply discount on Enter key
+    discountInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !applyButton.disabled) {
+            e.preventDefault();
+            applyDiscountCode();
+        }
+    });
+}
+
+// Apply discount code
+async function applyDiscountCode() {
+    const discountInput = document.getElementById('discount-code');
+    const discountMessage = document.getElementById('discount-message');
+    const applyButton = document.getElementById('apply-discount');
+
+    if (!discountInput || !discountMessage || !applyButton) return;
+
+    const code = discountInput.value.trim().toUpperCase();
+
+    if (!code) {
+        discountMessage.textContent = 'Please enter a discount code';
+        discountMessage.className = 'discount-message error';
+        return;
+    }
+
+    // Disable button during validation
+    applyButton.disabled = true;
+    applyButton.textContent = 'Validating...';
+
+    try {
+        const response = await fetch('/api/discounts/validate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code })
+        });
+
+        const data = await response.json();
+
+        if (data.success && data.valid) {
+            // Valid code - apply it
+            Cart.applyDiscountCode(code);
+            discountMessage.textContent = 'Discount code applied!';
+            discountMessage.className = 'discount-message success';
+            discountInput.value = '';
+        } else {
+            // Invalid code
+            discountMessage.textContent = 'Invalid or expired discount code';
+            discountMessage.className = 'discount-message error';
+        }
+    } catch (error) {
+        console.error('Error validating discount code:', error);
+        discountMessage.textContent = 'Error validating discount code. Please try again.';
+        discountMessage.className = 'discount-message error';
+    } finally {
+        // Re-enable button
+        applyButton.disabled = discountInput.value.trim() === '';
+        applyButton.textContent = 'Apply';
+    }
+}
+
+// Update discount UI based on current cart state
+function updateDiscountUI() {
+    const cart = Cart.get();
+    const freeItemSelector = document.getElementById('free-item-selector');
+    const freeItemOptions = document.getElementById('free-item-options');
+    const discountInput = document.getElementById('discount-code');
+    const applyButton = document.getElementById('apply-discount');
+    const discountMessage = document.getElementById('discount-message');
+
+    if (!freeItemSelector || !freeItemOptions || !discountInput || !applyButton || !discountMessage) return;
+
+    // If we have a valid discount code but no free item selected
+    if (cart.discountCode && !cart.freeItemId && cart.items.length > 0) {
+        // Show free item selector
+        freeItemSelector.style.display = 'block';
+
+        // Generate free item options
+        freeItemOptions.innerHTML = cart.items.map(item => `
+            <label class="free-item-option">
+                <input type="radio" name="free-item" value="${item.variantId}" class="free-item-radio">
+                <div class="free-item-info">
+                    <img src="${item.image}" alt="${item.title}" class="free-item-image">
+                    <div class="free-item-details">
+                        <span class="free-item-title">${item.title}</span>
+                        <span class="free-item-price">Original: $${item.price.toFixed(2)}</span>
+                    </div>
+                </div>
+            </label>
+        `).join('');
+
+        // Add event listeners for free item selection
+        freeItemOptions.querySelectorAll('.free-item-radio').forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.checked) {
+                    Cart.setFreeItem(this.value);
+                }
+            });
+        });
+
+        // Show current selection
+        if (cart.freeItemId) {
+            const selectedRadio = freeItemOptions.querySelector(`input[value="${cart.freeItemId}"]`);
+            if (selectedRadio) {
+                selectedRadio.checked = true;
+            }
+        }
+    } else {
+        // Hide free item selector
+        freeItemSelector.style.display = 'none';
+
+        // Clear message if no discount applied
+        if (!cart.discountCode) {
+            discountMessage.textContent = '';
+            discountMessage.className = 'discount-message';
+            discountInput.value = '';
+        }
+
+        // Remove discount if no items in cart
+        if (cart.items.length === 0 && cart.discountCode) {
+            Cart.removeDiscountCode();
+        }
+    }
+
+    // Update button state
+    applyButton.disabled = discountInput.value.trim() === '';
 }
 
 // Add spin animation

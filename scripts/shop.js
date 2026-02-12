@@ -60,6 +60,7 @@ function createProductCard(product) {
     // Get product data from Airtable format
     const image = product.image || 'https://via.placeholder.com/400x400?text=No+Image';
     const title = product.title || 'Untitled Product';
+    const type = product.type || 'Product';
     const price = product.price || '0.00';
     const currencyCode = product.currencyCode || 'CAD';
     const description = product.description ? truncateText(product.description, 100) : null;
@@ -96,6 +97,7 @@ function createProductCard(product) {
                         class="btn-add-to-cart ${!availableForSale ? 'out-of-stock' : ''}"
                         data-product-id="${productId}"
                         data-title="${title}"
+                        data-type="${type}"
                         data-price="${price}"
                         data-image="${image}"
                         ${!availableForSale ? 'disabled' : ''}
@@ -199,11 +201,13 @@ function handleAddToCart(button) {
 
     const productId = button.dataset.productId;
     const title = button.dataset.title;
+    const type = button.dataset.type;
     
     const productData = {
         id: productId,
         variantId: size ? `${productId}-${size}` : productId,
         title: size ? `${title} (${size})` : title,
+        type: type,
         price: button.dataset.price,
         image: button.dataset.image,
         size: size

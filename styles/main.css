@@ -1849,6 +1849,14 @@ p {
   height: 20px;
 }
 
+.website_by {
+  color: var(--text-light);
+}
+
+.website_by span {
+  color: var(--primary-color);
+}
+
 /* Footer Section Media Queries */
 @media (min-width: 768px) {
 

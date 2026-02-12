@@ -45,6 +45,51 @@ const ADMIN_CONFIG = {
   password: Deno.env.get("ADMIN_PASSWORD") || "password",
 };
 
+// Discount codes storage (in-memory for now)
+// In production, this should be moved to a database
+interface DiscountCode {
+  code: string;
+  createdAt: string;
+  isActive: boolean;
+}
+
+let discountCodes: DiscountCode[] = [
+  // Generate 10 initial test codes
+  { code: "HELLOHOPE001", createdAt: new Date().toISOString(), isActive: true },
+  { code: "HELLOHOPE002", createdAt: new Date().toISOString(), isActive: true },
+  { code: "HELLOHOPE003", createdAt: new Date().toISOString(), isActive: true },
+  { code: "HELLOHOPE004", createdAt: new Date().toISOString(), isActive: true },
+  { code: "HELLOHOPE005", createdAt: new Date().toISOString(), isActive: true },
+  { code: "HELLOHOPE006", createdAt: new Date().toISOString(), isActive: true },
+  { code: "HELLOHOPE007", createdAt: new Date().toISOString(), isActive: true },
+  { code: "HELLOHOPE008", createdAt: new Date().toISOString(), isActive: true },
+  { code: "HELLOHOPE009", createdAt: new Date().toISOString(), isActive: true },
+  { code: "HELLOHOPE010", createdAt: new Date().toISOString(), isActive: true },
+];
+
+// Discount code helper functions
+function generateDiscountCode(): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = 'HELLOHOPE';
+  for (let i = 0; i < 3; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+function validateDiscountCode(code: string): boolean {
+  return discountCodes.some(dc => dc.code === code.toUpperCase() && dc.isActive);
+}
+
+function deactivateDiscountCode(code: string): boolean {
+  const index = discountCodes.findIndex(dc => dc.code === code.toUpperCase());
+  if (index > -1) {
+    discountCodes[index].isActive = false;
+    return true;
+  }
+  return false;
+}
+
 // Client configuration (safe to expose to frontend)
 const CLIENT_CONFIG = {
   emailjs: {
@@ -483,6 +528,7 @@ async function handleApiRequest(req: Request): Promise<Response> {
         return {
           id: record.id,
           title: fields["Title"] || "Untitled Product",
+          type: fields["Type"] || "Product",
           price: fields["Variant Price"] || "0.00",
           image: fields["Image Src"] || "https://via.placeholder.com/400x400?text=No+Image",
           description: fields["Description"] || "",
@@ -629,7 +675,7 @@ async function handleApiRequest(req: Request): Promise<Response> {
   // PayPal API - Create Order
   if (url.pathname === "/api/paypal/create-order" && req.method === "POST") {
     try {
-      const { items } = await req.json();
+      const { items, discountCode } = await req.json();
 
       if (!items || !Array.isArray(items) || items.length === 0) {
         return new Response(JSON.stringify({ error: "No items provided" }), { status: 400 });
@@ -645,7 +691,30 @@ async function handleApiRequest(req: Request): Promise<Response> {
         }), { status: 500 });
       }
 
-      const totalAmount = items.reduce((sum: number, item: any) => sum + (parseFloat(item.price) * item.quantity), 0).toFixed(2);
+      // Calculate item total
+      let itemTotal = items.reduce((sum: number, item: any) => sum + (parseFloat(item.price) * item.quantity), 0);
+
+      // Apply discount if code provided
+      let discountApplied = false;
+      if (discountCode) {
+        const isValid = validateDiscountCode(discountCode);
+        if (isValid) {
+          // Find the discounted item (price should be 0)
+          const discountedItem = items.find((item: any) => parseFloat(item.price) === 0);
+          if (discountedItem) {
+            // Subtract the original price of the discounted item from total
+            // Note: We need to track original prices - this assumes frontend sent correct data
+            itemTotal = items.reduce((sum: number, item: any) => {
+              const price = parseFloat(item.price);
+              return sum + (price * item.quantity);
+            }, 0);
+            discountApplied = true;
+          }
+        }
+      }
+
+      const shippingAmount = items.length > 0 ? 15.00 : 0.00;
+      const totalAmount = (itemTotal + shippingAmount).toFixed(2);
 
       // We assume CAD for now as per Shopify domain
       const currencyCode = "CAD";
@@ -659,18 +728,42 @@ async function handleApiRequest(req: Request): Promise<Response> {
             breakdown: {
               item_total: {
                 currency_code: currencyCode,
-                value: totalAmount
+                value: itemTotal.toFixed(2)
+              },
+              shipping: {
+                currency_code: currencyCode,
+                value: shippingAmount.toFixed(2)
               }
             }
           },
-          items: items.map((item: any) => ({
-            name: item.title,
-            quantity: item.quantity.toString(),
-            unit_amount: {
-              currency_code: currencyCode,
-              value: parseFloat(item.price).toFixed(2)
+          items: items.map((item: any) => {
+            // Build comprehensive item name with type
+            let itemName = item.title;
+            if (item.type) {
+              // If title doesn't already include type, add it
+              if (!itemName.includes(item.type)) {
+                itemName = `${itemName} - ${item.type}`;
+              }
             }
-          }))
+            
+            // Build description with size info
+            let description = item.type || 'Product';
+            if (item.size) {
+              description += ` - Size: ${item.size}`;
+            }
+            
+            return {
+              name: itemName,
+              description: description,
+              sku: item.size || 'N/A',
+              quantity: item.quantity.toString(),
+              category: 'PHYSICAL_GOODS',
+              unit_amount: {
+                currency_code: currencyCode,
+                value: parseFloat(item.price).toFixed(2)
+              }
+            };
+          })
         }]
       };
 
@@ -678,6 +771,8 @@ async function handleApiRequest(req: Request): Promise<Response> {
         totalAmount,
         currencyCode,
         itemCount: items.length,
+        discountApplied,
+        discountCode: discountCode || null,
         accessTokenPresent: !!accessToken
       });
 
@@ -697,6 +792,12 @@ async function handleApiRequest(req: Request): Promise<Response> {
         hasId: !!data.id,
         error: data.details || data.error
       });
+
+      // If order creation was successful and discount was applied, deactivate the code
+      if (response.ok && data.id && discountApplied && discountCode) {
+        deactivateDiscountCode(discountCode);
+        console.log(`Discount code ${discountCode} deactivated after successful order creation`);
+      }
 
       return new Response(JSON.stringify(data), {
         status: response.status,
@@ -995,10 +1096,10 @@ async function handleApiRequest(req: Request): Promise<Response> {
     try {
       const postData = await req.json();
 
-      // Basic validation
-      if (!postData.title || !postData.content || !postData.excerpt || !postData.author) {
+      // Basic validation - only title, content, and author are required
+      if (!postData.title || !postData.content || !postData.author) {
         return new Response(
-          JSON.stringify({ error: "Missing required fields: title, content, excerpt, author" }),
+          JSON.stringify({ error: "Missing required fields: title, content, author" }),
           {
             status: 400,
             headers: {
@@ -1171,6 +1272,231 @@ async function handleApiRequest(req: Request): Promise<Response> {
     }
   }
 
+  // Discount code validation
+  if (url.pathname === "/api/discounts/validate" && req.method === "POST") {
+    try {
+      const { code } = await req.json();
+
+      if (!code) {
+        return new Response(
+          JSON.stringify({ success: false, message: "Discount code is required" }),
+          {
+            status: 400,
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*"
+            }
+          }
+        );
+      }
+
+      const isValid = validateDiscountCode(code);
+
+      return new Response(
+        JSON.stringify({ success: true, valid: isValid }),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Error validating discount code:", error);
+      return new Response(
+        JSON.stringify({ success: false, message: "Failed to validate discount code" }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
+        }
+      );
+    }
+  }
+
+  // GET /api/admin/discounts - Get all discount codes (admin only)
+  if (url.pathname === "/api/admin/discounts" && req.method === "GET") {
+    if (!requireAuth(req)) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        {
+          status: 401,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    }
+
+    try {
+      return new Response(
+        JSON.stringify(discountCodes),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Error fetching discount codes:", error);
+      return new Response(
+        JSON.stringify({ error: "Failed to fetch discount codes" }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    }
+  }
+
+  // POST /api/admin/discounts - Create new discount codes (admin only)
+  if (url.pathname === "/api/admin/discounts" && req.method === "POST") {
+    if (!requireAuth(req)) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        {
+          status: 401,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    }
+
+    try {
+      const { count } = await req.json();
+      const numCodes = Math.min(parseInt(count) || 1, 50); // Max 50 at once
+
+      const newCodes: DiscountCode[] = [];
+      for (let i = 0; i < numCodes; i++) {
+        const code = generateDiscountCode();
+        newCodes.push({
+          code: code,
+          createdAt: new Date().toISOString(),
+          isActive: true
+        });
+      }
+
+      discountCodes.push(...newCodes);
+
+      return new Response(
+        JSON.stringify({ success: true, codes: newCodes }),
+        {
+          status: 201,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Error creating discount codes:", error);
+      return new Response(
+        JSON.stringify({ error: "Failed to create discount codes" }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    }
+  }
+
+  // DELETE /api/admin/discounts/{code} - Delete discount code (admin only)
+  if (url.pathname.startsWith("/api/admin/discounts/") && req.method === "DELETE") {
+    if (!requireAuth(req)) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        {
+          status: 401,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    }
+
+    try {
+      const code = url.pathname.split("/api/admin/discounts/")[1].toUpperCase();
+
+      if (!code) {
+        return new Response(
+          JSON.stringify({ error: "Discount code is required" }),
+          {
+            status: 400,
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Credentials": "true"
+            }
+          }
+        );
+      }
+
+      const index = discountCodes.findIndex(dc => dc.code === code);
+      if (index === -1) {
+        return new Response(
+          JSON.stringify({ error: "Discount code not found" }),
+          {
+            status: 404,
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Credentials": "true"
+            }
+          }
+        );
+      }
+
+      discountCodes.splice(index, 1);
+
+      return new Response(
+        JSON.stringify({ success: true, message: "Discount code deleted" }),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Error deleting discount code:", error);
+      return new Response(
+        JSON.stringify({ error: "Failed to delete discount code" }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+        }
+      );
+    }
+  }
+
   // Handle OPTIONS requests for CORS
   if (req.method === "OPTIONS") {
     return new Response(null, {
@@ -1183,7 +1509,7 @@ async function handleApiRequest(req: Request): Promise<Response> {
       },
     });
   }
-  
+
   return new Response("Not Found", { status: 404 });
 }
 
