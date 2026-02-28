@@ -45,27 +45,58 @@ const ADMIN_CONFIG = {
   password: Deno.env.get("ADMIN_PASSWORD") || "password",
 };
 
-// Discount codes storage (in-memory for now)
-// In production, this should be moved to a database
+// Discount codes - persisted to a JSON file so they survive server restarts
 interface DiscountCode {
   code: string;
   createdAt: string;
   isActive: boolean;
+  discountPercentage: number;
 }
 
-let discountCodes: DiscountCode[] = [
-  // Generate 10 initial test codes
-  { code: "HELLOHOPE001", createdAt: new Date().toISOString(), isActive: true },
-  { code: "HELLOHOPE002", createdAt: new Date().toISOString(), isActive: true },
-  { code: "HELLOHOPE003", createdAt: new Date().toISOString(), isActive: true },
-  { code: "HELLOHOPE004", createdAt: new Date().toISOString(), isActive: true },
-  { code: "HELLOHOPE005", createdAt: new Date().toISOString(), isActive: true },
-  { code: "HELLOHOPE006", createdAt: new Date().toISOString(), isActive: true },
-  { code: "HELLOHOPE007", createdAt: new Date().toISOString(), isActive: true },
-  { code: "HELLOHOPE008", createdAt: new Date().toISOString(), isActive: true },
-  { code: "HELLOHOPE009", createdAt: new Date().toISOString(), isActive: true },
-  { code: "HELLOHOPE010", createdAt: new Date().toISOString(), isActive: true },
+const DISCOUNT_CODES_FILE = "./data/discount_codes.json";
+
+// Default seed codes written only when the file doesn't exist yet
+const DEFAULT_DISCOUNT_CODES: DiscountCode[] = [
+  { code: "HELLOHOPE001", createdAt: new Date().toISOString(), isActive: true, discountPercentage: 15 },
+  { code: "HELLOHOPE002", createdAt: new Date().toISOString(), isActive: true, discountPercentage: 15 },
+  { code: "HELLOHOPE003", createdAt: new Date().toISOString(), isActive: true, discountPercentage: 15 },
+  { code: "HELLOHOPE004", createdAt: new Date().toISOString(), isActive: true, discountPercentage: 15 },
+  { code: "HELLOHOPE005", createdAt: new Date().toISOString(), isActive: true, discountPercentage: 15 },
+  { code: "HELLOHOPE006", createdAt: new Date().toISOString(), isActive: true, discountPercentage: 15 },
+  { code: "HELLOHOPE007", createdAt: new Date().toISOString(), isActive: true, discountPercentage: 15 },
+  { code: "HELLOHOPE008", createdAt: new Date().toISOString(), isActive: true, discountPercentage: 15 },
+  { code: "HELLOHOPE009", createdAt: new Date().toISOString(), isActive: true, discountPercentage: 15 },
+  { code: "HELLOHOPE010", createdAt: new Date().toISOString(), isActive: true, discountPercentage: 15 },
 ];
+
+async function loadDiscountCodes(): Promise<DiscountCode[]> {
+  try {
+    const raw = await Deno.readTextFile(DISCOUNT_CODES_FILE);
+    return JSON.parse(raw) as DiscountCode[];
+  } catch (err) {
+    if (err instanceof Deno.errors.NotFound) {
+      // First run – seed the file with defaults
+      console.log("discount_codes.json not found, creating with default codes.");
+      await saveDiscountCodes(DEFAULT_DISCOUNT_CODES);
+      return DEFAULT_DISCOUNT_CODES;
+    }
+    console.error("Error loading discount codes from file:", err);
+    return DEFAULT_DISCOUNT_CODES;
+  }
+}
+
+async function saveDiscountCodes(codes: DiscountCode[]): Promise<void> {
+  try {
+    // Ensure the data directory exists
+    await Deno.mkdir("./data", { recursive: true });
+    await Deno.writeTextFile(DISCOUNT_CODES_FILE, JSON.stringify(codes, null, 2));
+  } catch (err) {
+    console.error("Error saving discount codes to file:", err);
+  }
+}
+
+// In-memory cache – loaded once at startup, kept in sync with the file
+let discountCodes: DiscountCode[] = await loadDiscountCodes();
 
 // Discount code helper functions
 function generateDiscountCode(): string {
@@ -81,10 +112,11 @@ function validateDiscountCode(code: string): boolean {
   return discountCodes.some(dc => dc.code === code.toUpperCase() && dc.isActive);
 }
 
-function deactivateDiscountCode(code: string): boolean {
+async function deactivateDiscountCode(code: string): Promise<boolean> {
   const index = discountCodes.findIndex(dc => dc.code === code.toUpperCase());
   if (index > -1) {
     discountCodes[index].isActive = false;
+    await saveDiscountCodes(discountCodes);
     return true;
   }
   return false;
@@ -1290,10 +1322,15 @@ async function handleApiRequest(req: Request): Promise<Response> {
         );
       }
 
-      const isValid = validateDiscountCode(code);
+      const discountEntry = discountCodes.find(dc => dc.code === code.toUpperCase() && dc.isActive);
+      const isValid = !!discountEntry;
 
       return new Response(
-        JSON.stringify({ success: true, valid: isValid }),
+        JSON.stringify({
+          success: true,
+          valid: isValid,
+          discountPercentage: isValid ? discountEntry!.discountPercentage : null
+        }),
         {
           status: 200,
           headers: {
@@ -1378,8 +1415,9 @@ async function handleApiRequest(req: Request): Promise<Response> {
     }
 
     try {
-      const { count } = await req.json();
+      const { count, discountPercentage } = await req.json();
       const numCodes = Math.min(parseInt(count) || 1, 50); // Max 50 at once
+      const percentage = Math.min(Math.max(parseInt(discountPercentage) || 15, 1), 100); // Clamp 1-100, default 15
 
       const newCodes: DiscountCode[] = [];
       for (let i = 0; i < numCodes; i++) {
@@ -1387,11 +1425,13 @@ async function handleApiRequest(req: Request): Promise<Response> {
         newCodes.push({
           code: code,
           createdAt: new Date().toISOString(),
-          isActive: true
+          isActive: true,
+          discountPercentage: percentage
         });
       }
 
       discountCodes.push(...newCodes);
+      await saveDiscountCodes(discountCodes);
 
       return new Response(
         JSON.stringify({ success: true, codes: newCodes }),
@@ -1469,6 +1509,7 @@ async function handleApiRequest(req: Request): Promise<Response> {
       }
 
       discountCodes.splice(index, 1);
+      await saveDiscountCodes(discountCodes);
 
       return new Response(
         JSON.stringify({ success: true, message: "Discount code deleted" }),

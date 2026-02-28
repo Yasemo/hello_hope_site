@@ -731,6 +731,9 @@ function createDiscountCodeRow(code) {
         <div class="col-code">
             <code>${code.code}</code>
         </div>
+        <div class="col-discount">
+            <span class="discount-badge">${code.discountPercentage || 15}% off</span>
+        </div>
         <div class="col-created">${createdDate}</div>
         <div class="col-status">
             <span class="status-badge ${code.isActive ? 'active' : 'used'}">
@@ -774,6 +777,7 @@ async function handleCodeGeneration(e) {
     e.preventDefault();
 
     const count = parseInt(document.getElementById('generate-count').value);
+    const discountPercentage = parseInt(document.getElementById('generate-percentage').value);
     const confirmGenerate = document.querySelector('.confirm-generate');
 
     confirmGenerate.disabled = true;
@@ -784,7 +788,7 @@ async function handleCodeGeneration(e) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
-            body: JSON.stringify({ count })
+            body: JSON.stringify({ count, discountPercentage })
         });
 
         if (!response.ok) {

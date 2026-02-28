@@ -225,16 +225,21 @@ async function initPayPal() {
                 createOrder: async (data, actions) => {
                     const cart = Cart.get();
                     const discountInfo = Cart.getDiscountInfo();
-                    const payload = { items: cart.items };
 
-                    if (discountInfo.code && discountInfo.freeItemId) {
-                        payload.discountCode = discountInfo.code;
-                        // Apply discount by setting free item price to 0
-                        const freeItemIndex = payload.items.findIndex(item => item.variantId === discountInfo.freeItemId);
-                        if (freeItemIndex > -1) {
-                            payload.items[freeItemIndex].price = "0.00";
-                        }
+                    // Build items with percentage discount applied to prices
+                    let items = cart.items.map(item => ({ ...item }));
+                    if (discountInfo.code && discountInfo.discountPercentage) {
+                        const multiplier = 1 - discountInfo.discountPercentage / 100;
+                        items = items.map(item => ({
+                            ...item,
+                            price: parseFloat((item.price * multiplier).toFixed(2))
+                        }));
                     }
+
+                    const payload = {
+                        items,
+                        discountCode: discountInfo.code || undefined
+                    };
 
                     const response = await fetch('/api/paypal/create-order', {
                         method: 'POST',
@@ -472,9 +477,9 @@ async function applyDiscountCode() {
         const data = await response.json();
 
         if (data.success && data.valid) {
-            // Valid code - apply it
-            Cart.applyDiscountCode(code);
-            discountMessage.textContent = 'Discount code applied!';
+            // Valid code - apply it with the percentage from the server
+            Cart.applyDiscountCode(code, data.discountPercentage);
+            discountMessage.textContent = `${data.discountPercentage}% discount applied!`;
             discountMessage.className = 'discount-message success';
             discountInput.value = '';
         } else {
@@ -504,56 +509,23 @@ function updateDiscountUI() {
 
     if (!freeItemSelector || !freeItemOptions || !discountInput || !applyButton || !discountMessage) return;
 
-    // If we have a valid discount code but no free item selected
-    if (cart.discountCode && !cart.freeItemId && cart.items.length > 0) {
-        // Show free item selector
-        freeItemSelector.style.display = 'block';
+    // Percentage-based discounts don't need a free-item selector - always hide it
+    freeItemSelector.style.display = 'none';
 
-        // Generate free item options
-        freeItemOptions.innerHTML = cart.items.map(item => `
-            <label class="free-item-option">
-                <input type="radio" name="free-item" value="${item.variantId}" class="free-item-radio">
-                <div class="free-item-info">
-                    <img src="${item.image}" alt="${item.title}" class="free-item-image">
-                    <div class="free-item-details">
-                        <span class="free-item-title">${item.title}</span>
-                        <span class="free-item-price">Original: $${item.price.toFixed(2)}</span>
-                    </div>
-                </div>
-            </label>
-        `).join('');
-
-        // Add event listeners for free item selection
-        freeItemOptions.querySelectorAll('.free-item-radio').forEach(radio => {
-            radio.addEventListener('change', function() {
-                if (this.checked) {
-                    Cart.setFreeItem(this.value);
-                }
-            });
-        });
-
-        // Show current selection
-        if (cart.freeItemId) {
-            const selectedRadio = freeItemOptions.querySelector(`input[value="${cart.freeItemId}"]`);
-            if (selectedRadio) {
-                selectedRadio.checked = true;
-            }
-        }
-    } else {
-        // Hide free item selector
-        freeItemSelector.style.display = 'none';
-
+    if (cart.discountCode && cart.discountPercentage) {
+        // Show the applied discount in the message
+        discountMessage.textContent = `${cart.discountPercentage}% discount applied!`;
+        discountMessage.className = 'discount-message success';
+    } else if (!cart.discountCode) {
         // Clear message if no discount applied
-        if (!cart.discountCode) {
-            discountMessage.textContent = '';
-            discountMessage.className = 'discount-message';
-            discountInput.value = '';
-        }
+        discountMessage.textContent = '';
+        discountMessage.className = 'discount-message';
+        discountInput.value = '';
+    }
 
-        // Remove discount if no items in cart
-        if (cart.items.length === 0 && cart.discountCode) {
-            Cart.removeDiscountCode();
-        }
+    // Remove discount if no items in cart
+    if (cart.items.length === 0 && cart.discountCode) {
+        Cart.removeDiscountCode();
     }
 
     // Update button state

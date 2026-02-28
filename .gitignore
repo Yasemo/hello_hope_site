@@ -52,6 +52,9 @@ node_modules/
 # dotenv environment variables file
 .env
 
+# Runtime data files (generated at runtime, not source code)
+data/discount_codes.json
+
 # Build outputs
 dist/
 build/

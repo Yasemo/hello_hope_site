@@ -1203,7 +1203,7 @@
 
 .discounts-table .table-header {
   display: grid;
-  grid-template-columns: 1fr 1.2fr 0.8fr 1.2fr;
+  grid-template-columns: 1fr 0.7fr 1.2fr 0.8fr 1.2fr;
   gap: var(--space-lg);
   padding: var(--space-lg);
   background: var(--neutral-gray);
@@ -1222,7 +1222,7 @@
 
 .discount-row {
   display: grid;
-  grid-template-columns: 1fr 1.2fr 0.8fr 1.2fr;
+  grid-template-columns: 1fr 0.7fr 1.2fr 0.8fr 1.2fr;
   gap: var(--space-lg);
   padding: var(--space-lg);
   border-bottom: 1px solid var(--neutral-gray);
@@ -1244,6 +1244,23 @@
   border-radius: var(--radius-sm);
   font-family: 'Courier New', monospace;
   font-weight: 500;
+}
+
+.col-discount {
+  display: flex;
+  align-items: center;
+}
+
+.discount-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: #cce5ff;
+  color: #004085;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .col-created {
@@ -1443,11 +1460,16 @@
   }
 
   .col-code,
+  .col-discount,
   .col-created,
   .col-status,
   .col-actions {
     padding: 8px 0;
     text-align: center;
+  }
+
+  .col-discount {
+    justify-content: center;
   }
 
   .col-code {

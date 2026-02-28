@@ -7,9 +7,12 @@ const Cart = {
         const cart = localStorage.getItem('hellohope_cart');
         const parsed = cart ? JSON.parse(cart) : { items: [] };
 
-        // Initialize discount fields if they don't exist
+    // Initialize discount fields if they don't exist
         if (parsed.discountCode === undefined) {
             parsed.discountCode = null;
+        }
+        if (parsed.discountPercentage === undefined) {
+            parsed.discountPercentage = null;
         }
         if (parsed.freeItemId === undefined) {
             parsed.freeItemId = null;
@@ -112,11 +115,12 @@ const Cart = {
         return item ? item.quantity : 0;
     },
 
-    // Apply discount code
-    applyDiscountCode(code) {
+    // Apply discount code with percentage
+    applyDiscountCode(code, percentage) {
         const cart = this.get();
         cart.discountCode = code.toUpperCase();
-        cart.freeItemId = null; // Reset free item selection
+        cart.discountPercentage = percentage || null;
+        cart.freeItemId = null; // legacy field, kept for compatibility
         this.save(cart);
         return cart;
     },
@@ -125,6 +129,7 @@ const Cart = {
     removeDiscountCode() {
         const cart = this.get();
         cart.discountCode = null;
+        cart.discountPercentage = null;
         cart.freeItemId = null;
         this.save(cart);
         return cart;
@@ -136,7 +141,7 @@ const Cart = {
         return cart.discountCode !== null;
     },
 
-    // Set free item
+    // Set free item (legacy, kept for compatibility)
     setFreeItem(variantId) {
         const cart = this.get();
         cart.freeItemId = variantId;
@@ -144,22 +149,32 @@ const Cart = {
         return cart;
     },
 
-    // Get discounted total (accounting for free item)
+    // Get discounted total (percentage-based)
     getDiscountedTotal() {
         const cart = this.get();
 
-        if (!cart.discountCode || !cart.freeItemId) {
+        if (!cart.discountCode) {
             return this.getTotal();
         }
 
-        // Calculate total with free item discount
-        return cart.items.reduce((total, item) => {
-            if (item.variantId === cart.freeItemId) {
-                // This item is free
-                return total;
-            }
-            return total + (item.price * item.quantity);
-        }, 0);
+        const subtotal = this.getTotal();
+
+        // Percentage-based discount
+        if (cart.discountPercentage) {
+            return subtotal * (1 - cart.discountPercentage / 100);
+        }
+
+        // Legacy: free item discount
+        if (cart.freeItemId) {
+            return cart.items.reduce((total, item) => {
+                if (item.variantId === cart.freeItemId) {
+                    return total;
+                }
+                return total + (item.price * item.quantity);
+            }, 0);
+        }
+
+        return subtotal;
     },
 
     // Get discount amount
@@ -172,6 +187,7 @@ const Cart = {
         const cart = this.get();
         return {
             code: cart.discountCode,
+            discountPercentage: cart.discountPercentage,
             freeItemId: cart.freeItemId
         };
     }
