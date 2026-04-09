@@ -60,7 +60,8 @@
   font-size: var(--text-sm);
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
   width: 100%;
   padding: var(--space-sm) var(--space-md);
   border: 2px solid var(--neutral-gray);
@@ -70,7 +71,8 @@
   box-sizing: border-box;
 }
 
-.form-group input:focus {
+.form-group input:focus,
+.form-group select:focus {
   outline: none;
   border-color: var(--primary-color);
 }
@@ -507,6 +509,7 @@
 }
 
 .form-group input,
+.form-group select,
 .form-group textarea {
   width: 100%;
   padding: var(--space-sm) var(--space-md);
@@ -519,6 +522,7 @@
 }
 
 .form-group input:focus,
+.form-group select:focus,
 .form-group textarea:focus {
   outline: none;
   border-color: var(--primary-color);

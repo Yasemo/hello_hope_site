@@ -1,6 +1,7 @@
 // Cart Modal - UI and Checkout Integration
 
 let paypalButtons = null;
+const SHIPPING_FEE = 15.00;
 
 document.addEventListener('DOMContentLoaded', function() {
     initCartModal();
@@ -41,6 +42,7 @@ function initCartModal() {
 
     // Discount code functionality
     initDiscountCode();
+    initShippingMethod();
 
     // Listen for cart updates
     window.addEventListener('cartUpdated', function() {
@@ -130,7 +132,7 @@ function updateCartDisplay() {
     const subtotal = Cart.getTotal();
     const discountAmount = Cart.getDiscountAmount();
     const discountedTotal = Cart.getDiscountedTotal();
-    const shipping = cart.items.length > 0 ? 15.00 : 0.00;
+    const shipping = getShippingAmount(cart);
     const total = discountedTotal + shipping;
 
     const cartSubtotalElement = document.getElementById('cart-subtotal');
@@ -151,11 +153,67 @@ function updateCartDisplay() {
         }
     }
 
-    if (cartShippingElement) cartShippingElement.textContent = `$${shipping.toFixed(2)}`;
+    if (cartShippingElement) {
+        if (shipping === 0 && cart.items.length > 0) {
+            cartShippingElement.textContent = 'Free';
+        } else {
+            cartShippingElement.textContent = `$${shipping.toFixed(2)}`;
+        }
+    }
     if (cartTotalElement) cartTotalElement.textContent = `$${total.toFixed(2)}`;
 
     // Update discount UI
     updateDiscountUI();
+}
+
+function getShippingAmount(cart) {
+    if (!cart.items || cart.items.length === 0) {
+        return 0;
+    }
+
+    const shippingMethod = Cart.getShippingMethod();
+    const hasFreeShippingCode = cart.discountCode && cart.discountType === 'free_shipping';
+
+    if (shippingMethod === 'pickup' || hasFreeShippingCode) {
+        return 0;
+    }
+
+    return SHIPPING_FEE;
+}
+
+function initShippingMethod() {
+    const shippingShip = document.getElementById('shipping-method-ship');
+    const shippingPickup = document.getElementById('shipping-method-pickup');
+
+    if (!shippingShip || !shippingPickup) return;
+
+    const selectedMethod = Cart.getShippingMethod();
+    shippingShip.checked = selectedMethod !== 'pickup';
+    shippingPickup.checked = selectedMethod === 'pickup';
+    updateShippingMethodUI();
+
+    shippingShip.addEventListener('change', function() {
+        if (this.checked) {
+            Cart.setShippingMethod('ship');
+            updateShippingMethodUI();
+            updateCartDisplay();
+        }
+    });
+
+    shippingPickup.addEventListener('change', function() {
+        if (this.checked) {
+            Cart.setShippingMethod('pickup');
+            updateShippingMethodUI();
+            updateCartDisplay();
+        }
+    });
+}
+
+function updateShippingMethodUI() {
+    const pickupNote = document.getElementById('pickup-note');
+    if (!pickupNote) return;
+
+    pickupNote.style.display = Cart.getShippingMethod() === 'pickup' ? 'block' : 'none';
 }
 
 // Create cart item HTML
@@ -225,10 +283,11 @@ async function initPayPal() {
                 createOrder: async (data, actions) => {
                     const cart = Cart.get();
                     const discountInfo = Cart.getDiscountInfo();
+                    const shippingMethod = Cart.getShippingMethod();
 
                     // Build items with percentage discount applied to prices
                     let items = cart.items.map(item => ({ ...item }));
-                    if (discountInfo.code && discountInfo.discountPercentage) {
+                    if (discountInfo.code && discountInfo.discountType === 'percentage' && discountInfo.discountPercentage) {
                         const multiplier = 1 - discountInfo.discountPercentage / 100;
                         items = items.map(item => ({
                             ...item,
@@ -238,6 +297,7 @@ async function initPayPal() {
 
                     const payload = {
                         items,
+                        shippingMethod,
                         discountCode: discountInfo.code || undefined
                     };
 
@@ -477,9 +537,13 @@ async function applyDiscountCode() {
         const data = await response.json();
 
         if (data.success && data.valid) {
-            // Valid code - apply it with the percentage from the server
-            Cart.applyDiscountCode(code, data.discountPercentage);
-            discountMessage.textContent = `${data.discountPercentage}% discount applied!`;
+            // Valid code - apply non-stacking discount mode
+            Cart.applyDiscountCode(code, data.discountPercentage, data.discountType);
+            if (data.discountType === 'free_shipping') {
+                discountMessage.textContent = 'Free shipping code applied!';
+            } else {
+                discountMessage.textContent = `${data.discountPercentage}% discount applied!`;
+            }
             discountMessage.className = 'discount-message success';
             discountInput.value = '';
         } else {
@@ -502,25 +566,29 @@ async function applyDiscountCode() {
 function updateDiscountUI() {
     const cart = Cart.get();
     const freeItemSelector = document.getElementById('free-item-selector');
-    const freeItemOptions = document.getElementById('free-item-options');
     const discountInput = document.getElementById('discount-code');
     const applyButton = document.getElementById('apply-discount');
     const discountMessage = document.getElementById('discount-message');
 
-    if (!freeItemSelector || !freeItemOptions || !discountInput || !applyButton || !discountMessage) return;
-
     // Percentage-based discounts don't need a free-item selector - always hide it
-    freeItemSelector.style.display = 'none';
+    if (freeItemSelector) {
+        freeItemSelector.style.display = 'none';
+    }
 
-    if (cart.discountCode && cart.discountPercentage) {
-        // Show the applied discount in the message
-        discountMessage.textContent = `${cart.discountPercentage}% discount applied!`;
-        discountMessage.className = 'discount-message success';
-    } else if (!cart.discountCode) {
-        // Clear message if no discount applied
-        discountMessage.textContent = '';
-        discountMessage.className = 'discount-message';
-        discountInput.value = '';
+    if (discountMessage) {
+        if (cart.discountCode && cart.discountType === 'free_shipping') {
+            discountMessage.textContent = 'Free shipping code applied!';
+            discountMessage.className = 'discount-message success';
+        } else if (cart.discountCode && cart.discountType === 'percentage' && cart.discountPercentage) {
+            discountMessage.textContent = `${cart.discountPercentage}% discount applied!`;
+            discountMessage.className = 'discount-message success';
+        } else if (!cart.discountCode) {
+            discountMessage.textContent = '';
+            discountMessage.className = 'discount-message';
+            if (discountInput) {
+                discountInput.value = '';
+            }
+        }
     }
 
     // Remove discount if no items in cart
@@ -529,7 +597,11 @@ function updateDiscountUI() {
     }
 
     // Update button state
-    applyButton.disabled = discountInput.value.trim() === '';
+    if (applyButton && discountInput) {
+        applyButton.disabled = discountInput.value.trim() === '';
+    }
+
+    updateShippingMethodUI();
 }
 
 // Add spin animation

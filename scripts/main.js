@@ -405,6 +405,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
 
+            if (typeof fbq !== 'undefined') {
+                fbq('track', 'InitiateCheckout', {
+                    content_name: 'Stay Sensitized Conference',
+                    content_category: 'conference_event',
+                    currency: 'CAD'
+                });
+            }
+
             // Scroll to the conference_cta section
             const headerHeight = 70; // Account for fixed header
             const targetPosition = ctaSection.offsetTop - headerHeight;

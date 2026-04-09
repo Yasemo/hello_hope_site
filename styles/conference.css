@@ -240,9 +240,17 @@ body {
 .hero_top {
     display: flex;
     justify-content: space-between;
-    align-items: top;
+    align-items: flex-start;
     position: relative;
     z-index: 2;
+}
+
+.hero_logos {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: 0.9rem;
 }
 
 .buy_tickets {
@@ -325,6 +333,13 @@ body {
     height: 6rem;
     margin-top: 5px;
     object-fit: contain;
+}
+
+.hero_top .ajax_logo {
+    width: auto;
+    height: 3rem;
+    margin-top: 0;
+    max-width: none;
 }
 
 .hero_middle {
@@ -2074,6 +2089,11 @@ body {
         width: 4rem;
         height: 4rem;
     }
+
+    .hero_top .ajax_logo {
+        width: auto;
+        height: 2rem;
+    }
     
     .hero_middle h1 {
         font-size: 4.3rem;
@@ -3183,9 +3203,36 @@ body {
     position: relative;
 }
 
-.venue_bottom_image img {
+@media (max-width: 425px) {
+    .hero_logos {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.35rem;
+    }
+}
+
+.venue_bottom_decor {
     width: 100%;
     height: auto;
     display: block;
     object-fit: cover;
+}
+
+.venue_ajax_logo {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    width: auto;
+    height: 3rem;
+    opacity: 0.6;
+    z-index: 2;
+    pointer-events: none;
+}
+
+@media (max-width: 480px) {
+    .venue_ajax_logo {
+        top: 0.5rem;
+        left: 0.5rem;
+        height: 2rem;
+    }
 }

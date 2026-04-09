@@ -1335,7 +1335,7 @@ p {
 
   .program_img {
     display: block;
-    max-height: 300px;
+    max-height: 160px;
   }
 
   .program_card {

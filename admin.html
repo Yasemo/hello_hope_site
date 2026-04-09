@@ -193,7 +193,7 @@
 
         <div id="discounts-empty" class="discounts-empty" style="display: none;">
           <h3>No discount codes yet</h3>
-          <p>Generate discount codes to allow customers to get free items.</p>
+          <p>Generate discount codes for percentage discounts or free shipping.</p>
           <button id="create-first-codes-btn" class="create-first-codes-btn">Generate First Codes</button>
         </div>
       </div>
@@ -216,12 +216,19 @@
               <input type="number" id="generate-count" name="count" value="5" min="1" max="50" required>
             </div>
             <div class="form-group">
+              <label for="generate-type">Code Type</label>
+              <select id="generate-type" name="discountType" required>
+                <option value="percentage" selected>Percentage Discount</option>
+                <option value="free_shipping">Free Shipping</option>
+              </select>
+            </div>
+            <div class="form-group" id="generate-percentage-group">
               <label for="generate-percentage">Discount Percentage (%)</label>
               <input type="number" id="generate-percentage" name="discountPercentage" value="15" min="1" max="100" required>
             </div>
             <div class="form-group">
               <label>Type</label>
-              <p>Each code gives a percentage discount on the entire order (one-time use)</p>
+              <p>Codes are one-time use. Free shipping codes only remove shipping fees and do not stack with percentage discounts.</p>
             </div>
             <div class="generate-actions">
               <button type="button" id="cancel-generate" class="cancel-generate">Cancel</button>

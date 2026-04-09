@@ -14,8 +14,14 @@ const Cart = {
         if (parsed.discountPercentage === undefined) {
             parsed.discountPercentage = null;
         }
+        if (parsed.discountType === undefined) {
+            parsed.discountType = parsed.discountCode && parsed.discountPercentage ? 'percentage' : null;
+        }
         if (parsed.freeItemId === undefined) {
             parsed.freeItemId = null;
+        }
+        if (parsed.shippingMethod === undefined) {
+            parsed.shippingMethod = 'ship';
         }
 
         return parsed;
@@ -99,7 +105,7 @@ const Cart = {
 
     // Clear cart
     clear() {
-        this.save({ items: [] });
+        this.save({ items: [], shippingMethod: 'ship' });
     },
 
     // Check if product is in cart
@@ -116,10 +122,11 @@ const Cart = {
     },
 
     // Apply discount code with percentage
-    applyDiscountCode(code, percentage) {
+    applyDiscountCode(code, percentage, discountType = 'percentage') {
         const cart = this.get();
         cart.discountCode = code.toUpperCase();
         cart.discountPercentage = percentage || null;
+        cart.discountType = discountType || 'percentage';
         cart.freeItemId = null; // legacy field, kept for compatibility
         this.save(cart);
         return cart;
@@ -130,6 +137,7 @@ const Cart = {
         const cart = this.get();
         cart.discountCode = null;
         cart.discountPercentage = null;
+        cart.discountType = null;
         cart.freeItemId = null;
         this.save(cart);
         return cart;
@@ -160,7 +168,7 @@ const Cart = {
         const subtotal = this.getTotal();
 
         // Percentage-based discount
-        if (cart.discountPercentage) {
+        if (cart.discountType === 'percentage' && cart.discountPercentage) {
             return subtotal * (1 - cart.discountPercentage / 100);
         }
 
@@ -187,9 +195,22 @@ const Cart = {
         const cart = this.get();
         return {
             code: cart.discountCode,
+            discountType: cart.discountType,
             discountPercentage: cart.discountPercentage,
             freeItemId: cart.freeItemId
         };
+    },
+
+    setShippingMethod(method) {
+        const cart = this.get();
+        cart.shippingMethod = method === 'pickup' ? 'pickup' : 'ship';
+        this.save(cart);
+        return cart;
+    },
+
+    getShippingMethod() {
+        const cart = this.get();
+        return cart.shippingMethod === 'pickup' ? 'pickup' : 'ship';
     }
 };
 

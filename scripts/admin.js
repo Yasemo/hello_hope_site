@@ -97,6 +97,11 @@ document.addEventListener('DOMContentLoaded', function() {
         generateForm.addEventListener('submit', handleCodeGeneration);
     }
 
+    const generateType = document.getElementById('generate-type');
+    if (generateType) {
+        generateType.addEventListener('change', updateGenerateFormFields);
+    }
+
     const cancelGenerate = document.getElementById('cancel-generate');
     if (cancelGenerate) {
         cancelGenerate.addEventListener('click', hideGenerateModal);
@@ -732,7 +737,7 @@ function createDiscountCodeRow(code) {
             <code>${code.code}</code>
         </div>
         <div class="col-discount">
-            <span class="discount-badge">${code.discountPercentage || 15}% off</span>
+            <span class="discount-badge">${code.discountType === 'free_shipping' ? 'Free shipping' : `${code.discountPercentage || 15}% off`}</span>
         </div>
         <div class="col-created">${createdDate}</div>
         <div class="col-status">
@@ -764,12 +769,25 @@ function createDiscountCodeRow(code) {
 // Code generation modal
 function showGenerateModal() {
     document.getElementById('generate-modal').style.display = 'flex';
+    updateGenerateFormFields();
     document.getElementById('generate-count').focus();
 }
 
 function hideGenerateModal() {
     document.getElementById('generate-modal').style.display = 'none';
     document.getElementById('generate-form').reset();
+    updateGenerateFormFields();
+}
+
+function updateGenerateFormFields() {
+    const typeSelect = document.getElementById('generate-type');
+    const percentageGroup = document.getElementById('generate-percentage-group');
+    const percentageInput = document.getElementById('generate-percentage');
+    if (!typeSelect || !percentageGroup || !percentageInput) return;
+
+    const isPercentage = typeSelect.value !== 'free_shipping';
+    percentageGroup.style.display = isPercentage ? 'block' : 'none';
+    percentageInput.required = isPercentage;
 }
 
 // Handle code generation
@@ -777,6 +795,7 @@ async function handleCodeGeneration(e) {
     e.preventDefault();
 
     const count = parseInt(document.getElementById('generate-count').value);
+    const discountType = document.getElementById('generate-type').value;
     const discountPercentage = parseInt(document.getElementById('generate-percentage').value);
     const confirmGenerate = document.querySelector('.confirm-generate');
 
@@ -788,7 +807,7 @@ async function handleCodeGeneration(e) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
-            body: JSON.stringify({ count, discountPercentage })
+            body: JSON.stringify({ count, discountType, discountPercentage })
         });
 
         if (!response.ok) {
