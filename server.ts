@@ -29,10 +29,26 @@ const PAYPAL_CONFIG = {
     : "https://api-m.sandbox.paypal.com",
 };
 
+function normalizeAccessToken(rawValue: string): string {
+  const raw = rawValue.trim();
+  if (!raw) {
+    return "";
+  }
+
+  if (raw.includes("access_token=")) {
+    const tokenSegment = raw.split("access_token=").pop() || "";
+    return tokenSegment.split(/[&#\s]/)[0] || "";
+  }
+
+  return raw;
+}
+
 // Meta conversion tracking configuration
 const META_CONFIG = {
   pixelId: Deno.env.get("META_PIXEL_ID") || "1497149528035279",
-  accessToken: Deno.env.get("META_CAPI_ACCESS_TOKEN") || "",
+  accessToken: normalizeAccessToken(
+    Deno.env.get("META_CAPI_ACCESS_TOKEN") || "",
+  ),
   testEventCode: Deno.env.get("META_TEST_EVENT_CODE") || "",
 };
 
@@ -508,45 +524,49 @@ function timingSafeEqual(a: string, b: string): boolean {
   return mismatch === 0;
 }
 
-function extractSignatureCandidates(headerValue: string): string[] {
-  const candidates = new Set<string>();
-  const normalized = headerValue.trim();
-  if (!normalized) {
-    return [];
-  }
+const LUMA_WEBHOOK_MAX_AGE_SECONDS = 300;
 
-  candidates.add(normalized);
-
-  const parts = normalized.split(",");
-  for (const part of parts) {
-    const value = part.includes("=")
-      ? part.split("=").slice(1).join("=")
-      : part;
-    const trimmed = value.trim();
-    if (trimmed) {
-      candidates.add(trimmed);
+function parseSignatureHeader(headerValue: string): Record<string, string> {
+  const result: Record<string, string> = {};
+  for (const part of headerValue.split(",")) {
+    const [key, ...rest] = part.trim().split("=");
+    if (!key || rest.length === 0) {
+      continue;
     }
+    result[key] = rest.join("=").trim();
   }
-
-  return Array.from(candidates);
+  return result;
 }
 
 async function verifyLumaWebhookSignature(
   rawBody: string,
   signatureHeader: string,
+  timestampHeader: string,
   secret: string,
 ): Promise<boolean> {
-  const signature = await hmacSha256(rawBody, secret);
-  const hex = toHex(signature);
-  const base64 = toBase64(signature);
-  const expectedVariants = [hex, `sha256=${hex}`, base64, `sha256=${base64}`];
-  const provided = extractSignatureCandidates(signatureHeader);
+  const signatureParts = parseSignatureHeader(signatureHeader);
+  const timestamp = signatureParts.t || timestampHeader;
+  const signatureV1 = signatureParts.v1;
 
-  return provided.some((providedSignature) => {
-    return expectedVariants.some((expected) =>
-      timingSafeEqual(providedSignature, expected)
-    );
-  });
+  if (!timestamp || !signatureV1) {
+    return false;
+  }
+
+  const timestampNumber = Number.parseInt(timestamp, 10);
+  if (!Number.isFinite(timestampNumber)) {
+    return false;
+  }
+
+  const nowSeconds = Math.floor(Date.now() / 1000);
+  if (Math.abs(nowSeconds - timestampNumber) > LUMA_WEBHOOK_MAX_AGE_SECONDS) {
+    return false;
+  }
+
+  const signedPayload = `${timestamp}.${rawBody}`;
+  const signature = await hmacSha256(signedPayload, secret);
+  const expectedHex = toHex(signature);
+
+  return timingSafeEqual(signatureV1, expectedHex);
 }
 
 function getClientIpAddress(req: Request): string | undefined {
@@ -705,6 +725,83 @@ async function getPayPalAccessToken() {
   }
 }
 
+function parseMoney(value: unknown): number {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : 0;
+  }
+
+  const normalized = String(value ?? "")
+    .replace(/[^0-9.-]/g, "")
+    .trim();
+  const parsed = Number.parseFloat(normalized);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function roundMoney(value: number): number {
+  return Number(value.toFixed(2));
+}
+
+type AirtableProduct = {
+  id: string;
+  title: string;
+  type: string;
+  price: number;
+  image: string;
+  description: string;
+  availableForSale: boolean;
+  currencyCode: string;
+};
+
+async function fetchAirtableProducts(): Promise<AirtableProduct[]> {
+  if (
+    !AIRTABLE_CONFIG.apiKey || !AIRTABLE_CONFIG.baseId ||
+    !AIRTABLE_CONFIG.tableId
+  ) {
+    throw new Error("Airtable configuration missing");
+  }
+
+  const airtableUrl =
+    `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableId}`;
+
+  const response = await fetch(airtableUrl, {
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${AIRTABLE_CONFIG.apiKey}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Airtable API error ${response.status}: ${errorText}`);
+  }
+
+  const data = await response.json();
+  const records = Array.isArray(data.records) ? data.records : [];
+
+  return records.map((record: any) => {
+    const fields = record.fields || {};
+    const inventory = Number(fields["Variant Inventory Qty"] || 0);
+    const rawPrice =
+      fields["Variant Price"] ?? fields["variant price"] ?? fields["Price"] ??
+      "0.00";
+    const parsedPrice = parseMoney(rawPrice);
+
+    return {
+      id: record.id,
+      title: String(fields["Title"] || "Untitled Product"),
+      type: String(fields["Type"] || "Product"),
+      price: roundMoney(Math.max(parsedPrice, 0)),
+      image: String(
+        fields["Image Src"] || "https://via.placeholder.com/400x400?text=No+Image",
+      ),
+      description: String(fields["Description"] || ""),
+      availableForSale: inventory > 0,
+      currencyCode: "CAD",
+    };
+  });
+}
+
 // Authentication functions
 const sessions = new Map<string, { username: string; expires: number }>();
 
@@ -840,10 +937,9 @@ async function handleApiRequest(req: Request): Promise<Response> {
 
   if (url.pathname === "/api/luma/webhook" && req.method === "POST") {
     try {
-      const signatureHeader = req.headers.get("x-luma-signature") ||
-        req.headers.get("luma-signature") ||
-        req.headers.get("x-webhook-signature") ||
-        "";
+      const signatureHeader = req.headers.get("webhook-signature") || "";
+      const timestampHeader = req.headers.get("webhook-timestamp") || "";
+      const webhookId = req.headers.get("webhook-id") || "";
 
       const rawBody = await req.text();
 
@@ -864,6 +960,7 @@ async function handleApiRequest(req: Request): Promise<Response> {
         const isValidSignature = await verifyLumaWebhookSignature(
           rawBody,
           signatureHeader,
+          timestampHeader,
           LUMA_CONFIG.webhookSecret,
         );
         if (!isValidSignature) {
@@ -912,7 +1009,7 @@ async function handleApiRequest(req: Request): Promise<Response> {
           data.id ||
           "",
       ).trim();
-      const eventId = rawEventId || `luma_${Date.now()}`;
+      const eventId = rawEventId || webhookId || `luma_${Date.now()}`;
 
       pruneProcessedLumaEvents();
       if (processedLumaEvents.has(eventId)) {
@@ -1100,72 +1197,8 @@ async function handleApiRequest(req: Request): Promise<Response> {
   // Airtable API - Get Products
   if (url.pathname === "/api/airtable/products" && req.method === "GET") {
     try {
-      if (
-        !AIRTABLE_CONFIG.apiKey || !AIRTABLE_CONFIG.baseId ||
-        !AIRTABLE_CONFIG.tableId
-      ) {
-        return new Response(
-          JSON.stringify({ error: "Airtable configuration missing" }),
-          {
-            status: 500,
-            headers: {
-              "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "*",
-            },
-          },
-        );
-      }
-
-      const airtableUrl =
-        `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableId}`;
-
       console.log("Fetching products from Airtable...");
-
-      const response = await fetch(airtableUrl, {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${AIRTABLE_CONFIG.apiKey}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Airtable API error:", response.status, errorText);
-        return new Response(
-          JSON.stringify({
-            error: "Failed to fetch products from Airtable",
-            details: errorText,
-          }),
-          {
-            status: response.status,
-            headers: {
-              "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "*",
-            },
-          },
-        );
-      }
-
-      const data = await response.json();
-
-      // Transform Airtable records to shop format
-      const products = data.records.map((record: any) => {
-        const fields = record.fields;
-        const inventory = fields["Variant Inventory Qty"] || 0;
-
-        return {
-          id: record.id,
-          title: fields["Title"] || "Untitled Product",
-          type: fields["Type"] || "Product",
-          price: fields["Variant Price"] || "0.00",
-          image: fields["Image Src"] ||
-            "https://via.placeholder.com/400x400?text=No+Image",
-          description: fields["Description"] || "",
-          availableForSale: inventory > 0,
-          currencyCode: "CAD",
-        };
-      });
+      const products = await fetchAirtableProducts();
 
       console.log(
         `Successfully fetched ${products.length} products from Airtable`,
@@ -1322,6 +1355,32 @@ async function handleApiRequest(req: Request): Promise<Response> {
         });
       }
 
+      const airtableProducts = await fetchAirtableProducts();
+      const productById = new Map(airtableProducts.map((product) => [product.id, product]));
+
+      const sanitizedItems = items.map((item: any) => {
+        const rawId = String(item.id || "").trim();
+        const product = productById.get(rawId);
+
+        if (!rawId || !product) {
+          throw new Error(`Product not found for checkout item id: ${rawId || "missing"}`);
+        }
+
+        const rawQuantity = Number.parseInt(String(item.quantity ?? "1"), 10);
+        const quantity = Number.isFinite(rawQuantity)
+          ? Math.min(Math.max(rawQuantity, 1), 999)
+          : 1;
+
+        return {
+          id: rawId,
+          title: product.title,
+          type: product.type,
+          size: item.size ? String(item.size) : "",
+          quantity,
+          basePrice: product.price,
+        };
+      });
+
       const accessToken = await getPayPalAccessToken();
 
       if (!accessToken) {
@@ -1336,16 +1395,10 @@ async function handleApiRequest(req: Request): Promise<Response> {
         );
       }
 
-      // Calculate item total
-      let itemTotal = items.reduce(
-        (sum: number, item: any) =>
-          sum + (parseFloat(item.price) * item.quantity),
-        0,
-      );
-
       // Apply discount if code provided
       let discountApplied = false;
       let discountType: "percentage" | "free_shipping" | null = null;
+      let discountPercentage: number | null = null;
       if (discountCode) {
         const discountEntry = discountCodes.find((dc) =>
           dc.code === discountCode.toUpperCase() && dc.isActive
@@ -1353,8 +1406,29 @@ async function handleApiRequest(req: Request): Promise<Response> {
         if (discountEntry) {
           discountApplied = true;
           discountType = discountEntry.discountType;
+          discountPercentage = discountEntry.discountPercentage;
         }
       }
+
+      const discountMultiplier =
+        discountType === "percentage" && discountPercentage
+          ? Math.max(0, 1 - (discountPercentage / 100))
+          : 1;
+
+      const paypalItems = sanitizedItems.map((item) => {
+        const discountedUnitPrice = roundMoney(item.basePrice * discountMultiplier);
+        return {
+          ...item,
+          unitPrice: discountedUnitPrice,
+        };
+      });
+
+      const itemTotal = roundMoney(
+        paypalItems.reduce(
+          (sum, item) => sum + (item.unitPrice * item.quantity),
+          0,
+        ),
+      );
 
       const selectedShippingMethod = shippingMethod === "pickup"
         ? "pickup"
@@ -1386,7 +1460,7 @@ async function handleApiRequest(req: Request): Promise<Response> {
               },
             },
           },
-          items: items.map((item: any) => {
+          items: paypalItems.map((item) => {
             // Build comprehensive item name with type
             let itemName = item.title;
             if (item.type) {
@@ -1410,7 +1484,7 @@ async function handleApiRequest(req: Request): Promise<Response> {
               category: "PHYSICAL_GOODS",
               unit_amount: {
                 currency_code: currencyCode,
-                value: parseFloat(item.price).toFixed(2),
+                value: item.unitPrice.toFixed(2),
               },
             };
           }),
@@ -1420,9 +1494,11 @@ async function handleApiRequest(req: Request): Promise<Response> {
       console.log("Creating PayPal order with data:", {
         totalAmount,
         currencyCode,
-        itemCount: items.length,
+        itemCount: paypalItems.length,
         discountApplied,
         discountCode: discountCode || null,
+        discountType,
+        discountPercentage,
         accessTokenPresent: !!accessToken,
       });
 
@@ -1460,6 +1536,16 @@ async function handleApiRequest(req: Request): Promise<Response> {
       });
     } catch (error) {
       console.error("PayPal create order error:", error);
+
+      if (error instanceof Error && error.message.includes("Product not found")) {
+        return new Response(
+          JSON.stringify({
+            error: "One or more items are no longer available. Please refresh and try again.",
+          }),
+          { status: 400 },
+        );
+      }
+
       return new Response(
         JSON.stringify({ error: "Failed to create PayPal order" }),
         { status: 500 },

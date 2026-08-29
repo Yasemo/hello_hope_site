@@ -285,18 +285,8 @@ async function initPayPal() {
                     const discountInfo = Cart.getDiscountInfo();
                     const shippingMethod = Cart.getShippingMethod();
 
-                    // Build items with percentage discount applied to prices
-                    let items = cart.items.map(item => ({ ...item }));
-                    if (discountInfo.code && discountInfo.discountType === 'percentage' && discountInfo.discountPercentage) {
-                        const multiplier = 1 - discountInfo.discountPercentage / 100;
-                        items = items.map(item => ({
-                            ...item,
-                            price: parseFloat((item.price * multiplier).toFixed(2))
-                        }));
-                    }
-
                     const payload = {
-                        items,
+                        items: cart.items,
                         shippingMethod,
                         discountCode: discountInfo.code || undefined
                     };

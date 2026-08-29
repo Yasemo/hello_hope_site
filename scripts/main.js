@@ -1024,38 +1024,38 @@ document.addEventListener('DOMContentLoaded', function() {
     const sections = document.querySelectorAll('section[id]');
     const contactForm = document.getElementById('contactForm');
 
-    // Handle URL hash scrolling with better timing and offset calculation
+    // Hash scroll — robust retry to handle mobile late layout shifts.
+    // Fires immediately (DOMContentLoaded), after full load, and at 1.4 s.
     if (window.location.hash) {
-        const hash = window.location.hash.substring(1); // Remove the # character
-        const targetElement = document.getElementById(hash);
+        const hash = window.location.hash.substring(1);
 
-        if (targetElement) {
-            // Allow more time for page content to load
-            setTimeout(() => {
-                // Calculate the target position accounting for various positioning offsets
-                const headerHeight = 70;
-                const targetRect = targetElement.getBoundingClientRect();
-                const absoluteElementTop = window.pageYOffset + targetRect.top;
+        function scrollToHash() {
+            const targetElement = document.getElementById(hash);
+            if (!targetElement) return false;
 
-                // Additional offset for sections with CSS positioning that affects scroll calculation
-                let positioningOffset = 0;
-                const sectionParent = targetElement.closest('section');
-                if (sectionParent) {
-                    const computedStyle = getComputedStyle(sectionParent);
-                    if (computedStyle.position === 'relative') {
-                        positioningOffset = parseFloat(computedStyle.top) || 0;
-                    }
-                }
+            // Use getBoundingClientRect so we always measure against the
+            // current rendered position, not a cached offsetTop.
+            const headerHeight = 80; // matches scroll-margin-top
+            const rect = targetElement.getBoundingClientRect();
+            const absoluteTop = window.pageYOffset + rect.top;
+            const targetPosition = Math.max(0, absoluteTop - headerHeight);
 
-                const targetPosition = absoluteElementTop - headerHeight + positioningOffset;
-
-                // Scroll to the calculated position
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
-            }, 200); // Increased delay to ensure all content is loaded
+            // 'auto' (instant) is far more reliable than 'smooth' on mobile
+            // for initial page-load jumps — there is no visible scroll to miss.
+            window.scrollTo({ top: targetPosition, behavior: 'auto' });
+            return true;
         }
+
+        // Attempt 1: as soon as DOM is ready
+        setTimeout(scrollToHash, 100);
+
+        // Attempt 2: after all resources (fonts, images) have loaded
+        window.addEventListener('load', function () {
+            setTimeout(scrollToHash, 150);
+        }, { once: true });
+
+        // Attempt 3: safety net for very slow / heavy mobile loads
+        setTimeout(scrollToHash, 1400);
     }
     
     // Throttle function for performance
@@ -1174,7 +1174,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, observerOptions);
 
     // Observe elements that should fade in
-    const fadeElements = document.querySelectorAll('.testimonial_card, .org_logo, .program_card');
+    const fadeElements = document.querySelectorAll('.testimonial_card, .org_logo, .program_card, .featured_video_card');
     fadeElements.forEach(el => observer.observe(el));
 
     // Clean URL Auto-scroll Functionality
@@ -1485,3 +1485,4 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+

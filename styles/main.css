@@ -694,6 +694,69 @@ p {
    PARTNERS SECTION
    ======================================== */
 
+.featured_video_section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+}
+
+.featured_video_section .section_container {
+  padding-bottom: 8rem;
+}
+
+.featured_video_card {
+  width: 100%;
+  max-width: 980px;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.featured_video_card.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.featured_video_text {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.featured_video_kicker {
+  color: var(--primary-color);
+  font-family: var(--font-primary);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.6rem;
+  text-transform: uppercase;
+}
+
+.featured_video_text h2 {
+  color: var(--text-primary);
+  margin-bottom: 0;
+}
+
+.featured_video_embed {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid #ececec;
+  border-radius: 18px;
+  background-color: #000;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12);
+}
+
+.featured_video_embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
 .partners_section {
   display: flex;
   flex-direction: column;
@@ -756,6 +819,18 @@ p {
 
 /* Partners Section Media Queries */
 @media (max-width: 768px) {
+  .featured_video_section .section_container {
+    padding: 5rem 1.5rem 6rem 1.5rem;
+  }
+
+  .featured_video_text {
+    margin-bottom: 1.5rem;
+  }
+
+  .featured_video_embed {
+    border-radius: 14px;
+  }
+
   .organizations_grid {
     gap: 0.75rem;
   }
@@ -771,6 +846,18 @@ p {
 }
 
 @media (max-width: 480px) {
+  .featured_video_section .section_container {
+    padding: 4rem 1rem 5rem 1rem;
+  }
+
+  .featured_video_kicker {
+    font-size: 0.8rem;
+  }
+
+  .featured_video_text h2 {
+    font-size: 1.8rem;
+  }
+
   .organizations_grid {
     gap: 0.5rem;
   }
