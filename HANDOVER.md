@@ -4,11 +4,14 @@ Production site: [https://hellohope.ca](https://hellohope.ca)
 
 This is a Deno (not Node) site: static HTML/CSS/JS served by a single backend file, `server.ts`. There is no `package.json` and no CI/CD.
 
-You received this project as a **zip of the source**, not GitHub access. Put it on your own GitHub (or any git host) and deploy from there.
+You received two handoff packages, not GitHub or GCP access:
+
+1. **Source zip** — the site code. Put it on your own GitHub (or any git host) and deploy from there.
+2. **Google Cloud Storage export** — images and videos from the `hello-hope` bucket. Upload those files to **your own** public file storage and replace the old URLs in the code (see [Media files](#media-files-google-cloud-storage-export)).
 
 ### First steps with the zip
 
-1. Unzip the folder.
+1. Unzip the source folder.
 2. Confirm there is **no** `.env` file. Secrets are not in the zip. If one is present, delete it and rotate every key that was in it.
 3. Copy `.env.example` to `.env` and fill in values from the accounts you now own (or new accounts you create).
 4. Create a new empty GitHub repo on your account, then:
@@ -51,8 +54,8 @@ Transfer accounts for **live** services. Do not spend time setting up the dorman
 
 | Service | What it does |
 |---|---|
-| **Google Cloud Run** | Hosts the Docker/Deno app |
-| **Google Cloud Storage** bucket `hello-hope` | Public images and videos (`https://storage.googleapis.com/hello-hope/...`) |
+| **Google Cloud Run** | Hosts the Docker/Deno app. Recreate on your own GCP (or another host). |
+| **Google Cloud Storage** bucket `hello-hope` | **Not transferred.** Files are exported; you rehost them and replace URLs. |
 | **Airtable** | Merch product catalog |
 | **PayPal** (live, CAD) | Merch checkout only |
 | **EmailJS** | Contact form + schedule-builder emails |
@@ -76,18 +79,19 @@ Stripe, SendGrid, and Firebase are **not** in this project.
 
 ## Accounts you need
 
-The zip is code only. Live site still depends on these services. Either take ownership of the existing accounts or recreate them and update env vars / hardcoded IDs.
+The source zip is code only. Media arrives as a separate GCS export. Live features still need the accounts below — take ownership or recreate them.
 
 1. **Your GitHub** — new repo; upload the unzipped project
-2. **Google Cloud** — Cloud Run service, GCS bucket `hello-hope` (or a new bucket + updated image URLs), domain mapping for `hellohope.ca`
-3. **Airtable** — merch catalog base
-4. **PayPal** developer app (live, CAD)
-5. **EmailJS** — service + contact template + schedule template
-6. **Luma** — conference event + webhook URL
-7. **Meta Business / Ads** — pixel + CAPI token
-8. **Google Analytics**
-9. **Calendly**
-10. **Domain / DNS** for `hellohope.ca`
+2. **Google Cloud Run** (or another host) — deploy the Docker/Deno app; map `hellohope.ca` if you own DNS
+3. **Your own public file storage** — import the GCS export (Cloudflare R2, S3, a new GCS bucket, etc.). Do not rely on the old `hello-hope` bucket.
+4. **Airtable** — merch catalog base
+5. **PayPal** developer app (live, CAD)
+6. **EmailJS** — service + contact template + schedule template
+7. **Luma** — conference event + webhook URL
+8. **Meta Business / Ads** — pixel + CAPI token
+9. **Google Analytics**
+10. **Calendly**
+11. **Domain / DNS** for `hellohope.ca`
 
 Skip Shopify and Gmail SMTP. They are leftover and not required.
 
@@ -118,6 +122,60 @@ Key client files:
 - `scripts/schedule-builder.js` — programs scheduler + EmailJS
 - `scripts/admin.js` — blog + discount admin
 - `scripts/articles.js` / `scripts/post.js` — public blog
+
+`media/`, `logos/`, and `fonts/` in the repo are already local. Hero video, speaker photos, program images, and blog featured images are **not** in the repo — they live in the GCS export.
+
+---
+
+## Media files (Google Cloud Storage export)
+
+The previous host is **exporting the `hello-hope` GCS bucket**, not transferring the Google Cloud project. Those objects will stop working on `https://storage.googleapis.com/hello-hope/...` once that bucket is gone.
+
+### What to do
+
+1. Unzip the GCS export.
+2. Upload every file to **your** public storage (new GCS bucket, Cloudflare R2, Amazon S3, etc.).
+3. Make the files publicly readable.
+4. **Keep the original filenames** (including spaces). Then you only need to replace the URL prefix.
+5. In the source code, replace every occurrence of:
+
+```
+https://storage.googleapis.com/hello-hope/
+```
+
+with your new public base URL, for example:
+
+```
+https://YOUR-BUCKET.s3.amazonaws.com/
+```
+
+or
+
+```
+https://storage.googleapis.com/YOUR-NEW-BUCKET/
+```
+
+Search the whole project. Do not change path/filename after the prefix unless you also renamed files on upload.
+
+### Files that contain GCS URLs
+
+| File | What |
+|---|---|
+| `index.html` | Hero videos, Aubrey photo, program images |
+| `conference.html` | Hero image, speaker/performer photos (`src` and `data-image`) |
+| `styles/main.css` | Homepage and program background images |
+| `styles/conference.css` | Conference hero background |
+| `posts/*.md` | Blog `featuredImage` front matter |
+| `data/posts.json` | Leftover; not used at runtime |
+
+Also check Airtable **Image Src** if any product photos were stored on this bucket. Those URLs are not in the repo.
+
+### Hero videos (large)
+
+- `9x16_HELLO HOPE X HIGHLIGHT REEL_Final_mobile.mp4`
+- `new_hello_hope_hero_video.mp4`
+
+After rehosting, confirm `/` and `/conference` load images and video. Broken images usually mean a missed URL or a renamed file.
 
 ---
 
@@ -287,9 +345,11 @@ HTML routes: `/`, `/home`, `/conference`, `/thank-you`, `/contact`, `/programs`,
 
 ## Day-one checklist
 
-- [ ] Unzip, confirm no `.env` in the zip, copy `.env.example` → `.env`
+- [ ] Unzip the source, confirm no `.env`, copy `.env.example` → `.env`
+- [ ] Unzip the GCS media export and upload it to your own public storage (keep filenames)
+- [ ] Replace `https://storage.googleapis.com/hello-hope/` in code (and Airtable Image Src if needed)
 - [ ] Push to your own GitHub repo (see First steps above)
-- [ ] Get or recreate GCP, Airtable, PayPal, EmailJS, Luma, Meta, GA, Calendly, and DNS
+- [ ] Get or recreate Cloud Run (or other host), Airtable, PayPal, EmailJS, Luma, Meta, GA, Calendly, and DNS
 - [ ] Fill `.env` / Cloud Run env from those accounts (never commit `.env`)
 - [ ] Run `deno task dev` and load `/`, `/shop`, `/conference`, `/contact`, `/admin`
 - [ ] Confirm shop products load from Airtable
